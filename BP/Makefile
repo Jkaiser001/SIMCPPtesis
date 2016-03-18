@@ -17,7 +17,7 @@ all:
 	make simulador
 
 todo:
-	rm -f obj/*
+	mkdir obj
 	make simulador
 
 simulador_OBJECTS = obj/simulador.o obj/sistema.o obj/lru.o obj/locks.o \
@@ -71,4 +71,5 @@ simulador: $(simulador_OBJECTS)
 
 clean: 
 	rm -f obj/*
+	rm -f simulador
 
