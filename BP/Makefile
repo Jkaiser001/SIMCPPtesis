@@ -1,7 +1,7 @@
 
 SHELL = /bin/sh
 #-------------------------------------------------------------------------------
-top_srcdir = /home/joseorellana/Documentos/Tesis/Codigos/Simulador/libcppsim-0.2.5
+top_srcdir = ../../libcppsim-0.2.5
 #top_srcdir =/home/cgomez/SIMULADOR/libcppsim-0.2.1
 srcdir = $(top_srcdir)/src
 #-------------------------------------------------------------------------------

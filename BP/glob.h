@@ -2,7 +2,7 @@
 #define GLOBAL_H
 
 //#include "/home/cgomez/SIMULADOR/libcppsim-0.2.1/src/cppsim.hh"
-#include "/home/joseorellana/Documentos/Tesis/Codigos/Simulador/libcppsim-0.2.5/src/cppsim.hh"
+#include "../../libcppsim-0.2.5/src/cppsim.hh"
 #include <stdio.h>
 #include <map>
 #include <sstream>
