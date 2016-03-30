@@ -88,10 +88,11 @@ public:
   void phold( double t )
   {
 #ifdef MIDE_ESTADISTICAS
-//     estadisticas->mide( pid, time(), t );
-#endif
+    //estadisticas->mide( pid, time(), t );//Borrar
+#endif 
 
      hold(t);
+     //cout<<"Para la hebra "<<pid<<" tiempo de holt1:"<<t<<endl;
   }
 
   void phold2( double t )

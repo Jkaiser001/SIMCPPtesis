@@ -37,6 +37,7 @@ public:
      L2      = new LRU( entradas_L2 );
 
      cores = new Core*[ncores];
+     cout<<"latencia L1<-L2 en chip"<<Latencia_G_L1_L2<<endl;
 
      for ( int i=0; i<ncores; i++ )
          cores[i] = new Core( i,

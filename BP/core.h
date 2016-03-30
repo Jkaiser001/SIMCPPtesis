@@ -49,6 +49,7 @@ public:
       Latencia_G_L2_Ram = _Latencia_G_L2_Ram;
 
       L1 = new LRU( entradas_L1 );
+      cout<<"latencia L1<-L2 en core"<<Latencia_G_L1_L2<<endl;
 
   }
 
@@ -91,7 +92,10 @@ public:
               L2->update( str );
               L1->insert( str );
               (*pthread)->phold2( Latencia_G_L1_L2 );
-              if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
+#ifdef MIDE_ESTADISTICAS
+              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
+#endif              
+            if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }
             else
             {
@@ -102,6 +106,10 @@ public:
               L1->insert( str );
               (*pthread)->phold2( Latencia_G_L1_L2 );
               (*pthread)->phold3( Latencia_G_L2_Ram );
+#ifdef MIDE_ESTADISTICAS
+              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
+              estadisticas->sumarTiemposRamL2(cpid,Latencia_G_L2_Ram);
+#endif
               if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }
 

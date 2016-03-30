@@ -1,0 +1,4 @@
+
+./simulador 200 64 1 ../Input/indiceOr/ traza-0-0-8.dat
+
+No se puede abrir ../Input/indiceOr/traza-0-0-8.dat

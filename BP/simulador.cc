@@ -55,12 +55,13 @@ double  Factor_ListaWrite;
 void PThreads::inner_body( void )
 { 
   printf("inicia thread (%d) dimBloque= %d\n",pid,dimBloque);
-  int qry=-1,qq;
-
-  while(1)
+  int qry=0,qq;
+  //cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
+  while(qry<QT)
   {
-    qry++;
-    if( qry>=QT ) break;
+    /*qry++;
+    cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
+    if( qry>=QT ) break;*/
     qq = qry%QT;
 
     if( query[qq].tipo==READ )
@@ -71,9 +72,11 @@ void PThreads::inner_body( void )
     if (pid==0&&qq%100==0) { printf("%d ",qq); fflush(stdout); }
 
     ovBarrier(qry%NT);
+    qry++;
   }
 
   double total= time();
+  cout<<"Timer of pid "<<pid<<" is "<< time()/1e6<<endl;
 
   Barrier();
   if (pid==0) { printf("\n"); fflush(stdout); }
@@ -373,7 +376,7 @@ printf("fin lectura indice\n");
   entradas_L2 = entradas_L2/4;
   
   double  latencia_G_L1_L2[1024];
-  
+  // De donde vienen estos valores de latencia
   latencia_G_L1_L2[1] = 0.01*1.0000000;
   latencia_G_L1_L2[2] = 0.01*1.2903226;
   latencia_G_L1_L2[4] = 0.01*2.3609467;
@@ -412,6 +415,8 @@ printf("fin lectura indice\n");
                                  Latencia_G_L2_Ram );
 
     chip->set_thread( &pthreads[0], 0);
+    estadisticas-> iniciarAcumuladorTiempoRamL2(1);
+    estadisticas-> iniciarAcumuladorTiempoL2L1(1,1);
   }
   else if ( NT==2 )
   {
@@ -422,7 +427,8 @@ printf("fin lectura indice\n");
 
     chip->set_thread( &pthreads[0], 0);
     chip->set_thread( &pthreads[1], 1);
-
+    estadisticas-> iniciarAcumuladorTiempoRamL2(1);
+    estadisticas-> iniciarAcumuladorTiempoL2L1(1,2);
   }
   else if ( NT==4 || NT==8 || NT==16 || NT==32 || NT==64 || NT==128 )
   {
@@ -445,7 +451,8 @@ printf("fin lectura indice\n");
           chip[i]->set_thread( &pthreads[nt], j);
        }
      }
-
+     estadisticas->iniciarAcumuladorTiempoRamL2(nchips);
+     estadisticas-> iniciarAcumuladorTiempoL2L1(nchips,ncores);
      ASSERT( nt==NT );
   }
   else
