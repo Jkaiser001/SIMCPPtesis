@@ -54,7 +54,7 @@ double  Factor_ListaWrite;
 
 void PThreads::inner_body( void )
 { 
-  printf("inicia thread (%d) dimBloque= %d\n",pid,dimBloque);
+  //printf("inicia thread (%d) dimBloque= %d\n",pid,dimBloque);
   int qry=0,qq;
   //cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
   while(qry<QT)

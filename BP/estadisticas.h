@@ -78,13 +78,14 @@ public:
       {
         //cout<<"sumaXcore: "<<sumaXcore<<endl;
         sumaXcore=sumaXcore+acumuladoresTiempoL2L1[i][j];
-        printf("Total_Time_L1<-L2 de chip %i, core %i: %6lf\n",i,j,sumaXcore);
+        printf("Total_Time_L1<-L2 de chip %i, core %i: %6lf\n",i,j,acumuladoresTiempoL2L1[i][j]);
       }
+      printf("Total_Time_L1<-L2 de chip %i: %6lf\n",i,sumaXcore);
       if (sumaXcore>max) max=sumaXcore;
       suma=suma+sumaXcore;
 
     }
-      printf("Total_Time_L1<-L2=   %.6lf    max= %.4lf\n",suma,max);
+      printf("Total_Time_L1<-L2=   %.6lf    max= %.6lf\n",suma,max);
     suma=0.0; max=0.0;
     printf("-------------------------------------------\n");
     printf("Total_L2<-Ram= ");
@@ -103,7 +104,7 @@ public:
       if (acumuladoresTiempoRamL2[i]/1e6>max) max=acumuladoresTiempoRamL2[i]/1e6;
       printf("Total_Time_L2<-RAM de chip %i: %6lf\n",i,acumuladoresTiempoRamL2[i]/1e6);
     }
-      printf("Total_Time_L2<-Ram=   %.6lf    max= %.2lf\n",suma,max);
+      printf("Total_Time_L2<-Ram=   %.6lf    max= %.6lf\n",suma,max);
       printf("-------------------------------------------\n");
     
     printf("Total_HitsL1=  ");
