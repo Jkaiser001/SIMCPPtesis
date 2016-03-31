@@ -76,7 +76,7 @@ void PThreads::inner_body( void )
   }
 
   double total= time();
-  cout<<"Timer of pid "<<pid<<" is "<< time()/1e6<<endl;
+  //cout<<"Timer of pid "<<pid<<" is "<< time()/1e6<<endl;
 
   Barrier();
   if (pid==0) { printf("\n"); fflush(stdout); }

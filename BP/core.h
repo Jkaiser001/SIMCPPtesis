@@ -49,7 +49,7 @@ public:
       Latencia_G_L2_Ram = _Latencia_G_L2_Ram;
 
       L1 = new LRU( entradas_L1 );
-      cout<<"latencia L1<-L2 en core"<<Latencia_G_L1_L2<<endl;
+     // cout<<"latencia L1<-L2 en core"<<Latencia_G_L1_L2<<endl;
 
   }
 

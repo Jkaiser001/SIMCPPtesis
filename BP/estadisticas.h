@@ -58,6 +58,7 @@ public:
   void muestraFallas()
   {
     double suma=0, max=0;
+    printf("-------------------------------------------\n");
     printf("Total_L1<-L2=  ");
     for(int i=0;i<NT;i++)
     {
@@ -67,7 +68,7 @@ public:
     }
     printf(" %.0lf    Ef= %.2lf\n",suma, (suma/NT)/max);
     suma=0.0, max=0.0;
-    printf("Total_Time_L1<-L2=   ");
+    
     for(int i=0;i<nchips;i++)
     {
       double sumaXcore=0.0;
@@ -77,13 +78,15 @@ public:
       {
         //cout<<"sumaXcore: "<<sumaXcore<<endl;
         sumaXcore=sumaXcore+acumuladoresTiempoL2L1[i][j];
+        printf("Total_Time_L1<-L2 de chip %i, core %i: %6lf\n",i,j,sumaXcore);
       }
       if (sumaXcore>max) max=sumaXcore;
       suma=suma+sumaXcore;
 
     }
-      printf("%.6lf    max= %.4lf\n",suma/NT,max);
+      printf("Total_Time_L1<-L2=   %.6lf    max= %.4lf\n",suma,max);
     suma=0.0; max=0.0;
+    printf("-------------------------------------------\n");
     printf("Total_L2<-Ram= ");
     for(int i=0;i<NT;i++)
     {
@@ -94,14 +97,14 @@ public:
     printf(" %.0lf    Ef= %.2lf\n",suma, (suma/NT)/max);
     
     max=0,suma=0.0;
-    printf("Total_Time_L2<-Ram=   ");
     for(int i=0;i<nchips;i++)
     {
       suma=suma+acumuladoresTiempoRamL2[i]/1e6;
       if (acumuladoresTiempoRamL2[i]/1e6>max) max=acumuladoresTiempoRamL2[i]/1e6;
-
+      printf("Total_Time_L2<-RAM de chip %i: %6lf\n",i,acumuladoresTiempoRamL2[i]/1e6);
     }
-      printf("%.6lf    max= %.2lf\n",suma,max);
+      printf("Total_Time_L2<-Ram=   %.6lf    max= %.2lf\n",suma,max);
+      printf("-------------------------------------------\n");
     
     printf("Total_HitsL1=  ");
     for(int i=0;i<NT;i++)

@@ -1,4 +1,441 @@
 
-./simulador 200 64 1 ../Input/indiceOr/ traza-0-0-8.dat
+./simulador 200 64 1 ../Input/ traza-0-0-8.dat
 
-No se puede abrir ../Input/indiceOr/traza-0-0-8.dat
+fin lectura consultas
+fin lectura indice
+cache L1= 8KB  L2= 1MB  Latencia gL1L2= 0.010000  gL2Ram= 0.100000
+Factor_MakeRanking= 1.360000 
+inicia thread (0) dimBloque= 16
+0 100 
+TiempoFinal= 8.234668   Ef= 1.00  min= 8.23 max= 8.23
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1118280    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 0.011183
+Total_Time_L1<-L2=   0.011183    max= 0.0112
+-------------------------------------------
+Total_L2<-Ram=  1118280    Ef= 1.00
+Total_Time_L2<-RAM de chip 0: 0.111828
+Total_Time_L2<-Ram=   0.111828    max= 0.11
+-------------------------------------------
+Total_HitsL1=   0    Ef= 1.00
+Total_HitsL2=    0    Ef= -nan
+Total_HitsRam=  1118280    Ef= 1.00
+WORK=  8111258   Ef= 1.00
+TotalLocks=  200   Ef= 1.00
+
+./simulador 200 128 2 ../Input/ traza-0-0-8.dat
+
+fin lectura consultas
+fin lectura indice
+cache L1= 8KB  L2= 1MB  Latencia gL1L2= 0.010000  gL2Ram= 0.100000
+Factor_MakeRanking= 1.360000 
+inicia thread (1) dimBloque= 16
+inicia thread (0) dimBloque= 16
+0 100 
+TiempoFinal= 4.117534   Ef= 1.00  min= 4.12 max= 4.12
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1118280    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 0.005591
+Total_Time_L1<-L2 de chip 0, core 1: 0.011183
+Total_Time_L1<-L2=   0.011183    max= 0.0112
+-------------------------------------------
+Total_L2<-Ram=  1118280    Ef= 1.00
+Total_Time_L2<-RAM de chip 0: 0.111828
+Total_Time_L2<-Ram=   0.111828    max= 0.11
+-------------------------------------------
+Total_HitsL1=   0    Ef= 0.50
+Total_HitsL2=    0    Ef= -nan
+Total_HitsRam=  1118280    Ef= 1.00
+WORK=  8111258   Ef= 1.00
+TotalLocks=  400   Ef= 1.00
+
+./simulador 200 256 4 ../Input/ traza-0-0-8.dat
+
+fin lectura consultas
+fin lectura indice
+cache L1= 8KB  L2= 1MB  Latencia gL1L2= 0.010000  gL2Ram= 0.100000
+Factor_MakeRanking= 1.360000 
+inicia thread (3) dimBloque= 16
+inicia thread (2) dimBloque= 16
+inicia thread (1) dimBloque= 16
+inicia thread (0) dimBloque= 16
+0 100 
+TiempoFinal= 2.058967   Ef= 1.00  min= 2.06 max= 2.06
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1118280    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 0.002796
+Total_Time_L1<-L2 de chip 0, core 1: 0.005591
+Total_Time_L1<-L2 de chip 0, core 2: 0.008387
+Total_Time_L1<-L2 de chip 0, core 3: 0.011183
+Total_Time_L1<-L2=   0.011183    max= 0.0112
+-------------------------------------------
+Total_L2<-Ram=  1118280    Ef= 1.00
+Total_Time_L2<-RAM de chip 0: 0.111828
+Total_Time_L2<-Ram=   0.111828    max= 0.11
+-------------------------------------------
+Total_HitsL1=   0    Ef= 0.25
+Total_HitsL2=    0    Ef= -nan
+Total_HitsRam=  1118280    Ef= 1.00
+WORK=  8111258   Ef= 1.00
+TotalLocks=  800   Ef= 1.00
+
+./simulador 200 512 8 ../Input/ traza-0-0-8.dat
+
+fin lectura consultas
+fin lectura indice
+cache L1= 8KB  L2= 1MB  Latencia gL1L2= 0.010000  gL2Ram= 0.100000
+Factor_MakeRanking= 1.360000 
+inicia thread (7) dimBloque= 16
+inicia thread (6) dimBloque= 16
+inicia thread (5) dimBloque= 16
+inicia thread (4) dimBloque= 16
+inicia thread (3) dimBloque= 16
+inicia thread (2) dimBloque= 16
+inicia thread (1) dimBloque= 16
+inicia thread (0) dimBloque= 16
+0 100 
+TiempoFinal= 1.029162   Ef= 1.00  min= 1.03 max= 1.03
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1118280    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 0.001398
+Total_Time_L1<-L2 de chip 0, core 1: 0.002796
+Total_Time_L1<-L2 de chip 0, core 2: 0.004194
+Total_Time_L1<-L2 de chip 0, core 3: 0.005591
+Total_Time_L1<-L2 de chip 1, core 0: 0.001398
+Total_Time_L1<-L2 de chip 1, core 1: 0.002796
+Total_Time_L1<-L2 de chip 1, core 2: 0.004194
+Total_Time_L1<-L2 de chip 1, core 3: 0.005591
+Total_Time_L1<-L2=   0.011183    max= 0.0056
+-------------------------------------------
+Total_L2<-Ram=  1076544    Ef= 1.00
+Total_Time_L2<-RAM de chip 0: 0.053827
+Total_Time_L2<-RAM de chip 1: 0.107654
+Total_Time_L2<-Ram=   0.107654    max= 0.05
+-------------------------------------------
+Total_HitsL1=   0    Ef= 0.25
+Total_HitsL2=    41736    Ef= 1.00
+Total_HitsRam=  1076544    Ef= 1.00
+WORK=  8111258   Ef= 1.00
+TotalLocks=  1600   Ef= 1.00
+
+./simulador 200 1024 16 ../Input/ traza-0-0-8.dat
+
+fin lectura consultas
+fin lectura indice
+cache L1= 8KB  L2= 1MB  Latencia gL1L2= 0.010000  gL2Ram= 0.100000
+Factor_MakeRanking= 1.360000 
+inicia thread (15) dimBloque= 16
+inicia thread (14) dimBloque= 16
+inicia thread (13) dimBloque= 16
+inicia thread (12) dimBloque= 16
+inicia thread (11) dimBloque= 16
+inicia thread (10) dimBloque= 16
+inicia thread (9) dimBloque= 16
+inicia thread (8) dimBloque= 16
+inicia thread (7) dimBloque= 16
+inicia thread (6) dimBloque= 16
+inicia thread (5) dimBloque= 16
+inicia thread (4) dimBloque= 16
+inicia thread (3) dimBloque= 16
+inicia thread (2) dimBloque= 16
+inicia thread (1) dimBloque= 16
+inicia thread (0) dimBloque= 16
+0 100 
+TiempoFinal= 0.513622   Ef= 1.00  min= 0.51 max= 0.51
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1120112    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 0.000700
+Total_Time_L1<-L2 de chip 0, core 1: 0.001400
+Total_Time_L1<-L2 de chip 0, core 2: 0.002100
+Total_Time_L1<-L2 de chip 0, core 3: 0.002800
+Total_Time_L1<-L2 de chip 1, core 0: 0.000700
+Total_Time_L1<-L2 de chip 1, core 1: 0.001400
+Total_Time_L1<-L2 de chip 1, core 2: 0.002100
+Total_Time_L1<-L2 de chip 1, core 3: 0.002800
+Total_Time_L1<-L2 de chip 2, core 0: 0.000700
+Total_Time_L1<-L2 de chip 2, core 1: 0.001400
+Total_Time_L1<-L2 de chip 2, core 2: 0.002100
+Total_Time_L1<-L2 de chip 2, core 3: 0.002800
+Total_Time_L1<-L2 de chip 3, core 0: 0.000700
+Total_Time_L1<-L2 de chip 3, core 1: 0.001400
+Total_Time_L1<-L2 de chip 3, core 2: 0.002100
+Total_Time_L1<-L2 de chip 3, core 3: 0.002800
+Total_Time_L1<-L2=   0.011201    max= 0.0028
+-------------------------------------------
+Total_L2<-Ram=  891008    Ef= 1.00
+Total_Time_L2<-RAM de chip 0: 0.022275
+Total_Time_L2<-RAM de chip 1: 0.044550
+Total_Time_L2<-RAM de chip 2: 0.066826
+Total_Time_L2<-RAM de chip 3: 0.089101
+Total_Time_L2<-Ram=   0.089101    max= 0.02
+-------------------------------------------
+Total_HitsL1=   0    Ef= 0.25
+Total_HitsL2=    229104    Ef= 1.00
+Total_HitsRam=  891008    Ef= 1.00
+WORK=  8111258   Ef= 1.00
+TotalLocks=  3200   Ef= 1.00
+
+./simulador 200 2048 32 ../Input/ traza-0-0-8.dat
+
+fin lectura consultas
+fin lectura indice
+cache L1= 8KB  L2= 1MB  Latencia gL1L2= 0.010000  gL2Ram= 0.100000
+Factor_MakeRanking= 1.360000 
+inicia thread (31) dimBloque= 16
+inicia thread (30) dimBloque= 16
+inicia thread (29) dimBloque= 16
+inicia thread (28) dimBloque= 16
+inicia thread (27) dimBloque= 16
+inicia thread (26) dimBloque= 16
+inicia thread (25) dimBloque= 16
+inicia thread (24) dimBloque= 16
+inicia thread (23) dimBloque= 16
+inicia thread (22) dimBloque= 16
+inicia thread (21) dimBloque= 16
+inicia thread (20) dimBloque= 16
+inicia thread (19) dimBloque= 16
+inicia thread (18) dimBloque= 16
+inicia thread (17) dimBloque= 16
+inicia thread (16) dimBloque= 16
+inicia thread (15) dimBloque= 16
+inicia thread (14) dimBloque= 16
+inicia thread (13) dimBloque= 16
+inicia thread (12) dimBloque= 16
+inicia thread (11) dimBloque= 16
+inicia thread (10) dimBloque= 16
+inicia thread (9) dimBloque= 16
+inicia thread (8) dimBloque= 16
+inicia thread (7) dimBloque= 16
+inicia thread (6) dimBloque= 16
+inicia thread (5) dimBloque= 16
+inicia thread (4) dimBloque= 16
+inicia thread (3) dimBloque= 16
+inicia thread (2) dimBloque= 16
+inicia thread (1) dimBloque= 16
+inicia thread (0) dimBloque= 16
+0 100 
+TiempoFinal= 0.255748   Ef= 1.00  min= 0.26 max= 0.26
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1128288    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 0.000353
+Total_Time_L1<-L2 de chip 0, core 1: 0.000705
+Total_Time_L1<-L2 de chip 0, core 2: 0.001058
+Total_Time_L1<-L2 de chip 0, core 3: 0.001410
+Total_Time_L1<-L2 de chip 1, core 0: 0.000353
+Total_Time_L1<-L2 de chip 1, core 1: 0.000705
+Total_Time_L1<-L2 de chip 1, core 2: 0.001058
+Total_Time_L1<-L2 de chip 1, core 3: 0.001410
+Total_Time_L1<-L2 de chip 2, core 0: 0.000353
+Total_Time_L1<-L2 de chip 2, core 1: 0.000705
+Total_Time_L1<-L2 de chip 2, core 2: 0.001058
+Total_Time_L1<-L2 de chip 2, core 3: 0.001410
+Total_Time_L1<-L2 de chip 3, core 0: 0.000353
+Total_Time_L1<-L2 de chip 3, core 1: 0.000705
+Total_Time_L1<-L2 de chip 3, core 2: 0.001058
+Total_Time_L1<-L2 de chip 3, core 3: 0.001410
+Total_Time_L1<-L2 de chip 4, core 0: 0.000353
+Total_Time_L1<-L2 de chip 4, core 1: 0.000705
+Total_Time_L1<-L2 de chip 4, core 2: 0.001058
+Total_Time_L1<-L2 de chip 4, core 3: 0.001410
+Total_Time_L1<-L2 de chip 5, core 0: 0.000353
+Total_Time_L1<-L2 de chip 5, core 1: 0.000705
+Total_Time_L1<-L2 de chip 5, core 2: 0.001058
+Total_Time_L1<-L2 de chip 5, core 3: 0.001410
+Total_Time_L1<-L2 de chip 6, core 0: 0.000353
+Total_Time_L1<-L2 de chip 6, core 1: 0.000705
+Total_Time_L1<-L2 de chip 6, core 2: 0.001058
+Total_Time_L1<-L2 de chip 6, core 3: 0.001410
+Total_Time_L1<-L2 de chip 7, core 0: 0.000353
+Total_Time_L1<-L2 de chip 7, core 1: 0.000705
+Total_Time_L1<-L2 de chip 7, core 2: 0.001058
+Total_Time_L1<-L2 de chip 7, core 3: 0.001410
+Total_Time_L1<-L2=   0.011283    max= 0.0014
+-------------------------------------------
+Total_L2<-Ram=  485824    Ef= 1.00
+Total_Time_L2<-RAM de chip 0: 0.006073
+Total_Time_L2<-RAM de chip 1: 0.012146
+Total_Time_L2<-RAM de chip 2: 0.018218
+Total_Time_L2<-RAM de chip 3: 0.024291
+Total_Time_L2<-RAM de chip 4: 0.030364
+Total_Time_L2<-RAM de chip 5: 0.036437
+Total_Time_L2<-RAM de chip 6: 0.042510
+Total_Time_L2<-RAM de chip 7: 0.048582
+Total_Time_L2<-Ram=   0.048582    max= 0.01
+-------------------------------------------
+Total_HitsL1=   0    Ef= 0.25
+Total_HitsL2=    642464    Ef= 1.00
+Total_HitsRam=  485824    Ef= 1.00
+WORK=  8111258   Ef= 1.00
+TotalLocks=  6400   Ef= 1.00
+
+./simulador 200 4096 64 ../Input/ traza-0-0-8.dat
+
+fin lectura consultas
+fin lectura indice
+cache L1= 8KB  L2= 1MB  Latencia gL1L2= 0.010000  gL2Ram= 0.100000
+Factor_MakeRanking= 1.360000 
+inicia thread (63) dimBloque= 16
+inicia thread (62) dimBloque= 16
+inicia thread (61) dimBloque= 16
+inicia thread (60) dimBloque= 16
+inicia thread (59) dimBloque= 16
+inicia thread (58) dimBloque= 16
+inicia thread (57) dimBloque= 16
+inicia thread (56) dimBloque= 16
+inicia thread (55) dimBloque= 16
+inicia thread (54) dimBloque= 16
+inicia thread (53) dimBloque= 16
+inicia thread (52) dimBloque= 16
+inicia thread (51) dimBloque= 16
+inicia thread (50) dimBloque= 16
+inicia thread (49) dimBloque= 16
+inicia thread (48) dimBloque= 16
+inicia thread (47) dimBloque= 16
+inicia thread (46) dimBloque= 16
+inicia thread (45) dimBloque= 16
+inicia thread (44) dimBloque= 16
+inicia thread (43) dimBloque= 16
+inicia thread (42) dimBloque= 16
+inicia thread (41) dimBloque= 16
+inicia thread (40) dimBloque= 16
+inicia thread (39) dimBloque= 16
+inicia thread (38) dimBloque= 16
+inicia thread (37) dimBloque= 16
+inicia thread (36) dimBloque= 16
+inicia thread (35) dimBloque= 16
+inicia thread (34) dimBloque= 16
+inicia thread (33) dimBloque= 16
+inicia thread (32) dimBloque= 16
+inicia thread (31) dimBloque= 16
+inicia thread (30) dimBloque= 16
+inicia thread (29) dimBloque= 16
+inicia thread (28) dimBloque= 16
+inicia thread (27) dimBloque= 16
+inicia thread (26) dimBloque= 16
+inicia thread (25) dimBloque= 16
+inicia thread (24) dimBloque= 16
+inicia thread (23) dimBloque= 16
+inicia thread (22) dimBloque= 16
+inicia thread (21) dimBloque= 16
+inicia thread (20) dimBloque= 16
+inicia thread (19) dimBloque= 16
+inicia thread (18) dimBloque= 16
+inicia thread (17) dimBloque= 16
+inicia thread (16) dimBloque= 16
+inicia thread (15) dimBloque= 16
+inicia thread (14) dimBloque= 16
+inicia thread (13) dimBloque= 16
+inicia thread (12) dimBloque= 16
+inicia thread (11) dimBloque= 16
+inicia thread (10) dimBloque= 16
+inicia thread (9) dimBloque= 16
+inicia thread (8) dimBloque= 16
+inicia thread (7) dimBloque= 16
+inicia thread (6) dimBloque= 16
+inicia thread (5) dimBloque= 16
+inicia thread (4) dimBloque= 16
+inicia thread (3) dimBloque= 16
+inicia thread (2) dimBloque= 16
+inicia thread (1) dimBloque= 16
+inicia thread (0) dimBloque= 16
+0 100 
+TiempoFinal= 0.127830   Ef= 1.00  min= 0.13 max= 0.13
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1145856    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 0.000179
+Total_Time_L1<-L2 de chip 0, core 1: 0.000358
+Total_Time_L1<-L2 de chip 0, core 2: 0.000537
+Total_Time_L1<-L2 de chip 0, core 3: 0.000716
+Total_Time_L1<-L2 de chip 1, core 0: 0.000179
+Total_Time_L1<-L2 de chip 1, core 1: 0.000358
+Total_Time_L1<-L2 de chip 1, core 2: 0.000537
+Total_Time_L1<-L2 de chip 1, core 3: 0.000716
+Total_Time_L1<-L2 de chip 2, core 0: 0.000179
+Total_Time_L1<-L2 de chip 2, core 1: 0.000358
+Total_Time_L1<-L2 de chip 2, core 2: 0.000537
+Total_Time_L1<-L2 de chip 2, core 3: 0.000716
+Total_Time_L1<-L2 de chip 3, core 0: 0.000179
+Total_Time_L1<-L2 de chip 3, core 1: 0.000358
+Total_Time_L1<-L2 de chip 3, core 2: 0.000537
+Total_Time_L1<-L2 de chip 3, core 3: 0.000716
+Total_Time_L1<-L2 de chip 4, core 0: 0.000179
+Total_Time_L1<-L2 de chip 4, core 1: 0.000358
+Total_Time_L1<-L2 de chip 4, core 2: 0.000537
+Total_Time_L1<-L2 de chip 4, core 3: 0.000716
+Total_Time_L1<-L2 de chip 5, core 0: 0.000179
+Total_Time_L1<-L2 de chip 5, core 1: 0.000358
+Total_Time_L1<-L2 de chip 5, core 2: 0.000537
+Total_Time_L1<-L2 de chip 5, core 3: 0.000716
+Total_Time_L1<-L2 de chip 6, core 0: 0.000179
+Total_Time_L1<-L2 de chip 6, core 1: 0.000358
+Total_Time_L1<-L2 de chip 6, core 2: 0.000537
+Total_Time_L1<-L2 de chip 6, core 3: 0.000716
+Total_Time_L1<-L2 de chip 7, core 0: 0.000179
+Total_Time_L1<-L2 de chip 7, core 1: 0.000358
+Total_Time_L1<-L2 de chip 7, core 2: 0.000537
+Total_Time_L1<-L2 de chip 7, core 3: 0.000716
+Total_Time_L1<-L2 de chip 8, core 0: 0.000179
+Total_Time_L1<-L2 de chip 8, core 1: 0.000358
+Total_Time_L1<-L2 de chip 8, core 2: 0.000537
+Total_Time_L1<-L2 de chip 8, core 3: 0.000716
+Total_Time_L1<-L2 de chip 9, core 0: 0.000179
+Total_Time_L1<-L2 de chip 9, core 1: 0.000358
+Total_Time_L1<-L2 de chip 9, core 2: 0.000537
+Total_Time_L1<-L2 de chip 9, core 3: 0.000716
+Total_Time_L1<-L2 de chip 10, core 0: 0.000179
+Total_Time_L1<-L2 de chip 10, core 1: 0.000358
+Total_Time_L1<-L2 de chip 10, core 2: 0.000537
+Total_Time_L1<-L2 de chip 10, core 3: 0.000716
+Total_Time_L1<-L2 de chip 11, core 0: 0.000179
+Total_Time_L1<-L2 de chip 11, core 1: 0.000358
+Total_Time_L1<-L2 de chip 11, core 2: 0.000537
+Total_Time_L1<-L2 de chip 11, core 3: 0.000716
+Total_Time_L1<-L2 de chip 12, core 0: 0.000179
+Total_Time_L1<-L2 de chip 12, core 1: 0.000358
+Total_Time_L1<-L2 de chip 12, core 2: 0.000537
+Total_Time_L1<-L2 de chip 12, core 3: 0.000716
+Total_Time_L1<-L2 de chip 13, core 0: 0.000179
+Total_Time_L1<-L2 de chip 13, core 1: 0.000358
+Total_Time_L1<-L2 de chip 13, core 2: 0.000537
+Total_Time_L1<-L2 de chip 13, core 3: 0.000716
+Total_Time_L1<-L2 de chip 14, core 0: 0.000179
+Total_Time_L1<-L2 de chip 14, core 1: 0.000358
+Total_Time_L1<-L2 de chip 14, core 2: 0.000537
+Total_Time_L1<-L2 de chip 14, core 3: 0.000716
+Total_Time_L1<-L2 de chip 15, core 0: 0.000179
+Total_Time_L1<-L2 de chip 15, core 1: 0.000358
+Total_Time_L1<-L2 de chip 15, core 2: 0.000537
+Total_Time_L1<-L2 de chip 15, core 3: 0.000716
+Total_Time_L1<-L2=   0.011459    max= 0.0007
+-------------------------------------------
+Total_L2<-Ram=  328000    Ef= 1.00
+Total_Time_L2<-RAM de chip 0: 0.002050
+Total_Time_L2<-RAM de chip 1: 0.004100
+Total_Time_L2<-RAM de chip 2: 0.006150
+Total_Time_L2<-RAM de chip 3: 0.008200
+Total_Time_L2<-RAM de chip 4: 0.010250
+Total_Time_L2<-RAM de chip 5: 0.012300
+Total_Time_L2<-RAM de chip 6: 0.014350
+Total_Time_L2<-RAM de chip 7: 0.016400
+Total_Time_L2<-RAM de chip 8: 0.018450
+Total_Time_L2<-RAM de chip 9: 0.020500
+Total_Time_L2<-RAM de chip 10: 0.022550
+Total_Time_L2<-RAM de chip 11: 0.024600
+Total_Time_L2<-RAM de chip 12: 0.026650
+Total_Time_L2<-RAM de chip 13: 0.028700
+Total_Time_L2<-RAM de chip 14: 0.030750
+Total_Time_L2<-RAM de chip 15: 0.032800
+Total_Time_L2<-Ram=   0.032800    max= 0.00
+-------------------------------------------
+Total_HitsL1=   0    Ef= 0.25
+Total_HitsL2=    817856    Ef= 1.00
+Total_HitsRam=  328000    Ef= 1.00
+WORK=  8111258   Ef= 1.00
+TotalLocks=  12800   Ef= 1.00
