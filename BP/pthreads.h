@@ -87,8 +87,9 @@ public:
 
   void phold( double t )
   {
+    cout<<"----CPU----"<<endl;
 #ifdef MIDE_ESTADISTICAS
-    //estadisticas->mide( pid, time(), t );//Borrar
+    estadisticas->mide( pid, time(), t );//Borrar
 #endif 
 
      hold(t);
@@ -97,8 +98,9 @@ public:
 
   void phold2( double t )
   {
+    cout<<"----L1<--L2----"<<endl;
 #ifdef MIDE_ESTADISTICAS
-//     estadisticas->mide( pid, time(), t );
+     estadisticas->mide( pid, time(), t );
      estadisticas->fallaL1L2( pid );
 #endif
      hold(t);
@@ -106,8 +108,9 @@ public:
 
   void phold3( double t )
   {
+    cout<<"----L2<--RAM----"<<endl;
 #ifdef MIDE_ESTADISTICAS
-//     estadisticas->mide( pid, time(), t );
+     estadisticas->mide( pid, time(), t );
      estadisticas->fallaL2Ram( pid );
 #endif
      hold(t);

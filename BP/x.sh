@@ -2,7 +2,7 @@
 
 #make todo
 
-./simulador 10000   64  1 ../Input/ traza-0-0-8.dat >  xejec-R.dat
+./simulador 100   64  1 ../Input/ traza-0-0-8.dat >  xejec-R.dat
 
 ./simulador 10000  128  2 ../Input/ traza-0-0-8.dat >> xejec-R.dat
 
@@ -14,5 +14,5 @@
 
 ./simulador 10000 2048 32 ../Input/ traza-0-0-8.dat >> xejec-R.dat
 
-./simulador 10000 4096 64 ../Input/ traza-0-0-8.dat >> xejec-R.dat
+./simulador 1000 4096 64 ../Input/ traza-0-0-8.dat >> xejec-R.dat
 

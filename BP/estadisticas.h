@@ -18,6 +18,7 @@ private:
   double *acumuladoresTiempoRamL2;
   double **acumuladoresTiempoL2L1;
   double *hitL1, *hitL2, *hitRam;
+  double *tiempoXThread;
 
 
 public:
@@ -42,7 +43,7 @@ public:
      hitL1  = new double[nt];
      hitL2  = new double[nt];
      hitRam = new double[nt];
-
+     tiempoXThread = new double[nt];
      for(int i=0;i<nt;i++)
        hitL1[i]= hitL2[i]= hitRam[i]= 0;
   }
@@ -185,12 +186,15 @@ public:
 
   void mide( int pid, double reloj, double retardo )
   {
+     cout<<"El pid: "<<pid<<" reloj: "<<reloj<<" retardo: "<<retardo<<endl;
+     /*
      double avg=0.0, mx=0.0, delta;
      
     printf("Esto no debería ejecutarse\n");exit(0);     
 
     for(int i=0; i<NT; i++)
      {
+        
         if (minimo[i]>=reloj) continue;
 
         if (minimo[i]==reloj && maximo[i]==reloj)
@@ -231,7 +235,7 @@ public:
 
      avg = 0.0;
      mx  = 0.0;
-
+    */
   }
 
   double Eficiencia()
