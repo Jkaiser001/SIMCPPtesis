@@ -21,6 +21,7 @@ class PThreads : public process
 public:
 
    int pid, NT;
+   int count[3];
    char nombre[1024];
    Core *core;
    handle<PThreads>* htrd;
@@ -66,6 +67,10 @@ public:
      indice    = _indice;
 
      nscores   = dimBloque*nTerm;
+     for (int i = 0; i < 3; ++i)
+     {
+        count[i]=1;
+     }
 /*     
      scores    = new double[nscores];
      
@@ -87,10 +92,14 @@ public:
 
   void phold( double t )
   {
-    cout<<"----CPU----"<<endl;
+    
 #ifdef MIDE_ESTADISTICAS
-    estadisticas->mide( pid, time(), t );//Borrar
-#endif 
+     //if (count[0]>0&&pid==0) {
+        cout<<"----CPU----"<<endl;
+        estadisticas->mide( pid, time(), t ,ACTIVE);//Borrar
+      //}
+     count[0]--;
+#endif
 
      hold(t);
      //cout<<"Para la hebra "<<pid<<" tiempo de holt1:"<<t<<endl;
@@ -98,9 +107,13 @@ public:
 
   void phold2( double t )
   {
-    cout<<"----L1<--L2----"<<endl;
+    
 #ifdef MIDE_ESTADISTICAS
-     estadisticas->mide( pid, time(), t );
+     //if (count[1]>0&&pid==0){
+      //cout<<"----L1<--L2----"<<endl;
+      estadisticas->mide( pid, time(), t , INACTIVE );
+    //} 
+     count[1]--;
      estadisticas->fallaL1L2( pid );
 #endif
      hold(t);
@@ -108,9 +121,13 @@ public:
 
   void phold3( double t )
   {
-    cout<<"----L2<--RAM----"<<endl;
+    
 #ifdef MIDE_ESTADISTICAS
-     estadisticas->mide( pid, time(), t );
+     //if (count[2]>0&&pid==0) {
+      //cout<<"----L2<--RAM----"<<endl;
+      estadisticas->mide( pid, time(), t, INACTIVE);
+    //}
+     count[2]--;
      estadisticas->fallaL2Ram( pid );
 #endif
      hold(t);

@@ -27,6 +27,9 @@ using namespace std;
 #define READ 0
 #define WRITE 1
 
+#define ACTIVE 1
+#define INACTIVE 0
+
 #define BLOQUE_NO_LLENO 0
 #define BLOQUE_LLENO 1
 

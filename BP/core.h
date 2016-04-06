@@ -94,6 +94,7 @@ public:
               (*pthread)->phold2( Latencia_G_L1_L2 );
 #ifdef MIDE_ESTADISTICAS
               estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
+              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
 #endif              
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }

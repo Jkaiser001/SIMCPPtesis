@@ -18,7 +18,7 @@ private:
   double *acumuladoresTiempoRamL2;
   double **acumuladoresTiempoL2L1;
   double *hitL1, *hitL2, *hitRam;
-  double *tiempoXThread;
+  double **tiempoXThread;
 
 
 public:
@@ -43,9 +43,15 @@ public:
      hitL1  = new double[nt];
      hitL2  = new double[nt];
      hitRam = new double[nt];
-     tiempoXThread = new double[nt];
+     tiempoXThread = (double **) malloc(nt *sizeof(double *));
+     for (int i = 0; i < nt; ++i)
+     {
+       tiempoXThread[i]=(double *) malloc(nt*sizeof(double));
+     }
+
      for(int i=0;i<nt;i++)
-       hitL1[i]= hitL2[i]= hitRam[i]= 0;
+       hitL1[i]= hitL2[i]= hitRam[i]=tiempoXThread[i][0]=tiempoXThread[i][1]=0;
+        
   }
 
 
@@ -184,13 +190,21 @@ public:
 
   }
 
-  void mide( int pid, double reloj, double retardo )
+  void mide( int pid, double reloj, double retardo, int modo )
   {
-     cout<<"El pid: "<<pid<<" reloj: "<<reloj<<" retardo: "<<retardo<<endl;
+    tiempoXThread[pid][modo]=retardo+tiempoXThread[pid][modo];
+    
+    if(modo==ACTIVE){
+      
+      cout<<"El pid: "<<pid<<" tiempo por threads:"<<tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]<<endl;
+      cout<<"Tiempo Total: "<<reloj<<" retardo: "<<retardo<<endl;
+        cout<<"Porcentaje de Utilización de la thread "<<(tiempoXThread[pid][ACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
+      }
+     
      /*
      double avg=0.0, mx=0.0, delta;
      
-    printf("Esto no deber�a ejecutarse\n");exit(0);     
+    printf("Esto no debería ejecutarse\n");exit(0);     
 
     for(int i=0; i<NT; i++)
      {
