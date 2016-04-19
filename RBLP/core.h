@@ -91,6 +91,10 @@ public:
               L2->update( str );
               L1->insert( str );
               (*pthread)->phold2( Latencia_G_L1_L2 );
+#ifdef MIDE_ESTADISTICAS
+              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
+              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
+#endif               
               if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }
             else
@@ -100,6 +104,10 @@ public:
 #endif
               L2->insert( str );
               L1->insert( str );
+#ifdef MIDE_ESTADISTICAS
+              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
+              estadisticas->sumarTiemposRamL2(cpid,Latencia_G_L2_Ram);
+#endif       
               (*pthread)->phold2( Latencia_G_L1_L2 );
               (*pthread)->phold3( Latencia_G_L2_Ram );
               if (t_cpu!=0.0) (*pthread)->phold( t_cpu );

@@ -1,6 +1,16 @@
 #ifndef ESTADISTICAS_H
 #define ESTADISTICAS_H
 #include "glob.h"
+#include "estruc.h"
+
+typedef  struct DATA
+{ 
+    int pid ;
+    double tiempothread;
+    double utilizacion;
+  
+}data;
+
 
 class Estadisticas
 {
@@ -20,6 +30,9 @@ private:
   double *hitL1, *hitL2, *hitRam;
   double **tiempoXThread;
 
+  double deltaTiempo;
+  double *tiempoAcumulado;
+  vector<data> vectorMuestreo;
 
 public:
 
@@ -43,15 +56,20 @@ public:
      hitL1  = new double[nt];
      hitL2  = new double[nt];
      hitRam = new double[nt];
+     tiempoAcumulado=new double[nt];
      tiempoXThread = (double **) malloc(nt *sizeof(double *));
      for (int i = 0; i < nt; ++i)
      {
        tiempoXThread[i]=(double *) malloc(nt*sizeof(double));
      }
 
-     for(int i=0;i<nt;i++)
-       hitL1[i]= hitL2[i]= hitRam[i]=tiempoXThread[i][0]=tiempoXThread[i][1]=0;
+     for(int i=0;i<nt;i++){
+       hitL1[i]= hitL2[i]= hitRam[i]=tiempoXThread[i][0]=tiempoXThread[i][1]=tiempoXThread[i][2]=0;
+       tiempoAcumulado[i]=deltaTiempo; 
+     }
         
+      deltaTiempo=100;
+      
   }
 
 
@@ -170,6 +188,8 @@ public:
   {
       nchips=nchip;
       Ncores=ncore;
+
+      
       acumuladoresTiempoL2L1=(double **)malloc(nchip *sizeof(double * ));
       for (int i = 0; i < nchip; ++i)
       {
@@ -190,16 +210,47 @@ public:
 
   }
 
+  void guardarIntervalo(){
+
+  }
   void mide( int pid, double reloj, double retardo, int modo )
   {
     tiempoXThread[pid][modo]=retardo+tiempoXThread[pid][modo];
+    tiempoXThread[pid][TOTAL]=retardo+tiempoXThread[pid][TOTAL];
     
     if(modo==ACTIVE){
       
-      cout<<"El pid: "<<pid<<" tiempo por threads:"<<tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]<<endl;
-      cout<<"Tiempo Total: "<<reloj<<" retardo: "<<retardo<<endl;
-        cout<<"Porcentaje de Utilización de la thread "<<(tiempoXThread[pid][ACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
+                
+        //cout<<"Porcentaje INACTIVO de la thread "<<(tiempoXThread[pid][INACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
+        if (tiempoAcumulado[pid]<=tiempoXThread[pid][TOTAL])
+        {
+          cout<<"CUMPLIDO"<<endl;
+          double diferencia=tiempoXThread[pid][TOTAL]-tiempoAcumulado[pid];
+          data datos;
+          datos.pid=pid;
+          double tiempoTotal= (tiempoXThread[pid][ACTIVE] + tiempoXThread[pid][INACTIVE] - diferencia);
+          if(diferencia>=0 && modo==ACTIVE) datos.utilizacion= ((tiempoXThread[pid][ACTIVE] - diferencia) /tiempoTotal )*100; 
+          else datos.utilizacion= (tiempoXThread[pid][ACTIVE] /tiempoTotal )*100;
+          datos.tiempothread= tiempoXThread[pid][TOTAL]- diferencia;
+        
+          cout<<"El pid: "<<datos.pid<<" tiempo por threads:"<<datos.tiempothread<<endl;
+          cout<<"Porcentaje de Utilización de la thread "<<datos.utilizacion<<endl;
+
+          vectorMuestreo.push_back(datos);
+          
+          tiempoXThread[pid][modo]=diferencia;
+          if(modo==ACTIVE){
+            tiempoXThread[pid][INACTIVE]=0;
+          }
+          else
+          {
+            tiempoXThread[pid][ACTIVE]=0;            
+          }
+          tiempoAcumulado[pid]=tiempoAcumulado[pid]+deltaTiempo;
+        }  
       }
+
+
      
      /*
      double avg=0.0, mx=0.0, delta;

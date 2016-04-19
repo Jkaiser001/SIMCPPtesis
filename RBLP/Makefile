@@ -1,7 +1,7 @@
 
 SHELL = /bin/sh
 #-------------------------------------------------------------------------------
-top_srcdir = /home/carolina/WSE/simulador/libcppsim-0.2.1
+top_srcdir = ../../libcppsim-0.2.5
 #top_srcdir =/home/cgomez/SIMULADOR/libcppsim-0.2.1
 srcdir = $(top_srcdir)/src
 #-------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ all:
 	make simulador
 
 todo:
-	rm -f obj/*
+	mkdir obj
 	make simulador
 
 simulador_OBJECTS = obj/simulador.o obj/sistema.o obj/lru.o obj/locks.o \
@@ -71,4 +71,5 @@ simulador: $(simulador_OBJECTS)
 
 clean: 
 	rm -f obj/*
+	rm -f simulador
 

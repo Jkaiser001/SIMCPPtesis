@@ -27,6 +27,8 @@ using namespace std;
 #define READ 0
 #define WRITE 1
 
+
+#define TOTAL 2
 #define ACTIVE 1
 #define INACTIVE 0
 

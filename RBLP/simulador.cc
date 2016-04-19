@@ -417,6 +417,8 @@ printf("fin lectura indice\n");
                                  Latencia_G_L2_Ram );
 
     chip->set_thread( &pthreads[0], 0);
+    estadisticas-> iniciarAcumuladorTiempoRamL2(1);
+    estadisticas-> iniciarAcumuladorTiempoL2L1(1,1);
   }
   else if ( NT==2 )
   {
@@ -427,6 +429,8 @@ printf("fin lectura indice\n");
 
     chip->set_thread( &pthreads[0], 0);
     chip->set_thread( &pthreads[1], 1);
+    estadisticas-> iniciarAcumuladorTiempoRamL2(1);
+    estadisticas-> iniciarAcumuladorTiempoL2L1(1,2);
 
   }
   else if ( NT==4 || NT==8 || NT==16 || NT==32 || NT==64 || NT==128 )
@@ -450,8 +454,9 @@ printf("fin lectura indice\n");
           chip[i]->set_thread( &pthreads[nt], j);
        }
      }
-
-     ASSERT( nt==NT );
+      estadisticas->iniciarAcumuladorTiempoRamL2(nchips);
+      estadisticas-> iniciarAcumuladorTiempoL2L1(nchips,ncores);
+      ASSERT( nt==NT );
   }
   else
   {

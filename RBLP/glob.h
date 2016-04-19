@@ -2,7 +2,7 @@
 #define GLOBAL_H
 
 //#include "/home/cgomez/SIMULADOR/libcppsim-0.2.1/src/cppsim.hh"
-#include "/home/carolina/WSE/simulador/libcppsim-0.2.1/src/cppsim.hh"
+#include "../../libcppsim-0.2.5/src/cppsim.hh"
 #include <stdio.h>
 #include <map>
 #include <sstream>
@@ -32,6 +32,9 @@ using namespace std;
 
 #define READ 0
 #define WRITE 1
+
+#define ACTIVE 1
+#define INACTIVE 0
 
 #define BLOQUE_NO_LLENO 0
 #define BLOQUE_LLENO 1
