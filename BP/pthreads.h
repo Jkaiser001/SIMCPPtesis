@@ -95,7 +95,7 @@ public:
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[0]>0&&pid==0) {
-        cout<<"----CPU----"<<endl;
+        //cout<<"----CPU----"<<endl;
         estadisticas->mide( pid, time(), t ,ACTIVE);//Borrar
       //}
      count[0]--;

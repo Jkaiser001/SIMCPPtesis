@@ -6,11 +6,13 @@
 #include <stdio.h>
 #include <map>
 #include <sstream>
+#include <fstream>
 #include <set>
 #include <vector>
 #include <list>
 #include <assert.h>
 #include <string>
+#include <cstring>
 #include <limits>
 #include <queue>
 #include <math.h>

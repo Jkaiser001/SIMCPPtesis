@@ -42,7 +42,7 @@ obj/simulador.o: simulador.cc $(srcdir)/cppsim.hh $(srcdir)/process.hh \
 #--- objetos de la simulacion
 
 obj/sistema.o:  sistema.cc sistema.h 
-	g++ -O2 -c -o obj/sistema.o sistema.cc -Wno-deprecated -Wall
+	g++ -O2 -c -o obj/sistema.o sistema.cc -lm -Wno-deprecated -Wall
 
 obj/lru.o:  lru.cc lru.h
 	g++ -O2 -c -o obj/lru.o lru.cc -Wno-deprecated -Wall
