@@ -97,6 +97,7 @@ public:
       {   
          
          if (vectorMuestreo[i].pid==j && vectorMuestreo[i].tiempothread!=0)
+
          {
            //cout<<"El pid: "<<vectorMuestreo[i].pid<<" tiempo thread:"<<vectorMuestreo[i].tiempothread<<endl;
             //cout<<"Porcentaje de Utilización de la thread "<<vectorMuestreo[i].utilizacion<<endl;
@@ -115,6 +116,7 @@ public:
                                };
     FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
     for (int k=0;k<5;k++){
+
       fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
     }
 
