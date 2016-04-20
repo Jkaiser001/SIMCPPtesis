@@ -289,12 +289,14 @@ int main( int argc, char* argv[] )
   int dimBloque;  // dimesion de los bloques/NT
   int dB;         // dimension real de los bloques
   int QT;         // total de consultas/documentos
+  int delta=200;
 
   char home_indice[128], log[128];
 
   QT = atoi(argv[1]);
   dB = atoi(argv[2]);
   NT = atoi(argv[3]);
+  delta=atoi(argv[4]);
   
   dB = dB/4; // se cae con mas de 4096 y no quiero cambiar los run*.sh 
   dimBloque = dB/NT;
@@ -303,10 +305,10 @@ int main( int argc, char* argv[] )
   for(int i=0; i<NT; i++)
     contador_locks[i]=0;
 
-//./simulador 50 256 4 /home2/cluster/carolina/datos-simulacion/indiceOr traza-0-0-8.dat
-
-  printf("\n%s %s %s %s %s %s\n\n", argv[0],argv[1],argv[2],
-                                    argv[3],argv[4],argv[5] );
+//./simulador 50 256 4 50 /home2/cluster/carolina/datos-simulacion/indiceOr traza-0-0-8.dat
+// ./simulador [QT] [dB] [NT] [delta] [homeindice] [traza] 
+  printf("\n%s %s %s %s %s %s %s\n\n", argv[0],argv[1],argv[2],
+                                    argv[3],argv[4],argv[5],argv[6] );
 
   sprintf(home_indice,"%s",argv[argc-2]);
   sprintf(log,"%s",argv[argc-1]);
@@ -405,7 +407,7 @@ printf("fin lectura indice\n");
   ov_barrier = new int[NT];
   for(int i=0;i<NT;i++) ov_barrier[i]= 0;
 
-  estadisticas= new Estadisticas( NT );
+  estadisticas= new Estadisticas( NT , delta);
 
   if ( NT==1 )
   {

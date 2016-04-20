@@ -7,6 +7,9 @@ typedef  struct DATA
 { 
     int pid ;
     double tiempothread;
+    double tiempoActivo;
+    double tiempoInactivo;
+    double tiempoTotal;
     double utilizacion;
   
 }data;
@@ -36,7 +39,7 @@ private:
 
 public:
 
-  Estadisticas(int nt)
+  Estadisticas(int nt,int delta)
   {
      NT= nt;
 
@@ -68,7 +71,7 @@ public:
        tiempoAcumulado[i]=0; 
      }
         
-      deltaTiempo=500;
+      deltaTiempo=delta;
       
   }
 
@@ -81,10 +84,10 @@ public:
   void fallaL2Ram( int pid ) { fallasCacheL2Ram[pid]++;  }
   void mostarIntervalosUtilizacion(){
     
-
+     
     for (int j = 0; j < NT; ++j )
     {
-      std::string name= "puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << j))->str()+".out" ;
+      std::string name= "out/puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << j))->str()+".out" ;
       ofstream out;
       //const char *namec=name.c_str();
       char * namec = new char [name.length()+1];
@@ -93,6 +96,7 @@ public:
     //memcpy(namec, name.c_str(), name.size() + 1);
       out.open(namec);
       cout<<"-------------------------------------------------------------"<<endl;
+      cout<<"GRAFICAR"<<endl;
       for (int i = 0; i < vectorMuestreo.size() ; ++i)
       {   
          
@@ -105,13 +109,20 @@ public:
          }
        
       }
+
        out.close();
     }
-    char * configGnuplot[] = {"set title \"Utilización vs Tiempo por thread\"", 
+    char * configGnuplot[] = {  "set term png",
+                                "set title \"Utilización vs Tiempo por thread\"", 
                                 "set ylabel \"----Utilización--->\"",
+                                //"set format y\"%2.f\"",
                                 "set xlabel \"----Tiempo--->\"",
-                                "set multiplot",
-                                "set size 1,0.5"
+                                //"set multiplot",
+                                //"set size 1,0.5"
+                                "set yrange[80:100]",
+                                "set grid",
+                                "show grid"
+
                                 //instrucionc
                                };
     FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
@@ -122,14 +133,21 @@ public:
 
     for (int i = 0; i < NT; ++i)
     {
-      string instrucion;
-      if(i==0)instrucion= "plot \"puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str()+".out\" using 1:2 with lines";
-       else instrucion= "plot \"puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str()+".out\" using 1:2 with lines";
-      char  * instrucionc = new char [instrucion.length()+1];
-      strcpy (instrucionc, instrucion.c_str());
-      fprintf(ventanaGnuplot, "%s \n", instrucionc);
+      string nameG="puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+      string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
+      string instrucionG = "set out \"graf/"+nameG+".png\"";
+      char  * instrucionPc = new char [instrucionP.length()+1];
+      strcpy (instrucionPc, instrucionP.c_str());
+      char *  instrucionGc = new char [instrucionG.length()+1];
+      strcpy (instrucionGc, instrucionG.c_str());
+
+      fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+      fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+    
     }
-     fprintf(ventanaGnuplot, "%s \n", "exit");  
+    fprintf(ventanaGnuplot, "%s \n", "exit");  
+    cout<<"-------------------------------------------------------------"<<endl;
+
   }
   void muestraFallas()
   {
@@ -268,7 +286,7 @@ public:
     tiempoXThread[pid][modo]=retardo+tiempoXThread[pid][modo];
     tiempoXThread[pid][TOTAL]=retardo+tiempoXThread[pid][TOTAL];
     
-    if(modo==ACTIVE){
+    //if(modo==ACTIVE){
       
                 
         //cout<<"Porcentaje INACTIVO de la thread "<<(tiempoXThread[pid][INACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
@@ -280,9 +298,18 @@ public:
           datos.pid=pid;
           double tiempoTotal= (tiempoXThread[pid][ACTIVE] + tiempoXThread[pid][INACTIVE] - diferencia);
           if (tiempoAcumulado[pid]==0) datos.utilizacion=0.0;
-          else if(diferencia>=0 && modo==ACTIVE) datos.utilizacion= ((tiempoXThread[pid][ACTIVE] - diferencia) /tiempoTotal )*100; 
-          else datos.utilizacion= (tiempoXThread[pid][ACTIVE] /tiempoTotal )*100;
-          
+          else if(diferencia>=0 && modo==ACTIVE) {
+            datos.tiempoActivo=tiempoXThread[pid][ACTIVE] - diferencia;
+            datos.tiempoInactivo=tiempoXThread[pid][INACTIVE];
+            datos.utilizacion= ((tiempoXThread[pid][ACTIVE] - diferencia) /tiempoTotal )*100;
+            
+          } 
+          else {
+            datos.tiempoActivo=tiempoXThread[pid][ACTIVE];
+            datos.tiempoInactivo=tiempoXThread[pid][INACTIVE]-diferencia;
+            datos.utilizacion= (tiempoXThread[pid][ACTIVE] /tiempoTotal )*100;
+          }
+          datos.tiempoTotal=tiempoTotal;
           datos.tiempothread= tiempoXThread[pid][TOTAL]- diferencia;
         
           //cout<<"El pid: "<<datos.pid<<" tiempo thread:"<<datos.tiempothread<<", tiempo acumulado thread: "<< tiempoAcumulado[pid]<<endl;
@@ -301,9 +328,13 @@ public:
           }
           tiempoAcumulado[pid]=tiempoAcumulado[pid]+deltaTiempo;
         }  
-      }
-
-
+   //   }
+      //else
+        /*if (tiempoAcumulado[pid]<=tiempoXThread[pid][TOTAL])
+          {
+            cout<< "INACTIVE"<<endl;
+          }
+          */
      
      /*
      double avg=0.0, mx=0.0, delta;
