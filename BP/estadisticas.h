@@ -3,13 +3,30 @@
 #include "glob.h"
 #include "estruc.h"
 
-typedef  struct DATA
+typedef  struct DATAT
 { 
     int pid ;
     double tiempothread;
+    double tiempoActivo;
+    double tiempoInactivo;
+    double tiempoTotal;
     double utilizacion;
   
-}data;
+}dataT;
+typedef  struct DATAC
+{ 
+   // int datos;
+    //int ncore;
+    //double tiempocore;
+    int NthreadCore;
+    double tiempoActivo;
+    double tiempoInactivo;
+    double tiempoTotal;
+    double utilizacion;
+    double utilizacionAcum;
+  
+}dataC;
+
 
 
 class Estadisticas
@@ -32,11 +49,12 @@ private:
 
   double deltaTiempo;
   double *tiempoAcumulado;
-  vector<data> vectorMuestreo;
+  vector<dataT> vectorMuestreoT;
+  map<int, map<double,dataC> > mapMuestreoC;
 
 public:
 
-  Estadisticas(int nt)
+  Estadisticas(int nt,int delta)
   {
      NT= nt;
 
@@ -68,7 +86,7 @@ public:
        tiempoAcumulado[i]=0; 
      }
         
-      deltaTiempo=500;
+      deltaTiempo=delta;
       
   }
 
@@ -79,38 +97,18 @@ public:
 
   void fallaL1L2( int pid ) { fallasCacheL1L2[pid]++; }
   void fallaL2Ram( int pid ) { fallasCacheL2Ram[pid]++;  }
-  void mostarIntervalosUtilizacion(){
-    
-
-    for (int j = 0; j < NT; ++j )
-    {
-      std::string name= "puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << j))->str()+".out" ;
-      ofstream out;
-      //const char *namec=name.c_str();
-      char * namec = new char [name.length()+1];
-      strcpy (namec, name.c_str());
-      //namec = (char *)alloca(name.size() + 1);
-    //memcpy(namec, name.c_str(), name.size() + 1);
-      out.open(namec);
-      cout<<"-------------------------------------------------------------"<<endl;
-      for (int i = 0; i < vectorMuestreo.size() ; ++i)
-      {   
-         
-         if (vectorMuestreo[i].pid==j && vectorMuestreo[i].tiempothread!=0)
-         {
-           //cout<<"El pid: "<<vectorMuestreo[i].pid<<" tiempo thread:"<<vectorMuestreo[i].tiempothread<<endl;
-            //cout<<"Porcentaje de Utilización de la thread "<<vectorMuestreo[i].utilizacion<<endl;
-            out<< vectorMuestreo[i].tiempothread/1e6<<", "<<vectorMuestreo[i].utilizacion<<endl;
-         }
-       
-      }
-       out.close();
-    }
-    char * configGnuplot[] = {"set title \"Utilización vs Tiempo por thread\"", 
+  void graficar(){
+    char * configGnuplot[] = {  "set term png",
+                                "set title \"Utilización vs Tiempo por thread\"", 
                                 "set ylabel \"----Utilización--->\"",
+                                //"set format y\"%2.f\"",
                                 "set xlabel \"----Tiempo--->\"",
-                                "set multiplot",
-                                "set size 1,0.5"
+                                //"set multiplot",
+                                //"set size 1,0.5"
+                                "set yrange[80:100]",
+                                "set grid",
+                                "show grid"
+
                                 //instrucionc
                                };
     FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
@@ -120,14 +118,156 @@ public:
 
     for (int i = 0; i < NT; ++i)
     {
-      string instrucion;
-      if(i==0)instrucion= "plot \"puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str()+".out\" using 1:2 with lines";
-       else instrucion= "plot \"puntosGraficar"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str()+".out\" using 1:2 with lines";
-      char  * instrucionc = new char [instrucion.length()+1];
-      strcpy (instrucionc, instrucion.c_str());
-      fprintf(ventanaGnuplot, "%s \n", instrucionc);
+      string nameG="Utilizacion_Thread-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+      string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
+      string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
+      char  * instrucionPc = new char [instrucionP.length()+1];
+      strcpy (instrucionPc, instrucionP.c_str());
+      char *  instrucionGc = new char [instrucionG.length()+1];
+      strcpy (instrucionGc, instrucionG.c_str());
+
+      fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+      fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+    
     }
-     fprintf(ventanaGnuplot, "%s \n", "exit");  
+    fprintf(ventanaGnuplot, "%s \n", "exit");  
+    cout<<"-------------------------------------------------------------"<<endl;
+  }
+  void guardarIntervalosUtilizacion(){
+    
+     
+    for (int j = 0; j < NT; ++j )
+    {
+      std::string name= "out/Utilizacion_Thread-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j))->str()+".out" ;
+      ofstream out;
+      //const char *namec=name.c_str();
+      char * namec = new char [name.length()+1];
+      strcpy (namec, name.c_str());
+
+      //namec = (char *)alloca(name.size() + 1);
+    //memcpy(namec, name.c_str(), name.size() + 1);
+      out.open(namec);
+      //cout<<"-------------------------------------------------------------"<<endl;
+      //cout<<"GRAFICAR"<<endl;
+      for (int i = 0; i < vectorMuestreoT.size() ; ++i)
+      {   
+         
+         if (vectorMuestreoT[i].pid==j && vectorMuestreoT[i].tiempothread!=0)
+         {
+           //cout<<"El pid: "<<vectorMuestreoT[i].pid<<" tiempo thread:"<<vectorMuestreoT[i].tiempothread<<endl;
+            //cout<<"Porcentaje de Utilización de la thread "<<vectorMuestreoT[i].utilizacion<<endl;
+            out<< vectorMuestreoT[i].tiempothread/1e6<<", "<<vectorMuestreoT[i].utilizacion<<endl;
+         }
+       
+      }
+
+       out.close();
+    }
+
+  }
+
+  void UtilizacionCore(){
+    //double **salida;
+    //salida=(double **)malloc(Ncores * sizeof(double *));
+    //int core=0;
+    /*for (int i = 0; i < Ncores; ++i)
+    {
+        salida[i]=(double *)malloc(3*sizeof(double ));
+        for (int j = 0; j < 3; ++i)
+        {
+          salida[i][j]=0;
+        }
+      
+    }*/
+    cout<<"___________________________ENTRE____________________________"<<endl;
+      for (int i = 0; i < vectorMuestreoT.size() ; ++i)
+      {   
+        dataT dato=vectorMuestreoT[i];
+        dataC datoc;
+        int core=dato.pid/4;
+        double tiempo=dato.tiempothread;
+        
+        if (mapMuestreoC.find(core)!=mapMuestreoC.end())
+        {
+          //cout<<"Voy por el 1° if"<<core<<endl;
+          if(mapMuestreoC[core].find(tiempo)==mapMuestreoC[core].end())
+          {
+            //cout<<"Voy por el 2° if"<<core<<endl;
+             
+              double tiempoTotal = mapMuestreoC[core][tiempo].tiempoTotal+dato.tiempoTotal;
+              double tiempoActivo = mapMuestreoC[core][tiempo].tiempoActivo+dato.tiempoActivo;
+              double utilizacion = tiempoActivo/tiempoTotal*100;
+              mapMuestreoC[core][tiempo].NthreadCore++;
+              mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
+              mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
+              mapMuestreoC[core][tiempo].utilizacion=utilizacion;
+              //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+              mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoInactivo+dato.tiempoInactivo;
+              mapMuestreoC[core][tiempo].utilizacionAcum=mapMuestreoC[core][tiempo].utilizacionAcum+dato.utilizacion;
+
+          }
+          else
+            {
+              //cout<<"Voy por el 2° else"<<core<<endl;
+
+                
+                double tiempoTotal = dato.tiempoTotal;
+                double tiempoActivo = dato.tiempoActivo;
+                double utilizacion = tiempoActivo/tiempoTotal*100;
+                //mapMuestreoC[core][tiempo].ncore=core;
+                //mapMuestreoC[core][tiempo].tiempocore=tiempo;
+                mapMuestreoC[core][tiempo].NthreadCore++; 
+                mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
+                mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
+                mapMuestreoC[core][tiempo].utilizacion=utilizacion;
+                //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+                
+                mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
+                mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
+
+            }
+        }
+        else
+        {
+            //cout<<"Voy por el 1° else"<<core<<endl;   
+            double tiempoTotal = dato.tiempoTotal;
+            double tiempoActivo = dato.tiempoActivo;
+            double utilizacion = tiempoActivo/tiempoTotal*100;
+           // mapMuestreoC[core][tiempo].ncore=core;
+            //mapMuestreoC[core][tiempo].tiempocore=tiempo;
+            mapMuestreoC[core][tiempo].NthreadCore==1;
+            mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
+            mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
+            mapMuestreoC[core][tiempo].utilizacion=utilizacion;
+            //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+            
+            mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
+            mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
+
+        }
+        //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     
+       
+      }
+       printUtilizacionCore();
+
+
+    //return salida; 
+  }
+  void printUtilizacionCore(){
+    int core=0;
+    for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
+    {
+      for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      {
+        dataC dato=j->second;
+        cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
+      }
+      
+
+    }
+    
+
   }
   void muestraFallas()
   {
@@ -209,7 +349,9 @@ public:
        if (max<hitRam[i]) max= hitRam[i];
     }
     printf(" %.0lf    Ef= %.2lf\n",suma, (suma/NT)/max);
-    mostarIntervalosUtilizacion();
+    //guardarIntervalosUtilizacion();
+    //graficar();
+    UtilizacionCore();
 
   }
   /*
@@ -266,7 +408,7 @@ public:
     tiempoXThread[pid][modo]=retardo+tiempoXThread[pid][modo];
     tiempoXThread[pid][TOTAL]=retardo+tiempoXThread[pid][TOTAL];
     
-    if(modo==ACTIVE){
+    //if(modo==ACTIVE){
       
                 
         //cout<<"Porcentaje INACTIVO de la thread "<<(tiempoXThread[pid][INACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
@@ -274,19 +416,28 @@ public:
         {
           //cout<<"CUMPLIDO"<<endl;
           double diferencia=tiempoXThread[pid][TOTAL]-tiempoAcumulado[pid];
-          data datos;
+          dataT datos;
           datos.pid=pid;
           double tiempoTotal= (tiempoXThread[pid][ACTIVE] + tiempoXThread[pid][INACTIVE] - diferencia);
           if (tiempoAcumulado[pid]==0) datos.utilizacion=0.0;
-          else if(diferencia>=0 && modo==ACTIVE) datos.utilizacion= ((tiempoXThread[pid][ACTIVE] - diferencia) /tiempoTotal )*100; 
-          else datos.utilizacion= (tiempoXThread[pid][ACTIVE] /tiempoTotal )*100;
-          
+          else if(diferencia>=0 && modo==ACTIVE) {
+            datos.tiempoActivo=tiempoXThread[pid][ACTIVE] - diferencia;
+            datos.tiempoInactivo=tiempoXThread[pid][INACTIVE];
+            datos.utilizacion= ((tiempoXThread[pid][ACTIVE] - diferencia) /tiempoTotal )*100;
+            
+          } 
+          else {
+            datos.tiempoActivo=tiempoXThread[pid][ACTIVE];
+            datos.tiempoInactivo=tiempoXThread[pid][INACTIVE]-diferencia;
+            datos.utilizacion= (tiempoXThread[pid][ACTIVE] /tiempoTotal )*100;
+          }
+          datos.tiempoTotal=tiempoTotal;
           datos.tiempothread= tiempoXThread[pid][TOTAL]- diferencia;
         
           //cout<<"El pid: "<<datos.pid<<" tiempo thread:"<<datos.tiempothread<<", tiempo acumulado thread: "<< tiempoAcumulado[pid]<<endl;
           //cout<<"Porcentaje de Utilización de la thread "<<datos.utilizacion<<endl;
 
-          vectorMuestreo.push_back(datos);
+          vectorMuestreoT.push_back(datos);
 
           
           tiempoXThread[pid][modo]=diferencia;
@@ -299,9 +450,13 @@ public:
           }
           tiempoAcumulado[pid]=tiempoAcumulado[pid]+deltaTiempo;
         }  
-      }
-
-
+   //   }
+      //else
+        /*if (tiempoAcumulado[pid]<=tiempoXThread[pid][TOTAL])
+          {
+            cout<< "INACTIVE"<<endl;
+          }
+          */
      
      /*
      double avg=0.0, mx=0.0, delta;
