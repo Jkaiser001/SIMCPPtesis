@@ -115,6 +115,7 @@ public:
     for (int k=0;k<5;k++){
       fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
     }
+<<<<<<< HEAD
 
     for (int i = 0; i < NT; ++i)
     {
@@ -132,6 +133,25 @@ public:
     }
     fprintf(ventanaGnuplot, "%s \n", "exit");  
     cout<<"-------------------------------------------------------------"<<endl;
+=======
+
+    for (int i = 0; i < NT; ++i)
+    {
+      string nameG="Utilizacion_Thread-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+      string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
+      string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
+      char  * instrucionPc = new char [instrucionP.length()+1];
+      strcpy (instrucionPc, instrucionP.c_str());
+      char *  instrucionGc = new char [instrucionG.length()+1];
+      strcpy (instrucionGc, instrucionG.c_str());
+
+      fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+      fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+    
+    }
+    fprintf(ventanaGnuplot, "%s \n", "exit");  
+
+>>>>>>> c629d0e538584eb2c9c28c4505ecae8696fc0752
   }
   void guardarIntervalosUtilizacion(){
     
@@ -171,6 +191,7 @@ public:
     //salida=(double **)malloc(Ncores * sizeof(double *));
     //int core=0;
     /*for (int i = 0; i < Ncores; ++i)
+<<<<<<< HEAD
     {
         salida[i]=(double *)malloc(3*sizeof(double ));
         for (int j = 0; j < 3; ++i)
@@ -257,18 +278,215 @@ public:
     int core=0;
     for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
     {
+=======
+    {
+        salida[i]=(double *)malloc(3*sizeof(double ));
+        for (int j = 0; j < 3; ++i)
+        {
+          salida[i][j]=0;
+        }
+      
+    }*/
+    cout<<"___________________________ENTRE____________________________"<<endl;
+      for (int i = 0; i < vectorMuestreoT.size() ; ++i)
+      {   
+        dataT dato=vectorMuestreoT[i];
+        dataC datoc;
+        int core=dato.pid/4;
+        double tiempo=dato.tiempothread;
+        
+        if (mapMuestreoC.find(core)!=mapMuestreoC.end())
+        {
+          //cout<<"Voy por el 1° if"<<core<<endl;
+          if(mapMuestreoC[core].find(tiempo)==mapMuestreoC[core].end())
+          {
+            //cout<<"Voy por el 2° if"<<core<<endl;
+             
+              double tiempoTotal = mapMuestreoC[core][tiempo].tiempoTotal+dato.tiempoTotal;
+              double tiempoActivo = mapMuestreoC[core][tiempo].tiempoActivo+dato.tiempoActivo;
+              double utilizacion = tiempoActivo/tiempoTotal*100;
+              mapMuestreoC[core][tiempo].NthreadCore++;
+              mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
+              mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
+              mapMuestreoC[core][tiempo].utilizacion=utilizacion;
+              //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+              mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoInactivo+dato.tiempoInactivo;
+              mapMuestreoC[core][tiempo].utilizacionAcum=mapMuestreoC[core][tiempo].utilizacionAcum+dato.utilizacion;
+
+          }
+          else
+            {
+              //cout<<"Voy por el 2° else"<<core<<endl;
+
+                
+                double tiempoTotal = dato.tiempoTotal;
+                double tiempoActivo = dato.tiempoActivo;
+                double utilizacion = tiempoActivo/tiempoTotal*100;
+                //mapMuestreoC[core][tiempo].ncore=core;
+                //mapMuestreoC[core][tiempo].tiempocore=tiempo;
+                mapMuestreoC[core][tiempo].NthreadCore++; 
+                mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
+                mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
+                mapMuestreoC[core][tiempo].utilizacion=mapMuestreoC[core][tiempo].utilizacionAcum+utilizacion;
+                //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+                
+                mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
+                mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
+
+            }
+        }
+        else
+        {
+            //cout<<"Voy por el 1° else"<<core<<endl;   
+            double tiempoTotal = dato.tiempoTotal;
+            double tiempoActivo = dato.tiempoActivo;
+            double utilizacion = tiempoActivo/tiempoTotal*100;
+           
+            // mapMuestreoC[core][tiempo].ncore=core;
+            //mapMuestreoC[core][tiempo].tiempocore=tiempo;
+            
+            mapMuestreoC[core][tiempo].NthreadCore==1;
+            mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
+            mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
+            mapMuestreoC[core][tiempo].utilizacion=utilizacion;
+            
+            //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+            
+            mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
+            mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
+
+        }
+        //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     
+       
+      }
+       //printUtilizacionCore();
+      guardarIntervalosUtilizacionCore();
+      graficarCore();
+      graficarPromUCore();
+    //return salida; 
+  }
+  void printUtilizacionCore(){
+    int core=0;
+    for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
+    {
+>>>>>>> c629d0e538584eb2c9c28c4505ecae8696fc0752
       for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
         dataC dato=j->second;
         cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
         //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
       }
+<<<<<<< HEAD
       
 
     }
     
 
+=======
+    }
   }
+  void guardarIntervalosUtilizacionCore(){
+    for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
+    {
+      std::string name= "out/Utilizacion_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
+      ofstream out;
+      //const char *namec=name.c_str();
+      char * namec = new char [name.length()+1];
+      strcpy (namec, name.c_str());
+      out.open(namec);
+      
+      name= "out/PromUtilizacion_Core_-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
+      ofstream outp;
+      //const char *namec=name.c_str();
+      namec = new char [name.length()+1];
+      strcpy (namec, name.c_str());
+      outp.open(namec);
+      
+      for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      {
+        dataC dato=j->second;
+        cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+        
+        out<< j->first / 1e6 << " , " << dato.utilizacion << endl;
+        outp<< j->first / 1e6 << " , " << dato.utilizacionAcum / dato.NthreadCore << endl;
+        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
+      }
+      out.close();
+      outp.close();
+    }
+>>>>>>> c629d0e538584eb2c9c28c4505ecae8696fc0752
+  }
+  void graficarCore(){
+   char * configGnuplot[] = {  "set term png",
+                                  "set title \"Utilización vs Tiempo por core\"", 
+                                  "set ylabel \"----Utilización--->\"",
+                                  //"set format y\"%2.f\"",
+                                  "set xlabel \"----Tiempo--->\"",
+                                  //"set multiplot",
+                                  //"set size 1,0.5"
+                                  "set yrange[80:100]",
+                                  "set grid",
+                                  "show grid"
+
+                                  //instrucionc
+                                 };
+      FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
+      for (int k=0;k<5;k++){
+        fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
+      }
+
+      for (int i = 0; i < Ncores; ++i)
+      {
+        string nameG="Utilizacion_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+        string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
+        string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
+        char  * instrucionPc = new char [instrucionP.length()+1];
+        strcpy (instrucionPc, instrucionP.c_str());
+        char *  instrucionGc = new char [instrucionG.length()+1];
+        strcpy (instrucionGc, instrucionG.c_str());
+
+        fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+        fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+      
+      }
+      fprintf(ventanaGnuplot, "%s \n", "exit");  
+  }
+  void graficarPromUCore(){
+   char * configGnuplot[] = {  "set term png",
+                                  "set title \"Utilización vs Tiempo por core\"", 
+                                  "set ylabel \"----Utilización--->\"",
+                                  //"set format y\"%2.f\"",
+                                  "set xlabel \"----Tiempo--->\"",
+                                  //"set multiplot",
+                                  //"set size 1,0.5"
+                                  "set yrange[80:100]",
+                                  "set grid",
+                                  "show grid"
+
+                                  //instrucionc
+                                 };
+      FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
+      for (int k=0;k<5;k++){
+        fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
+      }
+
+      for (int i = 0; i < Ncores; ++i)
+      {
+        string nameG="PromUtilizacion_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+        string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
+        string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
+        char  * instrucionPc = new char [instrucionP.length()+1];
+        strcpy (instrucionPc, instrucionP.c_str());
+        char *  instrucionGc = new char [instrucionG.length()+1];
+        strcpy (instrucionGc, instrucionG.c_str());
+
+        fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+        fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+      
+      }
+      fprintf(ventanaGnuplot, "%s \n", "exit");  
+  }
+
   void muestraFallas()
   {
     double suma=0, max=0;
