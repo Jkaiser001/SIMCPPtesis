@@ -170,7 +170,6 @@ public:
     //salida=(double **)malloc(Ncores * sizeof(double *));
     //int core=0;
     /*for (int i = 0; i < Ncores; ++i)
-<<<<<<< HEAD
     {
         salida[i]=(double *)malloc(3*sizeof(double ));
         for (int j = 0; j < 3; ++i)
@@ -179,84 +178,7 @@ public:
         }
       
     }*/
-    cout<<"___________________________ENTRE____________________________"<<endl;
-      for (int i = 0; i < vectorMuestreoT.size() ; ++i)
-      {   
-        dataT dato=vectorMuestreoT[i];
-        dataC datoc;
-        int core=dato.pid/4;
-        double tiempo=dato.tiempothread;
-        
-        if (mapMuestreoC.find(core)!=mapMuestreoC.end())
-        {
-          //cout<<"Voy por el 1° if"<<core<<endl;
-          if(mapMuestreoC[core].find(tiempo)==mapMuestreoC[core].end())
-          {
-            //cout<<"Voy por el 2° if"<<core<<endl;
-             
-              double tiempoTotal = mapMuestreoC[core][tiempo].tiempoTotal+dato.tiempoTotal;
-              double tiempoActivo = mapMuestreoC[core][tiempo].tiempoActivo+dato.tiempoActivo;
-              double utilizacion = tiempoActivo/tiempoTotal*100;
-              mapMuestreoC[core][tiempo].NthreadCore++;
-              mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
-              mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
-              mapMuestreoC[core][tiempo].utilizacion=utilizacion;
-              //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
-              mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoInactivo+dato.tiempoInactivo;
-              mapMuestreoC[core][tiempo].utilizacionAcum=mapMuestreoC[core][tiempo].utilizacionAcum+dato.utilizacion;
-
-          }
-          else
-            {
-              //cout<<"Voy por el 2° else"<<core<<endl;
-
-                
-                double tiempoTotal = dato.tiempoTotal;
-                double tiempoActivo = dato.tiempoActivo;
-                double utilizacion = tiempoActivo/tiempoTotal*100;
-                //mapMuestreoC[core][tiempo].ncore=core;
-                //mapMuestreoC[core][tiempo].tiempocore=tiempo;
-                mapMuestreoC[core][tiempo].NthreadCore++; 
-                mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
-                mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
-                mapMuestreoC[core][tiempo].utilizacion=utilizacion;
-                //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
-                
-                mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
-                mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
-
-            }
-        }
-        else
-        {
-            //cout<<"Voy por el 1° else"<<core<<endl;   
-            double tiempoTotal = dato.tiempoTotal;
-            double tiempoActivo = dato.tiempoActivo;
-            double utilizacion = tiempoActivo/tiempoTotal*100;
-           // mapMuestreoC[core][tiempo].ncore=core;
-            //mapMuestreoC[core][tiempo].tiempocore=tiempo;
-            mapMuestreoC[core][tiempo].NthreadCore==1;
-            mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
-            mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
-            mapMuestreoC[core][tiempo].utilizacion=utilizacion;
-            //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
-            
-            mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
-            mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
-
-        }
-        //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     
-       
-      }
-       printUtilizacionCore();
-
-
-    //return salida; 
-  }
-  void printUtilizacionCore(){
-    int core=0;
-    for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
-    {
+    
     cout<<"___________________________ENTRE____________________________"<<endl;
       for (int i = 0; i < vectorMuestreoT.size() ; ++i)
       {   
@@ -335,7 +257,7 @@ public:
       graficarPromUCore();
     //return salida; 
   }
-}
+
   void printUtilizacionCore(){
     int core=0;
     for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
