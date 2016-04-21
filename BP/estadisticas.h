@@ -131,7 +131,7 @@ public:
     
     }
     fprintf(ventanaGnuplot, "%s \n", "exit");  
-    //cout<<"-------------------------------------------------------------"<<endl;
+
   }
   void guardarIntervalosUtilizacion(){
     
