@@ -18,7 +18,7 @@ typedef  struct DATAC
    // int datos;
     //int ncore;
     //double tiempocore;
-    int NthreadCore;
+    int NthreadChip;
     double tiempoActivo;
     double tiempoInactivo;
     double tiempoTotal;
@@ -57,7 +57,7 @@ public:
   Estadisticas(int nt,int delta)
   {
      NT= nt;
-
+     
      minimo = new double[nt];
      maximo  = new double[nt];
      for(int i=0;i<nt;i++) minimo[i]=maximo[i]=1000e100;
@@ -105,7 +105,7 @@ public:
                                 "set xlabel \"----Tiempo--->\"",
                                 //"set multiplot",
                                 //"set size 1,0.5"
-                                "set yrange[80:100]",
+                                "set autoscale",
                                 "set grid",
                                 "show grid"
 
@@ -165,7 +165,7 @@ public:
 
   }
 
-  void UtilizacionCore(){
+  void UtilizacionChip(){
     //double **salida;
     //salida=(double **)malloc(Ncores * sizeof(double *));
     //int core=0;
@@ -183,104 +183,107 @@ public:
       for (int i = 0; i < vectorMuestreoT.size() ; ++i)
       {   
         dataT dato=vectorMuestreoT[i];
-        dataC datoc;
-        int core=dato.pid/4;
-        double tiempo=dato.tiempothread;
-        
-        if (mapMuestreoC.find(core)!=mapMuestreoC.end())
-        {
-          //cout<<"Voy por el 1° if"<<core<<endl;
-          if(mapMuestreoC[core].find(tiempo)==mapMuestreoC[core].end())
+        //if (dato.tiempothread!=0)
+        //{
+          dataC datoc;
+          int chip=dato.pid/4;
+          double tiempo=dato.tiempothread;
+          
+          if (mapMuestreoC.find(chip)!=mapMuestreoC.end())
           {
-            //cout<<"Voy por el 2° if"<<core<<endl;
-             
-              double tiempoTotal = mapMuestreoC[core][tiempo].tiempoTotal+dato.tiempoTotal;
-              double tiempoActivo = mapMuestreoC[core][tiempo].tiempoActivo+dato.tiempoActivo;
-              double utilizacion = tiempoActivo/tiempoTotal*100;
-              mapMuestreoC[core][tiempo].NthreadCore++;
-              mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
-              mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
-              mapMuestreoC[core][tiempo].utilizacion=utilizacion;
-              //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
-              mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoInactivo+dato.tiempoInactivo;
-              mapMuestreoC[core][tiempo].utilizacionAcum=mapMuestreoC[core][tiempo].utilizacionAcum+dato.utilizacion;
-
-          }
-          else
+            //if(dato.tiempothread==0) cout<<"Voy por el 1° if "<<chip<<endl;
+            if(mapMuestreoC[chip].find(tiempo)==mapMuestreoC[chip].end())
             {
-              //cout<<"Voy por el 2° else"<<core<<endl;
-
-                
-                double tiempoTotal = dato.tiempoTotal;
-                double tiempoActivo = dato.tiempoActivo;
-                double utilizacion = tiempoActivo/tiempoTotal*100;
-                //mapMuestreoC[core][tiempo].ncore=core;
-                //mapMuestreoC[core][tiempo].tiempocore=tiempo;
-                mapMuestreoC[core][tiempo].NthreadCore++; 
-                mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
-                mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
-                mapMuestreoC[core][tiempo].utilizacion=mapMuestreoC[core][tiempo].utilizacionAcum+utilizacion;
+              //if(dato.tiempothread==0)cout<<"Voy por el 2° if "<<chip<<endl;
+               
+                double tiempoTotal = mapMuestreoC[chip][tiempo].tiempoTotal+dato.tiempoTotal;
+                double tiempoActivo = mapMuestreoC[chip][tiempo].tiempoActivo+dato.tiempoActivo;
+                double utilizacion = (tiempoActivo/tiempoTotal)*100;
+                mapMuestreoC[chip][tiempo].NthreadChip++;
+                mapMuestreoC[chip][tiempo].tiempoTotal=tiempoTotal;
+                mapMuestreoC[chip][tiempo].tiempoActivo=tiempoActivo;
+                mapMuestreoC[chip][tiempo].utilizacion=utilizacion;
                 //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
-                
-                mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
-                mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
+                mapMuestreoC[chip][tiempo].tiempoInactivo=mapMuestreoC[chip][tiempo].tiempoInactivo+dato.tiempoInactivo;
+                mapMuestreoC[chip][tiempo].utilizacionAcum=mapMuestreoC[chip][tiempo].utilizacionAcum+dato.utilizacion;
 
             }
-        }
-        else
-        {
-            //cout<<"Voy por el 1° else"<<core<<endl;   
-            double tiempoTotal = dato.tiempoTotal;
-            double tiempoActivo = dato.tiempoActivo;
-            double utilizacion = tiempoActivo/tiempoTotal*100;
-           
-            // mapMuestreoC[core][tiempo].ncore=core;
-            //mapMuestreoC[core][tiempo].tiempocore=tiempo;
-            
-            mapMuestreoC[core][tiempo].NthreadCore==1;
-            mapMuestreoC[core][tiempo].tiempoTotal=tiempoTotal;
-            mapMuestreoC[core][tiempo].tiempoActivo=tiempoActivo;
-            mapMuestreoC[core][tiempo].utilizacion=utilizacion;
-            
-            //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
-            
-            mapMuestreoC[core][tiempo].tiempoInactivo=dato.tiempoInactivo;
-            mapMuestreoC[core][tiempo].utilizacionAcum=dato.utilizacion;
+            else
+              {
+                //if(dato.tiempothread==0) cout<<"Voy por el 2° else "<<chip<<endl;
 
-        }
-        //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     
-       
+                  
+                  double tiempoTotal = dato.tiempoTotal;
+                  double tiempoActivo = dato.tiempoActivo;
+                  double utilizacion = (tiempoActivo/tiempoTotal)*100;
+                  //mapMuestreoC[core][tiempo].ncore=core;
+                  //mapMuestreoC[core][tiempo].tiempocore=tiempo;
+                  mapMuestreoC[chip][tiempo].NthreadChip=1; 
+                  mapMuestreoC[chip][tiempo].tiempoTotal=tiempoTotal;
+                  mapMuestreoC[chip][tiempo].tiempoActivo=tiempoActivo;
+                  mapMuestreoC[chip][tiempo].utilizacion=utilizacion;
+                  //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+                  
+                  mapMuestreoC[chip][tiempo].tiempoInactivo=dato.tiempoInactivo;
+                  mapMuestreoC[chip][tiempo].utilizacionAcum=dato.utilizacion;
+
+              }
+          }
+          else
+          {
+              //if(dato.tiempothread==0) cout<<"Voy por el 1° else "<<chip<<endl;   
+              double tiempoTotal = dato.tiempoTotal;
+              double tiempoActivo = dato.tiempoActivo;
+              double utilizacion = (tiempoActivo/tiempoTotal)*100;
+             
+              // mapMuestreoC[core][tiempo].ncore=core;
+              //mapMuestreoC[core][tiempo].tiempocore=tiempo;
+              
+              mapMuestreoC[chip][tiempo].NthreadChip=1;
+              mapMuestreoC[chip][tiempo].tiempoTotal=tiempoTotal;
+              mapMuestreoC[chip][tiempo].tiempoActivo=tiempoActivo;
+              mapMuestreoC[chip][tiempo].utilizacion=utilizacion;
+              
+              //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+              
+              mapMuestreoC[chip][tiempo].tiempoInactivo=dato.tiempoInactivo;
+              mapMuestreoC[chip][tiempo].utilizacionAcum=dato.utilizacion;
+              //if(dato.tiempothread==0) cout<<"Utilización dato: "<<dato.utilizacion<<endl;
+          }
+          //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     
+       //}  
       }
        //printUtilizacionCore();
-      guardarIntervalosUtilizacionCore();
-      graficarCore();
-      graficarPromUCore();
+      guardarIntervalosUtilizacionChip();
+      graficarChip();
+      graficarPromUChip();
     //return salida; 
   }
 
-  void printUtilizacionCore(){
-    int core=0;
+  void printUtilizacionChip(){
+
     for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
     {
       for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
         dataC dato=j->second;
-        cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+        cout<<"chip : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadChip<<endl;
         //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
       }
     }
   }
-  void guardarIntervalosUtilizacionCore(){
+  void guardarIntervalosUtilizacionChip(){
+    int primero=0;
     for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
     {
-      std::string name= "out/Utilizacion_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
+      std::string name= "out/Utilizacion_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
       ofstream out;
       //const char *namec=name.c_str();
       char * namec = new char [name.length()+1];
       strcpy (namec, name.c_str());
       out.open(namec);
       
-      name= "out/PromUtilizacion_Core_-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
+      name= "out/PromUtilizacion_Chip_-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
       ofstream outp;
       //const char *namec=name.c_str();
       namec = new char [name.length()+1];
@@ -290,25 +293,33 @@ public:
       for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
         dataC dato=j->second;
-        cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+        //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+        if (j->first!=0)
+        {
+          //cout<<"OJO "<<dato.utilizacionAcum<<", "<<dato.NthreadCore<<endl;
+          out<< j->first / 1e6 << ", " << dato.utilizacion << endl;
+
+        outp<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
+        }
         
-        out<< j->first / 1e6 << " , " << dato.utilizacion << endl;
-        outp<< j->first / 1e6 << " , " << dato.utilizacionAcum / dato.NthreadCore << endl;
+        
         //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
+      primero++;
       }
       out.close();
       outp.close();
+      
     }
   }
-  void graficarCore(){
+  void graficarChip(){
    char * configGnuplot[] = {  "set term png",
-                                  "set title \"Utilización vs Tiempo por core\"", 
+                                  "set title \"Utilización vs Tiempo por chip\"", 
                                   "set ylabel \"----Utilización--->\"",
                                   //"set format y\"%2.f\"",
                                   "set xlabel \"----Tiempo--->\"",
                                   //"set multiplot",
                                   //"set size 1,0.5"
-                                  "set yrange[80:100]",
+                                  "set autoscale",
                                   "set grid",
                                   "show grid"
 
@@ -319,9 +330,9 @@ public:
         fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
       }
 
-      for (int i = 0; i < Ncores; ++i)
+      for (int i = 0; i < nchips; ++i)
       {
-        string nameG="Utilizacion_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+        string nameG="Utilizacion_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
         string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
         string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
         char  * instrucionPc = new char [instrucionP.length()+1];
@@ -335,15 +346,15 @@ public:
       }
       fprintf(ventanaGnuplot, "%s \n", "exit");  
   }
-  void graficarPromUCore(){
+  void graficarPromUChip(){
    char * configGnuplot[] = {  "set term png",
-                                  "set title \"Utilización vs Tiempo por core\"", 
+                                  "set title \"Utilización vs Tiempo por chip\"", 
                                   "set ylabel \"----Utilización--->\"",
                                   //"set format y\"%2.f\"",
                                   "set xlabel \"----Tiempo--->\"",
                                   //"set multiplot",
                                   //"set size 1,0.5"
-                                  "set yrange[80:100]",
+                                  "set autoscale",
                                   "set grid",
                                   "show grid"
 
@@ -354,9 +365,9 @@ public:
         fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
       }
 
-      for (int i = 0; i < Ncores; ++i)
+      for (int i = 0; i < nchips; ++i)
       {
-        string nameG="PromUtilizacion_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+        string nameG="PromUtilizacion_Chip_-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
         string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
         string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
         char  * instrucionPc = new char [instrucionP.length()+1];
@@ -451,9 +462,9 @@ public:
        if (max<hitRam[i]) max= hitRam[i];
     }
     printf(" %.0lf    Ef= %.2lf\n",suma, (suma/NT)/max);
-    //guardarIntervalosUtilizacion();
-    //graficar();
-    UtilizacionCore();
+    guardarIntervalosUtilizacion();
+    graficar();
+    UtilizacionChip();
 
   }
   /*
