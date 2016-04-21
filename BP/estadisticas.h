@@ -115,7 +115,6 @@ public:
     for (int k=0;k<5;k++){
       fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
     }
-<<<<<<< HEAD
 
     for (int i = 0; i < NT; ++i)
     {
@@ -132,26 +131,6 @@ public:
     
     }
     fprintf(ventanaGnuplot, "%s \n", "exit");  
-    cout<<"-------------------------------------------------------------"<<endl;
-=======
-
-    for (int i = 0; i < NT; ++i)
-    {
-      string nameG="Utilizacion_Thread-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
-      string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
-      string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
-      char  * instrucionPc = new char [instrucionP.length()+1];
-      strcpy (instrucionPc, instrucionP.c_str());
-      char *  instrucionGc = new char [instrucionG.length()+1];
-      strcpy (instrucionGc, instrucionG.c_str());
-
-      fprintf(ventanaGnuplot, "%s \n", instrucionGc);
-      fprintf(ventanaGnuplot, "%s \n", instrucionPc);
-    
-    }
-    fprintf(ventanaGnuplot, "%s \n", "exit");  
-
->>>>>>> c629d0e538584eb2c9c28c4505ecae8696fc0752
   }
   void guardarIntervalosUtilizacion(){
     
@@ -278,15 +257,6 @@ public:
     int core=0;
     for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
     {
-=======
-    {
-        salida[i]=(double *)malloc(3*sizeof(double ));
-        for (int j = 0; j < 3; ++i)
-        {
-          salida[i][j]=0;
-        }
-      
-    }*/
     cout<<"___________________________ENTRE____________________________"<<endl;
       for (int i = 0; i < vectorMuestreoT.size() ; ++i)
       {   
@@ -365,24 +335,17 @@ public:
       graficarPromUCore();
     //return salida; 
   }
+}
   void printUtilizacionCore(){
     int core=0;
     for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
     {
->>>>>>> c629d0e538584eb2c9c28c4505ecae8696fc0752
       for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
         dataC dato=j->second;
         cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
         //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
       }
-<<<<<<< HEAD
-      
-
-    }
-    
-
-=======
     }
   }
   void guardarIntervalosUtilizacionCore(){
@@ -414,7 +377,6 @@ public:
       out.close();
       outp.close();
     }
->>>>>>> c629d0e538584eb2c9c28c4505ecae8696fc0752
   }
   void graficarCore(){
    char * configGnuplot[] = {  "set term png",
