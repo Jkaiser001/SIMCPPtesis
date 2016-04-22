@@ -96,7 +96,8 @@ public:
 #ifdef MIDE_ESTADISTICAS
      //if (count[0]>0&&pid==0) {
         //cout<<"----CPU----"<<endl;
-        estadisticas->mide( pid, time(), t ,ACTIVE);//Borrar
+        estadisticas->mide( pid, time(), t ,ACTIVE,CPU);//Borrar
+
       //}
      count[0]--;
 #endif
@@ -111,10 +112,10 @@ public:
 #ifdef MIDE_ESTADISTICAS
      //if (count[1]>0&&pid==0){
       //cout<<"----L1<--L2----"<<endl;
-      estadisticas->mide( pid, time(), t , INACTIVE );
-    //} 
-     count[1]--;
-     estadisticas->fallaL1L2( pid );
+      estadisticas->sumarTiemposL2L1(getCPid(),getIdCore(),pid,t);
+      estadisticas->mide( getCPid(), time(), t , INACTIVE,CL1 );
+      estadisticas->fallaL1L2( pid );
+
 #endif
      hold(t);
   }
@@ -125,10 +126,12 @@ public:
 #ifdef MIDE_ESTADISTICAS
      //if (count[2]>0&&pid==0) {
       //cout<<"----L2<--RAM----"<<endl;
-      estadisticas->mide( pid, time(), t, INACTIVE);
+     estadisticas->sumarTiemposRamL2(getCPid(),t);
+      estadisticas->mide( pid, time(), t, INACTIVE,CL2);
     //}
      count[2]--;
      estadisticas->fallaL2Ram( pid );
+    
 #endif
      hold(t);
   }

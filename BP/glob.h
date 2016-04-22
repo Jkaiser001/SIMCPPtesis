@@ -34,6 +34,11 @@ using namespace std;
 #define ACTIVE 1
 #define INACTIVE 0
 
+#define CPU 0
+#define CL1 1
+#define CL2 2
+
+
 #define BLOQUE_NO_LLENO 0
 #define BLOQUE_LLENO 1
 

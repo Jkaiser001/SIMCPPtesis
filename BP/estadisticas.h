@@ -2,6 +2,7 @@
 #define ESTADISTICAS_H
 #include "glob.h"
 #include "estruc.h"
+//#include "dataChip.h"
 
 typedef  struct DATAT
 { 
@@ -13,7 +14,7 @@ typedef  struct DATAT
     double utilizacion;
   
 }dataT;
-typedef  struct DATAC
+typedef  struct DATACHIP
 { 
    // int datos;
     //int ncore;
@@ -25,9 +26,15 @@ typedef  struct DATAC
     double utilizacion;
     double utilizacionAcum;
   
-}dataC;
+}dataChip;
 
-
+typedef struct DATACACHE
+{
+    int ncore
+    double tiempoActivo;
+    double tiempoTotal;
+    doube utilizacionAcum;
+}dataCACHE;
 
 class Estadisticas
 {
@@ -50,7 +57,9 @@ private:
   double deltaTiempo;
   double *tiempoAcumulado;
   vector<dataT> vectorMuestreoT;
-  map<int, map<double,dataC> > mapMuestreoC;
+  map<int, map<double,dataChip> > mapMuestreoChip;
+  map<int, map<double,dataCache> > mapMuestreoCacheL1;
+  //map<int, value> mapMuestreoCache;
 
 public:
 
@@ -185,27 +194,27 @@ public:
         dataT dato=vectorMuestreoT[i];
         //if (dato.tiempothread!=0)
         //{
-          dataC datoc;
+          dataChip datoc;
           int chip=dato.pid/4;
           double tiempo=dato.tiempothread;
           
-          if (mapMuestreoC.find(chip)!=mapMuestreoC.end())
+          if (mapMuestreoChip.find(chip)!=mapMuestreoChip.end())
           {
             //if(dato.tiempothread==0) cout<<"Voy por el 1° if "<<chip<<endl;
-            if(mapMuestreoC[chip].find(tiempo)==mapMuestreoC[chip].end())
+            if(mapMuestreoChip[chip].find(tiempo)==mapMuestreoChip[chip].end())
             {
               //if(dato.tiempothread==0)cout<<"Voy por el 2° if "<<chip<<endl;
                
-                double tiempoTotal = mapMuestreoC[chip][tiempo].tiempoTotal+dato.tiempoTotal;
-                double tiempoActivo = mapMuestreoC[chip][tiempo].tiempoActivo+dato.tiempoActivo;
+                double tiempoTotal = mapMuestreoChip[chip][tiempo].tiempoTotal+dato.tiempoTotal;
+                double tiempoActivo = mapMuestreoChip[chip][tiempo].tiempoActivo+dato.tiempoActivo;
                 double utilizacion = (tiempoActivo/tiempoTotal)*100;
-                mapMuestreoC[chip][tiempo].NthreadChip++;
-                mapMuestreoC[chip][tiempo].tiempoTotal=tiempoTotal;
-                mapMuestreoC[chip][tiempo].tiempoActivo=tiempoActivo;
-                mapMuestreoC[chip][tiempo].utilizacion=utilizacion;
-                //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
-                mapMuestreoC[chip][tiempo].tiempoInactivo=mapMuestreoC[chip][tiempo].tiempoInactivo+dato.tiempoInactivo;
-                mapMuestreoC[chip][tiempo].utilizacionAcum=mapMuestreoC[chip][tiempo].utilizacionAcum+dato.utilizacion;
+                mapMuestreoChip[chip][tiempo].NthreadChip++;
+                mapMuestreoChip[chip][tiempo].tiempoTotal=tiempoTotal;
+                mapMuestreoChip[chip][tiempo].tiempoActivo=tiempoActivo;
+                mapMuestreoChip[chip][tiempo].utilizacion=utilizacion;
+                //mapMuestreoChip[core][tiempo].tiempoInactivo=mapMuestreoChip[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
+                mapMuestreoChip[chip][tiempo].tiempoInactivo=mapMuestreoChip[chip][tiempo].tiempoInactivo+dato.tiempoInactivo;
+                mapMuestreoChip[chip][tiempo].utilizacionAcum=mapMuestreoChip[chip][tiempo].utilizacionAcum+dato.utilizacion;
 
             }
             else
@@ -218,14 +227,14 @@ public:
                   double utilizacion = (tiempoActivo/tiempoTotal)*100;
                   //mapMuestreoC[core][tiempo].ncore=core;
                   //mapMuestreoC[core][tiempo].tiempocore=tiempo;
-                  mapMuestreoC[chip][tiempo].NthreadChip=1; 
-                  mapMuestreoC[chip][tiempo].tiempoTotal=tiempoTotal;
-                  mapMuestreoC[chip][tiempo].tiempoActivo=tiempoActivo;
-                  mapMuestreoC[chip][tiempo].utilizacion=utilizacion;
+                  mapMuestreoChip[chip][tiempo].NthreadChip=1; 
+                  mapMuestreoChip[chip][tiempo].tiempoTotal=tiempoTotal;
+                  mapMuestreoChip[chip][tiempo].tiempoActivo=tiempoActivo;
+                  mapMuestreoChip[chip][tiempo].utilizacion=utilizacion;
                   //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
                   
-                  mapMuestreoC[chip][tiempo].tiempoInactivo=dato.tiempoInactivo;
-                  mapMuestreoC[chip][tiempo].utilizacionAcum=dato.utilizacion;
+                  mapMuestreoChip[chip][tiempo].tiempoInactivo=dato.tiempoInactivo;
+                  mapMuestreoChip[chip][tiempo].utilizacionAcum=dato.utilizacion;
 
               }
           }
@@ -236,18 +245,18 @@ public:
               double tiempoActivo = dato.tiempoActivo;
               double utilizacion = (tiempoActivo/tiempoTotal)*100;
              
-              // mapMuestreoC[core][tiempo].ncore=core;
-              //mapMuestreoC[core][tiempo].tiempocore=tiempo;
+              // mapMuestreoChip[core][tiempo].ncore=core;
+              //mapMuestreoChip[core][tiempo].tiempocore=tiempo;
               
-              mapMuestreoC[chip][tiempo].NthreadChip=1;
-              mapMuestreoC[chip][tiempo].tiempoTotal=tiempoTotal;
-              mapMuestreoC[chip][tiempo].tiempoActivo=tiempoActivo;
-              mapMuestreoC[chip][tiempo].utilizacion=utilizacion;
+              mapMuestreoChip[chip][tiempo].NthreadChip=1;
+              mapMuestreoChip[chip][tiempo].tiempoTotal=tiempoTotal;
+              mapMuestreoChip[chip][tiempo].tiempoActivo=tiempoActivo;
+              mapMuestreoChip[chip][tiempo].utilizacion=utilizacion;
               
               //mapMuestreoC[core][tiempo].tiempoInactivo=mapMuestreoC[core][tiempo].tiempoTotalInactivo+dato.tiempoInactivo;
               
-              mapMuestreoC[chip][tiempo].tiempoInactivo=dato.tiempoInactivo;
-              mapMuestreoC[chip][tiempo].utilizacionAcum=dato.utilizacion;
+              mapMuestreoChip[chip][tiempo].tiempoInactivo=dato.tiempoInactivo;
+              mapMuestreoChip[chip][tiempo].utilizacionAcum=dato.utilizacion;
               //if(dato.tiempothread==0) cout<<"Utilización dato: "<<dato.utilizacion<<endl;
           }
           //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     
@@ -262,11 +271,11 @@ public:
 
   void printUtilizacionChip(){
 
-    for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
+    for (map< int,map < double, dataChip> >::iterator i = mapMuestreoChip.begin(); i != mapMuestreoChip.end(); ++i)
     {
-      for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      for (map<double, dataChip>::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
-        dataC dato=j->second;
+        dataChip dato=j->second;
         cout<<"chip : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadChip<<endl;
         //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
       }
@@ -274,7 +283,7 @@ public:
   }
   void guardarIntervalosUtilizacionChip(){
     int primero=0;
-    for (map< int,map < double, dataC> >::iterator i = mapMuestreoC.begin(); i != mapMuestreoC.end(); ++i)
+    for (map< int,map < double, dataChip> >::iterator i = mapMuestreoChip.begin(); i != mapMuestreoChip.end(); ++i)
     {
       std::string name= "out/Utilizacion_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
       ofstream out;
@@ -290,9 +299,9 @@ public:
       strcpy (namec, name.c_str());
       outp.open(namec);
       
-      for (map<double, dataC>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      for (map<double, dataChip>::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
-        dataC dato=j->second;
+        dataChip dato=j->second;
         //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
         if (j->first!=0)
         {
@@ -508,15 +517,17 @@ public:
   }
   /* Suma los valores de tiempo de tranferencia en cada chip
   */
-  void sumarTiemposL2L1(int cpid,int id_core, double tiempo){
+  void sumarTiemposL2L1(int cpid,int id_core, int pid, double tiempo){
     //cout<<"SUMO AL L1<-L2 "<<tiempo<<endl;
     acumuladoresTiempoL2L1[ cpid ] [ id_core ]= acumuladoresTiempoL2L1[cpid][id_core]+tiempo/1e6;
     //cout<<"Sume :"<< tiempo << " al chip "<< cpid <<" core "<<id_core<< ", Nuevo valor :" << acumuladoresTiempoL2L1 [ cpid][id_core]<<endl;
+    //if (acumuladoresTiempoL2L1[ cpid ] [ id_core ])
+    //dataCache cache;
 
   }
 
  
-  void mide( int pid, double reloj, double retardo, int modo )
+  void mide( int pid, double reloj, double retardo, int modo, int dispositivo )
   {
     tiempoXThread[pid][modo]=retardo+tiempoXThread[pid][modo];
     tiempoXThread[pid][TOTAL]=retardo+tiempoXThread[pid][TOTAL];

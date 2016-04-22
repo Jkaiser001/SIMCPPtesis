@@ -53,6 +53,9 @@ public:
 
   }
 
+  int getCPid(){return cpid;} 
+  int getIdCore(){return id_core;}
+
   void set_thread( handle<PThreads> *_pthread )
   {
       pthread = _pthread;
@@ -79,7 +82,7 @@ public:
 #ifdef MIDE_ESTADISTICAS
            estadisticas->hit_L1( (*pthread)->pid );
 #endif
-           L1->update( str );
+           L1->update( str );// me falta este tiempo
            if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
         }
         else
@@ -89,13 +92,9 @@ public:
 #ifdef MIDE_ESTADISTICAS
               estadisticas->hit_L2( (*pthread)->pid );
 #endif
-              L2->update( str );
+              L2->update( str );//me falta este tiempo
               L1->insert( str );
               (*pthread)->phold2( Latencia_G_L1_L2 );
-#ifdef MIDE_ESTADISTICAS
-              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
-              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
-#endif              
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }
             else
@@ -107,17 +106,14 @@ public:
               L1->insert( str );
               (*pthread)->phold2( Latencia_G_L1_L2 );
               (*pthread)->phold3( Latencia_G_L2_Ram );
-#ifdef MIDE_ESTADISTICAS
-              estadisticas->sumarTiemposL2L1(cpid,id_core,Latencia_G_L1_L2);
-              estadisticas->sumarTiemposRamL2(cpid,Latencia_G_L2_Ram);
-#endif
-              if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
+            if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }
 
-        } // else
-     }
-  }
+        } 
 
+     }
+
+  }
 
 };
 
