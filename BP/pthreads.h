@@ -98,7 +98,9 @@ public:
      //if (count[0]>0&&pid==0) {
         //cout<<"----CPU----"<<endl;
         
+        //estadisticas->sumarTiemposL2L1(pid/4 , pid%4,pid,t);
         estadisticas->mide( pid,pid/4,pid%4, time(), t ,ACTIVE,CPU);//Borrar
+
 
       //}
      count[0]--;
