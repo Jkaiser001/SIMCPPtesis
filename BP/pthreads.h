@@ -9,6 +9,7 @@
 #include "metodos.h"
 #include "search.h"
 #include "index.h"
+//#include "core.h"
 
 extern Estadisticas *estadisticas;
 extern int *ov_barrier;
@@ -96,7 +97,8 @@ public:
 #ifdef MIDE_ESTADISTICAS
      //if (count[0]>0&&pid==0) {
         //cout<<"----CPU----"<<endl;
-        estadisticas->mide( pid, time(), t ,ACTIVE,CPU);//Borrar
+        
+        estadisticas->mide( pid,pid/4,pid%4, time(), t ,ACTIVE,CPU);//Borrar
 
       //}
      count[0]--;
@@ -106,28 +108,28 @@ public:
      //cout<<"Para la hebra "<<pid<<" tiempo de holt1:"<<t<<endl;
   }
 
-  void phold2( double t )
+  void phold2( double t, int cpid, int id_core)
   {
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[1]>0&&pid==0){
       //cout<<"----L1<--L2----"<<endl;
-      estadisticas->sumarTiemposL2L1(getCPid(),getIdCore(),pid,t);
-      estadisticas->mide( getCPid(), time(), t , INACTIVE,CL1 );
+      estadisticas->sumarTiemposL2L1(cpid , id_core,pid,t);
+      estadisticas->mide( pid , cpid ,id_core, time(), t , INACTIVE,CL1 );
       estadisticas->fallaL1L2( pid );
 
 #endif
      hold(t);
   }
 
-  void phold3( double t )
+  void phold3( double t , int cpid)
   {
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[2]>0&&pid==0) {
       //cout<<"----L2<--RAM----"<<endl;
-     estadisticas->sumarTiemposRamL2(getCPid(),t);
-      estadisticas->mide( pid, time(), t, INACTIVE,CL2);
+     estadisticas->sumarTiemposRamL2(cpid,t);
+      estadisticas->mide( pid, cpid, pid%4, time(), t, INACTIVE,CL2);
     //}
      count[2]--;
      estadisticas->fallaL2Ram( pid );
@@ -207,6 +209,9 @@ public:
            (*htrd_barrier[i]).despierta();
        }
      }
+  }
+  int getPid(){
+    return pid;
   }
 
 };

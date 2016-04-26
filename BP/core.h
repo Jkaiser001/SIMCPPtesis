@@ -94,7 +94,7 @@ public:
 #endif
               L2->update( str );//me falta este tiempo
               L1->insert( str );
-              (*pthread)->phold2( Latencia_G_L1_L2 );
+              (*pthread)->phold2( Latencia_G_L1_L2 , cpid,id_core );
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }
             else
@@ -104,9 +104,10 @@ public:
 #endif
               L2->insert( str );
               L1->insert( str );
-              (*pthread)->phold2( Latencia_G_L1_L2 );
-              (*pthread)->phold3( Latencia_G_L2_Ram );
+              (*pthread)->phold2( Latencia_G_L1_L2,cpid,id_core );
+              (*pthread)->phold3( Latencia_G_L2_Ram,cpid );
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
+              if(id_core!=(*pthread)->getPid()%4) cout<<"pid "<< (*pthread)->getPid() << "core: "<<id_core<<endl;
             }
 
         } 

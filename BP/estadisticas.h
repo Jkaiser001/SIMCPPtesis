@@ -30,11 +30,12 @@ typedef  struct DATACHIP
 
 typedef struct DATACACHE
 {
-    int ncore
+    int ncore;
     double tiempoActivo;
     double tiempoTotal;
-    doube utilizacionAcum;
-}dataCACHE;
+    double utilizacion;
+    double utilizacionAcum;
+}dataCache;
 
 class Estadisticas
 {
@@ -526,8 +527,31 @@ public:
 
   }
 
- 
-  void mide( int pid, double reloj, double retardo, int modo, int dispositivo )
+ void mideCacheL1(int cpid,int id_core,double diferencia,double tiempo_total, double tiempothread){
+      //dataCache datoC;
+      bool stado=mapMuestreoCacheL1.find(cpid)!=mapMuestreoCacheL1.end();
+
+      //cout<<stado<<endl;
+      mapMuestreoCacheL1[cpid][tiempothread].ncore=id_core;
+    
+      double tiempoActivo=acumuladoresTiempoL2L1[cpid][id_core]-diferencia;
+      double utilizacion =(tiempoActivo/(tiempo_total/1e6))*100;
+      mapMuestreoCacheL1[cpid][tiempothread].tiempoActivo=tiempoActivo;
+      mapMuestreoCacheL1[cpid][tiempothread].tiempoTotal=tiempo_total;
+      mapMuestreoCacheL1[cpid][tiempothread].utilizacion=utilizacion;
+    cout<<"tiempo: "<<tiempothread<<", cpid: "<< cpid<< ", id_core: "<<id_core<<", diferencia :"<<diferencia<<"\nUtilización CacheL1: "<<utilizacion<<"\%"<<endl;
+      //mapMuestreoCacheL1[cpid][tiempothread].utilizacionAcum=utilizacion;
+      
+
+      acumuladoresTiempoL2L1[cpid][id_core]=diferencia; 
+      
+        /* code */
+      
+      //mapMuestreoCacheL1[cpid][tiempothread]=datoC;
+      //cout<<"mide CL1"<<endl;
+
+ }
+  void mide( int pid,int cpid,int id_core , double reloj, double retardo, int modo, int dispositivo )
   {
     tiempoXThread[pid][modo]=retardo+tiempoXThread[pid][modo];
     tiempoXThread[pid][TOTAL]=retardo+tiempoXThread[pid][TOTAL];
@@ -542,6 +566,7 @@ public:
           double diferencia=tiempoXThread[pid][TOTAL]-tiempoAcumulado[pid];
           dataT datos;
           datos.pid=pid;
+
           double tiempoTotal= (tiempoXThread[pid][ACTIVE] + tiempoXThread[pid][INACTIVE] - diferencia);
           if (tiempoAcumulado[pid]==0) datos.utilizacion=0.0;
           else if(diferencia>=0 && modo==ACTIVE) {
@@ -554,22 +579,38 @@ public:
             datos.tiempoActivo=tiempoXThread[pid][ACTIVE];
             datos.tiempoInactivo=tiempoXThread[pid][INACTIVE]-diferencia;
             datos.utilizacion= (tiempoXThread[pid][ACTIVE] /tiempoTotal )*100;
+            
           }
           datos.tiempoTotal=tiempoTotal;
-          datos.tiempothread= tiempoXThread[pid][TOTAL]- diferencia;
+          double tiempoThread = tiempoXThread[pid][TOTAL]- diferencia;
+          datos.tiempothread= tiempoThread;
         
           //cout<<"El pid: "<<datos.pid<<" tiempo thread:"<<datos.tiempothread<<", tiempo acumulado thread: "<< tiempoAcumulado[pid]<<endl;
           //cout<<"Porcentaje de Utilización de la thread "<<datos.utilizacion<<endl;
 
           vectorMuestreoT.push_back(datos);
-
+          
           
           tiempoXThread[pid][modo]=diferencia;
           if(modo==ACTIVE){
+            //cout<<"Core"<<endl;
+            mideCacheL1(cpid,id_core,0,tiempoTotal,tiempoThread);
+            //mideCacheL1(cpid,id_core,0,tiempoTotal,tiempoThread);
             tiempoXThread[pid][INACTIVE]=0;
           }
           else
           {
+            //cout<<"HOLAAAA"<<endl;
+            if (dispositivo==CL1){ 
+                cout<<"CacheL1"<<endl;
+                mideCacheL1(cpid,id_core,diferencia,tiempoTotal,tiempoThread);
+                
+              }
+              else{
+                  //cout<<"CacheL2"<<endl;
+                  mideCacheL1(cpid,id_core,0,tiempoTotal,tiempoThread); 
+              }
+            //cout<<"HOLAAAA"<<endl;
             tiempoXThread[pid][ACTIVE]=0;            
           }
           tiempoAcumulado[pid]=tiempoAcumulado[pid]+deltaTiempo;
