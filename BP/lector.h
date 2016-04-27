@@ -15,6 +15,7 @@ class Lector
     Metodos *metodos;
 
   public:
+    Lector();
     Lector(int _dimBloque, int qt, int nt)
     {
       dimBloque = _dimBloque; // total de bloques/nThreads
