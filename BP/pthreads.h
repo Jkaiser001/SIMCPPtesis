@@ -96,7 +96,7 @@ public:
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[0]>0&&pid==0) {
-        //cout<<"----CPU----"<<endl;
+        //cout<<"----CPU, Pid: "<<pid<<"----"<<endl;
         
         estadisticas->sumarTiemposL2L1(pid/4 , pid%4,pid,t);
         estadisticas->mide( pid,pid/4,pid%4, time(), t ,ACTIVE,CPU);//Borrar
@@ -115,7 +115,7 @@ public:
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[1]>0&&pid==0){
-      //cout<<"----L1<--L2----"<<endl;
+      //cout<<"----CACHE L1, Pid: "<<pid<<"----"<<endl;
       estadisticas->sumarTiemposL2L1(cpid , id_core,pid,t);
       estadisticas->mide( pid , cpid ,id_core, time(), t , INACTIVE,CL1 );
       estadisticas->fallaL1L2( pid );
@@ -129,8 +129,8 @@ public:
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[2]>0&&pid==0) {
-      //cout<<"----L2<--RAM----"<<endl;
-     //estadisticas->sumarTiemposRamL2(cpid,t);
+      //cout<<"----CACHE L2, Pid: "<<pid<<"----"<<endl;
+      estadisticas->sumarTiemposRamL2(cpid,t);
       estadisticas->mide( pid, cpid, pid%4, time(), t, INACTIVE,CL2);
     //}
      count[2]--;

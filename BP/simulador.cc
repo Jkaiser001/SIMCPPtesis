@@ -63,11 +63,21 @@ void PThreads::inner_body( void )
     cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
     if( qry>=QT ) break;*/
     qq = qry%QT;
+    //Modificar
+    
+    Query querya=query[qq];
 
-    if( query[qq].tipo==READ )
-      runRead(qq);
+    if( querya.tipo==READ )
+     
+      {
+    //    cout<<"Despacho READ"<<endl;
+            runRead(qq);
+          }
     else
-      runWrite(qq);
+      {
+     //   cout<<"Despacho Write"<<endl;
+            runWrite(qq);
+          }
 
     if (pid==0&&qq%100==0) { printf("%d ",qq); fflush(stdout); }
 
@@ -328,7 +338,7 @@ int main( int argc, char* argv[] )
   sprintf(archivo,"%s%s",home_indice,log ); // consultas/documentos
   query = new Query[ QT ];
   lector->loadQry(query, archivo, &nTerm, &idTermMax);
-
+  lector->loadQry1(archivo,&nTerm,&idTermMax);
 printf("fin lectura consultas\n"); 
 
   indice = new Indice*[NT];
@@ -398,10 +408,11 @@ printf("fin lectura indice\n");
   
   for(int i=0;i<NT;i++)
   {
+
     sprintf( nombre, "PThread_%d", i );
     pthreads[i]= new PThreads( i, NT, nombre, pthreads,
                                locks, QT, dimBloque, nTerm,
-                               query, indice, masBloques );
+                               query, indice, masBloques );//aqui se pasan las query cambiar query por un handle<espachadorQuery> crean las query!!!
   }
    
   ov_barrier = new int[NT];
@@ -426,12 +437,14 @@ printf("fin lectura indice\n");
                                  entradas_L2,
                                  Latencia_G_L1_L2,
                                  Latencia_G_L2_Ram );
-
+    
     chip->set_thread( &pthreads[0], 0);
     chip->set_thread( &pthreads[1], 1);
+
     estadisticas-> iniciarAcumuladorTiempoRamL2(1);
     estadisticas-> iniciarAcumuladorTiempoL2L1(1,2);
   }
+
   else if ( NT==4 || NT==8 || NT==16 || NT==32 || NT==64 || NT==128 )
   {
      int ncores= 4;
@@ -474,6 +487,7 @@ printf("fin lectura indice\n");
   system->activate( );
 
   simulation::instance( )->run( );
+  cout<<"Por aqui"<<endl;
 
   simulation::instance( )->end_simulation( );
   return 0;
