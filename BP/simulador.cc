@@ -63,7 +63,6 @@ void PThreads::inner_body( void )
     /*qry++;
     cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
     if( qry>=QT ) break;*/
-    //(*despachador)->activateAfter( current( ) );
     qq = qry%QT;
 
     if( query[qq].tipo==READ )
@@ -75,7 +74,6 @@ void PThreads::inner_body( void )
 
     ovBarrier(qry%NT);
     qry++;
-
   }
 
   double total= time();
@@ -332,11 +330,9 @@ int main( int argc, char* argv[] )
   sprintf(archivo,"%s%s",home_indice,log ); // consultas/documentos
   query = new Query[ QT ];
   lector->loadQry(query, archivo, &nTerm, &idTermMax);
-  lector->loadQry1(archivo,&nTerm,&idTermMax);
+
   handle<Dispatcher> *Despachador=new handle<Dispatcher>[1];
-  char nombred[1024];
-  sprintf( nombred, "Dispatcher");
-  Despachador[0]= new Dispatcher(lector,Despachador,nombred);
+  
 
 printf("fin lectura consultas\n"); 
 
@@ -355,7 +351,9 @@ printf("fin lectura consultas\n");
   sprintf(archivo,"%sindexOr-x.idx",home_indice ); // indice
 
   lector->loadIndice( indice, archivo, idTermMax );
-  
+  char nombred[1024];
+  sprintf( nombred, "Dispatcher");
+  Despachador[0]= new Dispatcher(lector,nombred);
 printf("fin lectura indice\n"); 
   
   masBloques = new Indice[NT]; // conjunto de bloques por thread
@@ -409,7 +407,7 @@ printf("fin lectura indice\n");
   {
     sprintf( nombre, "PThread_%d", i );
 
-    pthreads[i]= new PThreads( i, NT, nombre, pthreads, Despachador,
+    pthreads[i]= new PThreads( i, NT, nombre, pthreads,
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );
   }
@@ -475,7 +473,7 @@ printf("fin lectura indice\n");
 
   handle<Sistema> system(
 
-        new Sistema( "System main", pthreads,Despachador,
+        new Sistema( "System main", pthreads,
                       NT
                    )
 

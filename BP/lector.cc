@@ -215,21 +215,16 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
 
       }
 
-      listQuery.push_back(query);
+      vecQuery.push_back(query);
     }
   }
-    cout<<"Cantidad: "<<listQuery.size()<<endl;
+    cout<<"Cantidad"<<vecQuery.size()<<endl;
 
 }
 <<<<<<< HEAD
 
-Query Lector::getQuery(){
-   Query query=listQuery.front();
-   listQuery.pop_front();
-   return query;
-}
-bool Lector::emptylistQuery(){
-  return listQuery.empty();
+Query Lector::getQuery(int i){
+   return vecQuery[i];
 }
 =======
 >>>>>>> parent of 0fed49e... lector fix
