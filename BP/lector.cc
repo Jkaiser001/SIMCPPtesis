@@ -221,6 +221,10 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
     cout<<"Cantidad"<<vecQuery.size()<<endl;
 
 }
+
+Query Lector::getQuery(int i){
+   return vecQuery[i];
+}
 // -------------------------------------------
 // --- lectura indice
 
