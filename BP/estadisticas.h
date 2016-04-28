@@ -611,13 +611,9 @@ public:
       mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
       //if(acumuladoresTiempoRamL2[cpid]>0.0) 
         //{
-<<<<<<< HEAD
-          //cout<<"tiempo: "<<tiempothread/1e6<<", cpid: "<< cpid<<", diferencia :"<<diferencia<<endl;
-          //cout<<"Utilización CacheL2: "<<utilizacion<<"\%, tiempoActivo: "<<tiempoActivo<<", tiempo_total: "<< tiempo_total/1e6<<". \n Acumulador Tiempo: "<<acumuladoresTiempoRamL2[cpid]<<", diferencia"<<diferencia<<endl;
-=======
           cout<<"tiempo: "<<tiempothread/1e6<<", cpid: "<< cpid<<", diferencia :"<<diferencia<<endl;
           cout<<"Utilización CacheL2: "<<utilizacion<<"\%, tiempoActivo: "<<tiempoActivo<<", tiempo_total: "<< tiempo_total/1e6<<". \n Acumulador Tiempo: "<<acumuladoresTiempoRamL2[cpid]<<", diferencia"<<diferencia<<endl;
->>>>>>> a891c4563c7cd1d782e895075c2ae789a771f505
+
         //}
       //mapMuestreoCacheL1[cpid][tiempothread].utilizacionAcum=utilizacion;
       
