@@ -354,9 +354,7 @@ int main( int argc, char* argv[] )
   sprintf(archivo,"%sindexOr-x.idx",home_indice ); // indice
 
   lector->loadIndice( indice, archivo, idTermMax );
-  char nombred[1024];
-  sprintf( nombred, "Dispatcher");
-  Despachador[0]= new Dispatcher(lector,nombred);
+  
 printf("fin lectura indice\n"); 
   
   masBloques = new Indice[NT]; // conjunto de bloques por thread
