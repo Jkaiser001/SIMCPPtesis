@@ -9,7 +9,7 @@
 #include "metodos.h"
 #include "search.h"
 #include "index.h"
-#include "dispatcher.h"
+//#include "dispatcher.h"
 //#include "core.h"
 
 extern Estadisticas *estadisticas;
@@ -28,7 +28,8 @@ public:
    Core *core;
    handle<PThreads>* htrd;
    handle<PThreads>* htrd_barrier;
-   handle<Dispatcher> *despachador;
+   list<Query> listQuery_ptheards;
+   //handle<Dispatcher> *despachador;
    Locks* lock;
    int QT, dimBloque, nTerm;
 
@@ -46,7 +47,7 @@ public:
              int _NT,
              const string& _name,
              handle<PThreads>* handle_pthread,
-             handle<Dispatcher> *_despachador,
+             //handle<Dispatcher> *_despachador,
              Locks *_locks,
              int _qt,
              int _dimBloque,
@@ -62,7 +63,7 @@ public:
 
      htrd = &(handle_pthread[pid]);
      htrd_barrier = handle_pthread;
-     despachador= &(_despachador[0]);
+     //despachador= &(_despachador[0]);
 
      lock      = _locks;
      QT        = _qt;
@@ -94,7 +95,15 @@ public:
 
  // definimos varios phold iguales para obtener
  // las estadisticas diferenciadas por core, L1 y L2.
-
+  void add_query(Query _query){
+    listQuery_ptheards.push_back(_query);
+    //cout<<"pid: "<<pid<<"tamaño COLA:"<<listQuery_ptheards.size()<<endl;
+  }
+  Query pop_query(){
+    Query query=listQuery_ptheards.front();
+    listQuery_ptheards.pop_front();
+    return query;
+  }
   void phold( double t )
   {
     

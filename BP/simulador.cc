@@ -64,6 +64,13 @@ void PThreads::inner_body( void )
     cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
     if( qry>=QT ) break;*/
      //(*despachador)->activateAfter( current( ) );
+    if(!listQuery_ptheards.empty()){
+        Query query=pop_query();
+        if(query.tipo==READ) cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
+        else   cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", ESCRIBO"<<endl;  
+    }else{
+      cout<<"Vacia"<<endl;
+    }
     qq = qry%QT;
 
     if( query[qq].tipo==READ )
@@ -336,7 +343,7 @@ int main( int argc, char* argv[] )
   
   char nombred[1024]; 
   sprintf( nombred, "Dispatcher");    
-  Despachador[0]= new Dispatcher(lector,Despachador,nombred);
+
   printf("fin lectura consultas\n"); 
 
   indice = new Indice*[NT];
@@ -408,10 +415,11 @@ printf("fin lectura indice\n");
   {
     sprintf( nombre, "PThread_%d", i );
 
-    pthreads[i]= new PThreads( i, NT, nombre, pthreads, Despachador,
+    pthreads[i]= new PThreads( i, NT, nombre, pthreads,
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );
   }
+    Despachador[0]= new Dispatcher(NT,lector,Despachador,pthreads,nombred);
    
   ov_barrier = new int[NT];
   for(int i=0;i<NT;i++) ov_barrier[i]= 0;

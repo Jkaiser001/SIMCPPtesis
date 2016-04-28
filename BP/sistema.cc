@@ -4,10 +4,10 @@
 void Sistema::inner_body( void )
 {
     // crea objetos co-rutina de la simulación.
-       
+   despachador[0]->activate();    
    for(int i=0; i<NT; i++)
       pthreads[i]->activate();
-    despachador[0]->activate();
+    
     
   //-----------------------------------------------------------
   //-----------------------------------------------------------     
