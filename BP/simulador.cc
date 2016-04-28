@@ -20,6 +20,7 @@ make;./simulador 200  256 8 /home2/cluster/carolina/datos-simulacion/indiceOr/ t
 #include "pthreads.h"
 #include "lector.h"
 #include "estruc.h"
+#include "dispatcher.h"
 
 //--------------------------------------------
 // Thread del programa (Estrategias)
@@ -322,12 +323,16 @@ int main( int argc, char* argv[] )
 
   Lector *lector = new Lector(dimBloque, QT, NT);
 
+
   char archivo[128];
   int nTerm, idTermMax;
 
   sprintf(archivo,"%s%s",home_indice,log ); // consultas/documentos
   query = new Query[ QT ];
   lector->loadQry(query, archivo, &nTerm, &idTermMax);
+
+  handle<Dispatcher> *Despachador=new handle<Dispatcher>[1];
+  
 
 printf("fin lectura consultas\n"); 
 
@@ -346,7 +351,9 @@ printf("fin lectura consultas\n");
   sprintf(archivo,"%sindexOr-x.idx",home_indice ); // indice
 
   lector->loadIndice( indice, archivo, idTermMax );
-   
+  char nombred[1024];
+  sprintf( nombred, "Dispatcher");
+  Despachador[0]= new Dispatcher(lector,nombred);
 printf("fin lectura indice\n"); 
   
   masBloques = new Indice[NT]; // conjunto de bloques por thread
@@ -399,6 +406,7 @@ printf("fin lectura indice\n");
   for(int i=0;i<NT;i++)
   {
     sprintf( nombre, "PThread_%d", i );
+
     pthreads[i]= new PThreads( i, NT, nombre, pthreads,
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );
