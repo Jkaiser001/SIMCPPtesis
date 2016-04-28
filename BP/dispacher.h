@@ -2,6 +2,7 @@
 #define DISPACHER_H
 #include "glob.h"
 #include "lector.h"
+<<<<<<< HEAD
 #include "estadisticas.h"
 #include "estruc.h"
 #include "locks.h"
@@ -22,6 +23,15 @@ public:
 	 	strcpy(nombre,_name.c_str());
 	 }
 	 void inner_body( void );
+=======
+class Dispacher//:public process
+{
+public:
+	Lector lector;
+
+
+	void Dispacher(Lector *);
+>>>>>>> 2ae837822e5ecf7b7139133f8d2a5a81c4a2a632
 	
 	~Dispacher();
 

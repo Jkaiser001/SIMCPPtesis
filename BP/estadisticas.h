@@ -94,7 +94,7 @@ public:
 
      for(int i=0;i<nt;i++){
        hitL1[i]= hitL2[i]= hitRam[i]=tiempoXThread[i][0]=tiempoXThread[i][1]=tiempoXThread[i][2]=0;
-       tiempoAcumulado[i]=0; 
+       tiempoAcumulado[i]=delta; 
      }
         
       deltaTiempo=delta;
@@ -165,6 +165,41 @@ public:
     for (int i = 0; i < NT; ++i)
     {
       string nameG="Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i/4))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i%4))->str();
+      string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
+      string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
+      char  * instrucionPc = new char [instrucionP.length()+1];
+      strcpy (instrucionPc, instrucionP.c_str());
+      char *  instrucionGc = new char [instrucionG.length()+1];
+      strcpy (instrucionGc, instrucionG.c_str());
+
+      fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+      fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+    
+    }
+    fprintf(ventanaGnuplot, "%s \n", "exit");  
+  }
+  void graficarCacheL2(){
+    char * configGnuplot[] = {  "set term png",
+                                "set title \"Utilización CacheL2\"", 
+                                "set ylabel \"----Utilización--->\"",
+                                //"set format y\"%2.f\"",
+                                "set xlabel \"----Tiempo--->\"",
+                                //"set multiplot",
+                                //"set size 1,0.5"
+                                "set autoscale",
+                                "set grid",
+                                "show grid"
+
+                                //instrucionc
+                               };
+    FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
+    for (int k=0;k<5;k++){
+      fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
+    }
+
+    for (int i = 0; i < nchips; ++i)
+    {
+      string nameG="Utilizacion_CacheL2_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
       string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
       string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
       char  * instrucionPc = new char [instrucionP.length()+1];
@@ -428,8 +463,7 @@ public:
       fprintf(ventanaGnuplot, "%s \n", "exit");  
   }
 
-  void muestraFallas()
-  {
+  void muestraFallas(){
     double suma=0, max=0;
     printf("-------------------------------------------\n");
     printf("Total_L1<-L2=  ");
@@ -526,8 +560,10 @@ public:
       acumuladoresTiempoRamL2=new double[nchip];
       for (int i = 0; i < nchip; ++i)
       {
+
         acumuladoresTiempoRamL2[i]=0.0;
       }
+
       //cout<<"INICIADO!!!!! "<<Nchip<<endl;
   }
   /* Suma los valores de tiempo de tranferencia en cada chip
@@ -605,22 +641,36 @@ public:
     
       double tiempoActivo=acumuladoresTiempoRamL2[cpid]-diferencia;
       
-      double utilizacion =(tiempoActivo/tiempo_total)*100;
-      mapMuestreoCacheL2[cpid][tiempothread].tiempoActivo=tiempoActivo;
-      mapMuestreoCacheL2[cpid][tiempothread].tiempoTotal=tiempo_total;
-      mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
+      //
+      if (tiempoActivo!=0)
+      {
+        if(mapMuestreoCacheL2[cpid].find(tiempothread)==mapMuestreoCacheL2[cpid].end())
+        { 
+
+          mapMuestreoCacheL2[cpid][tiempothread].tiempoActivo=tiempoActivo;
+          mapMuestreoCacheL2[cpid][tiempothread].tiempoTotal=tiempo_total;
+          acumuladoresTiempoRamL2[cpid]=diferencia;
+          double utilizacion =(tiempoActivo/tiempo_total)*100;
+          mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
+          //cout<<"tiempo: "<<tiempothread/1e6<<", cpid: "<< cpid<<", diferencia :"<<diferencia/1e6<<endl;
+          //cout<<"Utilización CacheL2: "<<utilizacion<<"\%, tiempoActivo: "<<tiempoActivo/1e6<<", tiempo_total: "<< tiempo_total/1e6<<".\nAcumulador Tiempo: "<<acumuladoresTiempoRamL2[cpid]<<", diferencia"<<diferencia<<endl;
+
+
+        }
+        //else cout<<"CHAAOO"<<endl;
+        
+        //mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
+                
+          
+
+        
+         
+      
+      }
+
       //if(acumuladoresTiempoRamL2[cpid]>0.0) 
         //{
-
-          //cout<<"tiempo: "<<tiempothread/1e6<<", cpid: "<< cpid<<", diferencia :"<<diferencia<<endl;
-          //cout<<"Utilización CacheL2: "<<utilizacion<<"\%, tiempoActivo: "<<tiempoActivo<<", tiempo_total: "<< tiempo_total/1e6<<". \n Acumulador Tiempo: "<<acumuladoresTiempoRamL2[cpid]<<", diferencia"<<diferencia<<endl;
-
-        //}
-      //mapMuestreoCacheL1[cpid][tiempothread].utilizacionAcum=utilizacion;
-      
-
-      acumuladoresTiempoRamL2[cpid]=diferencia; 
-      
+          
         /* code */
       
       //mapMuestreoCacheL1[cpid][tiempothread]=datoC;
@@ -708,7 +758,7 @@ public:
       
       //outp.close();
       
-    
+    graficarCacheL2();
   
 
  }
@@ -723,7 +773,6 @@ public:
         //cout<<"Porcentaje INACTIVO de la thread "<<(tiempoXThread[pid][INACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
         if (tiempoAcumulado[pid]<=tiempoXThread[pid][TOTAL])
         {
-          //cout<<"CUMPLIDO"<<endl;
           double diferencia=tiempoXThread[pid][TOTAL]-tiempoAcumulado[pid];
           dataT datos;
           datos.pid=pid;
@@ -764,14 +813,14 @@ public:
           {
             //cout<<"HOLAAAA"<<endl;
             if (dispositivo==CL1){ 
-                cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL1: "<<retardo<<", pid: "<<pid<<endl;
+                //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL1: "<<retardo<<", pid: "<<pid<<endl;
 
                 mideCacheL1(cpid,id_core,diferencia,tiempoTotal,tiempoThread);
                 mideCacheL2(cpid,0.0,tiempoTotal,tiempoThread);
               }
               else{
 
-                  cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
+                  //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempoThread);
                   mideCacheL2(cpid,diferencia,tiempoTotal,tiempoThread); 
               }

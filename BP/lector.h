@@ -5,13 +5,13 @@
 #include "estruc.h"
 #include "metodos.h"
 
-class Lector
+class Lector 
 {
   private:
     int dimBloque, dB, // dimension de los bloques
         QT,        // total consultas/documentos
         NT;        // total de threads
-
+    vector<Query> vecQuery;
     Metodos *metodos;
 
   public:
@@ -27,8 +27,10 @@ class Lector
       
     }
     void loadQry(Query*,char*,int*,int*);
+    void loadQry1(char*,int*,int*);
     void loadIndice(Indice**,char*, int);
     void inicMasBloques(Indice*);
+    Query getQuery(int);
 };
 
 #endif
