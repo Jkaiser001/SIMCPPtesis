@@ -152,6 +152,20 @@ public:
 #endif
      hold(t);
   }
+  void phold4( double t)
+  {
+    
+#ifdef MIDE_ESTADISTICAS
+     //if (count[2]>0&&pid==0) {
+      //cout<<"----L2<--RAM----"<<endl;
+     //estadisticas->sumarTiemposRamL2(cpid,t);
+      estadisticas->mide( pid, pid/4, pid%4, time(), t, INACTIVE,CPU);
+    //}
+     
+    
+#endif
+     hold(t);
+  }
 
   void duerme() { (*htrd)->passivate( ); }
   void despierta() { (*htrd)->activateAfter( current( ) ); }
@@ -162,7 +176,9 @@ public:
   }
 
   void runRead(int);
+  void runRead1(Query);
   void runWrite(int);
+  void runWrite1(Query);
   void runCore(double,long,int);
   void runCore2(double);
 

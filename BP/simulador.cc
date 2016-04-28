@@ -66,10 +66,15 @@ void PThreads::inner_body( void )
      //(*despachador)->activateAfter( current( ) );
     if(!listQuery_ptheards.empty()){
         Query query=pop_query();
-        if(query.tipo==READ) cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
-        else   cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", ESCRIBO"<<endl;  
+        if(query.tipo==READ){
+          cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
+        }
+        else   {
+          cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
+        }  
     }else{
       cout<<"Vacia"<<endl;
+      //phold4(2.0);
     }
     qq = qry%QT;
 
@@ -198,6 +203,59 @@ void PThreads::runRead(int idq)
     }
   }  
 }
+void PThreads::runRead1(Query query)
+{
+  int maxIter=0, maxIterQry, termino;
+  
+  // busca la mayor iteracion de todos los terminos de idq
+  for( int jTerm=0; jTerm<query.nt; jTerm++ )
+  {
+    if ( maxIter<query.iter[jTerm] )
+      maxIter=query.iter[jTerm];
+  }
+
+  for( int jTerm=0; jTerm<query.nt; jTerm++ )
+  {
+    termino = query.termino[jTerm];
+    maxIterQry = query.iter[jTerm];
+
+    Indice *indx= &indice[pid][termino];
+    Bloque *actual= indx->inicioBloque;
+
+    for( int iter=0; iter<maxIter; iter++ )
+    {
+      if (indx->nb==0) 
+      { printf("ERROR, esto no puede ser\n"); exit(0); continue; }
+
+      if( iter<maxIterQry && iter<indx->nb)
+      {
+        if( iter==0 ) // primera iteracion
+          actual = indx->inicioBloque;
+        else
+          actual = actual->sig;
+
+        if( actual == NULL )
+          actual = indx->finBloque;
+
+//----------------
+
+        runCore(0.0, long(&actual->doc[0]),
+                (actual->jBloque)*sizeof(int) );
+
+//----------------
+
+        runCore(0.0, long(&actual->frec[0]),
+               (actual->jBloque)*sizeof(double) );
+
+//----------------
+
+        runCore2( Factor_MakeRanking*double(actual->jBloque) );
+
+//----------------
+      }
+    }
+  }  
+}
 
 void PThreads::runWrite(int idq)
 {
@@ -211,6 +269,73 @@ void PThreads::runWrite(int idq)
   {
       termino = query[idq].termino[jTerm];
       frec    = query[idq].frec[jTerm];
+      
+//--------------------------------------------------------------------------
+//----- Simulando
+
+      indx=&indice[tid][termino];
+
+      indx->actual =
+             metodos->buscaBloque( indx->inicioBloque, frec );
+             
+//----- Simulador
+
+      // simula en el multi-core lo que hace buscaBloque()
+      for( Bloque *puntero= indx->inicioBloque;
+           puntero!=NULL && puntero != indx->actual;
+           puntero = puntero->sig )
+      {
+        runCore( 0*double(Factor_ListaWrite*1), // simula comparacion  frec[0]
+                 long( puntero ),
+                 PAG_CACHE );
+
+        setValSimBloque(puntero->jBloque);
+        int npaginasBloque = bytesBloque / PAG_CACHE ;
+
+        runCore( 0*double(Factor_ListaWrite*1), // simula comparacion  frec[jb]
+                 long(  ( (char*) puntero )  +  (npaginasBloque-1)*PAG_CACHE  ),
+                 PAG_CACHE );
+      }
+
+// Simula insercion en un bloque.
+      
+      if( indx->actual==NULL ) indx->actual = indx->finBloque;
+      
+// OJO: Esto para ver si todas las estrategias hacen el mismo WORK
+/*                  
+      indx->actual= indx->inicioBloque;
+
+      setValSimBloque(indx->actual->jBloque);
+
+      runCore( double(Factor_ListaWrite*indx->actual->jBloque),
+               long( indx->actual ),
+               bytesBloque );
+*/
+
+      setValSimBloque(dimBloque);
+
+      runCore( double(Factor_ListaWrite*dimBloque),
+               long( indx->actual ),
+               bytesBloque );
+
+            
+//--------------------------------------------------------------------------
+
+  } // for terminos
+
+}
+void PThreads::runWrite1(Query query)
+{
+  int    termino;
+  double frec;
+  Indice *indx;
+  int doc = query.idDoc;
+  int tid = doc%NT;
+
+  for( int jTerm=pid; jTerm<query.nt; jTerm+=NT )
+  {
+      termino = query.termino[jTerm];
+      frec    = query.frec[jTerm];
       
 //--------------------------------------------------------------------------
 //----- Simulando
