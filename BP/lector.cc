@@ -221,6 +221,7 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
     cout<<"Cantidad: "<<listQuery.size()<<endl;
 
 }
+<<<<<<< HEAD
 
 Query Lector::getQuery(){
    Query query=listQuery.front();
@@ -230,6 +231,8 @@ Query Lector::getQuery(){
 bool Lector::emptylistQuery(){
   return listQuery.empty();
 }
+=======
+>>>>>>> parent of 0fed49e... lector fix
 // -------------------------------------------
 // --- lectura indice
 
