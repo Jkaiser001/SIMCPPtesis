@@ -64,25 +64,32 @@ void PThreads::inner_body( void )
     cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
     if( qry>=QT ) break;*/
      //(*despachador)->activateAfter( current( ) );
-    if(!listQuery_ptheards.empty()){
-        Query query=pop_query();
-        if(query.tipo==READ){
-          cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
-        }
-        else   {
-          cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
-        }  
-    }else{
-      cout<<"Vacia"<<endl;
-      //phold4(2.0);
-    }
     qq = qry%QT;
+    int flag=0;
+    while(flag==0){
+      if(!listQuery_ptheards.empty()){
+          Query query=pop_query();
+          if(query.tipo==READ){
+            cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
+            runRead1(query);
+          }
+          else   {
+            cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
+            runWrite1(query);
+          }
+          flag=1;  
+      }else{
+        cout<<"Vacia"<<endl;
+        phold4(2.0);
 
-    if( query[qq].tipo==READ )
+      }
+    }
+
+    /*if( query[qq].tipo==READ )
       runRead(qq);
     else
       runWrite(qq);
-
+    */
     if (pid==0&&qq%100==0) { printf("%d ",qq); fflush(stdout); }
 
     ovBarrier(qry%NT);

@@ -94,7 +94,7 @@ public:
 
      for(int i=0;i<nt;i++){
        hitL1[i]= hitL2[i]= hitRam[i]=tiempoXThread[i][0]=tiempoXThread[i][1]=tiempoXThread[i][2]=0;
-       tiempoAcumulado[i]=0; 
+       tiempoAcumulado[i]=delta; 
      }
         
       deltaTiempo=delta;
@@ -178,6 +178,41 @@ public:
     }
     fprintf(ventanaGnuplot, "%s \n", "exit");  
   }
+  void graficarCacheL2(){
+     char * configGnuplot[] = {  "set term png",
+                                 "set title \"Utilización CacheL2\"", 
+                                 "set ylabel \"----Utilización--->\"",
+                                 //"set format y\"%2.f\"",
+                                 "set xlabel \"----Tiempo--->\"",
+                                 //"set multiplot",
+                                 //"set size 1,0.5"
+                                 "set autoscale",
+                                 "set grid",
+                                 "show grid"
+ 
+                                 //instrucionc
+                                };
+     FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
+     for (int k=0;k<5;k++){
+       fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
+     }
+ 
+     for (int i = 0; i < nchips; ++i)
+     {
+       string nameG="Utilizacion_CacheL2_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+       string instrucionP = "plot \"out/"+ nameG+".out\" with lines";
+       string instrucionG = "set out \"graf/Grafico_"+nameG+".png\"";
+       char  * instrucionPc = new char [instrucionP.length()+1];
+       strcpy (instrucionPc, instrucionP.c_str());
+       char *  instrucionGc = new char [instrucionG.length()+1];
+       strcpy (instrucionGc, instrucionG.c_str());
+ 
+       fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+       fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+     
+     }
+     fprintf(ventanaGnuplot, "%s \n", "exit");  
+   }
   void guardarIntervalosUtilizacion(){
     
      
@@ -514,6 +549,7 @@ public:
     graficar();
     UtilizacionChip();
     graficarCacheL1();
+    graficarCacheL2();
   
   }
   /*
@@ -597,33 +633,19 @@ public:
 
  }
  void mideCacheL2(int cpid,double diferencia,double tiempo_total, double tiempothread){
-      //dataCache datoC;
-      //bool stado=mapMuestreoCacheL1.find(cpid)!=mapMuestreoCacheL1.end();
-
-      //cout<<stado<<endl;
-      //mapMuestreoCacheL1[cpid][tiempothread].ncore=id_core;
-    
       double tiempoActivo=acumuladoresTiempoRamL2[cpid]-diferencia;
-      
-      double utilizacion =(tiempoActivo/tiempo_total)*100;
-      mapMuestreoCacheL2[cpid][tiempothread].tiempoActivo=tiempoActivo;
-      mapMuestreoCacheL2[cpid][tiempothread].tiempoTotal=tiempo_total;
-      mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
-      //if(acumuladoresTiempoRamL2[cpid]>0.0) 
-        //{
-          //cout<<"tiempo: "<<tiempothread/1e6<<", cpid: "<< cpid<<", diferencia :"<<diferencia<<endl;
-          //cout<<"Utilización CacheL2: "<<utilizacion<<"\%, tiempoActivo: "<<tiempoActivo<<", tiempo_total: "<< tiempo_total/1e6<<". \n Acumulador Tiempo: "<<acumuladoresTiempoRamL2[cpid]<<", diferencia"<<diferencia<<endl;
+       if (tiempoActivo!=0)
+       {
+          if(mapMuestreoCacheL2[cpid].find(tiempothread)==mapMuestreoCacheL2[cpid].end())
+          { 
+              mapMuestreoCacheL2[cpid][tiempothread].tiempoActivo=tiempoActivo;
+              mapMuestreoCacheL2[cpid][tiempothread].tiempoTotal=tiempo_total;
+              acumuladoresTiempoRamL2[cpid]=diferencia;
 
-        //}
-      //mapMuestreoCacheL1[cpid][tiempothread].utilizacionAcum=utilizacion;
-      
-
-      acumuladoresTiempoRamL2[cpid]=diferencia; 
-      
-        /* code */
-      
-      //mapMuestreoCacheL1[cpid][tiempothread]=datoC;
-      //cout<<"mide CL1"<<endl;
+              double utilizacion =(tiempoActivo/tiempo_total)*100;
+              mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
+          }
+       }    
 
  }
  void guardarIntervalosUtilizacionCacheL1(){
@@ -733,7 +755,7 @@ public:
             datos.tiempoActivo=tiempoXThread[pid][ACTIVE] - diferencia;
             datos.tiempoInactivo=tiempoXThread[pid][INACTIVE];
             datos.utilizacion= ((tiempoXThread[pid][ACTIVE] - diferencia) /tiempoTotal )*100;
-            
+
           } 
           else {
             datos.tiempoActivo=tiempoXThread[pid][ACTIVE];
@@ -763,14 +785,14 @@ public:
           {
             //cout<<"HOLAAAA"<<endl;
             if (dispositivo==CL1){ 
-                cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL1: "<<retardo<<", pid: "<<pid<<endl;
+                //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL1: "<<retardo<<", pid: "<<pid<<endl;
 
                 mideCacheL1(cpid,id_core,diferencia,tiempoTotal,tiempoThread);
                 mideCacheL2(cpid,0.0,tiempoTotal,tiempoThread);
               }
               else{
 
-                  cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
+                  //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempoThread);
                   mideCacheL2(cpid,diferencia,tiempoTotal,tiempoThread); 
               }

@@ -40,7 +40,7 @@ using namespace std;
 
 #define NORMAL_TIME 500.0 //segundos con tasa normal		
 //#define NORMAL_RATE 0.011 //
-#define NORMAL_RATE 0.0001 //
+#define NORMAL_RATE 1000 //
 
 
 #define BLOQUE_NO_LLENO 0
