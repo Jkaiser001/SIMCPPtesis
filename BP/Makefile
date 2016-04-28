@@ -22,7 +22,7 @@ todo:
 	make simulador
 
 simulador_OBJECTS = obj/simulador.o obj/sistema.o obj/lru.o obj/locks.o \
-		    obj/lector.o obj/dispacher.o obj/metodos.o obj/index.o
+		    obj/lector.o obj/dispatcher.o obj/metodos.o obj/index.o
 
 #-------------------------------------------------------------------------------
 obj/simulador.o: simulador.cc $(srcdir)/cppsim.hh $(srcdir)/process.hh \
@@ -36,7 +36,7 @@ obj/simulador.o: simulador.cc $(srcdir)/cppsim.hh $(srcdir)/process.hh \
 	$(srcdir)/welch.hh $(srcdir)/rng.hh $(srcdir)/assertions.hh \
         \
         chip.h core.h estadisticas.h \
-        pthreads.h dispacher.h sistema.h
+        pthreads.h sistema.h
 	g++ -O2 -c -o obj/simulador.o simulador.cc -Wno-deprecated -Wall
 #-------------------------------------------------------------------------------
 
@@ -63,8 +63,8 @@ obj/metodos.o:  metodos.cc metodos.h
 obj/index.o:  index.cc index.h
 	g++ -O2 -c -o obj/index.o index.cc -Wno-deprecated -Wall
 
-obj/dispacher.o:  dispacher.cc dispacher.h
-	g++ -O2 -c -o obj/dispacher.o dispacher.cc -Wno-deprecated -Wall	
+obj/dispatcher.o:  dispatcher.cc dispatcher.h
+	g++ -O2 -c -o obj/dispatcher.o dispatcher.cc -Wno-deprecated -Wall	
 
 #------------------------------------------------------------------------------
 
