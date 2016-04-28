@@ -63,6 +63,7 @@ void PThreads::inner_body( void )
     /*qry++;
     cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
     if( qry>=QT ) break;*/
+     //(*despachador)->activateAfter( current( ) );
     qq = qry%QT;
 
     if( query[qq].tipo==READ )
@@ -330,11 +331,13 @@ int main( int argc, char* argv[] )
   sprintf(archivo,"%s%s",home_indice,log ); // consultas/documentos
   query = new Query[ QT ];
   lector->loadQry(query, archivo, &nTerm, &idTermMax);
-
+  lector->loadQry1(archivo,&nTerm,&idTermMax);
   handle<Dispatcher> *Despachador=new handle<Dispatcher>[1];
   
-
-printf("fin lectura consultas\n"); 
+  char nombred[1024]; 
+  sprintf( nombred, "Dispatcher");    
+  Despachador[0]= new Dispatcher(lector,Despachador,nombred);
+  printf("fin lectura consultas\n"); 
 
   indice = new Indice*[NT];
   for(int tid=0; tid<NT; tid++)
@@ -407,7 +410,7 @@ printf("fin lectura indice\n");
   {
     sprintf( nombre, "PThread_%d", i );
 
-    pthreads[i]= new PThreads( i, NT, nombre, pthreads,
+    pthreads[i]= new PThreads( i, NT, nombre, pthreads, Despachador,
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );
   }
@@ -473,7 +476,7 @@ printf("fin lectura indice\n");
 
   handle<Sistema> system(
 
-        new Sistema( "System main", pthreads,
+         new Sistema( "System main", pthreads,Despachador,
                       NT
                    )
 

@@ -13,6 +13,8 @@ class Dispatcher:public process
 private:
 	Lector *lector;
 	char nombre[1024];
+	handle<Dispatcher> *despachador;
+	rng<double> *arrival_time;
 
 public:
 	
@@ -21,9 +23,15 @@ public:
 	 	lector=_lector;
 	 	strcpy(nombre,_name.c_str());
 	 }
-	 void inner_body( void );
-	
-	
+	Dispatcher(Lector *_lector,handle<Dispatcher> *_despachador, const string& _name): process( _name ){		 +	 Dispatcher(Lector *_lector, const string& _name): process( _name ){
+  	 	lector=_lector;		  	 	lector=_lector;
+ 	 	despachador=&(_despachador[0]);		
+  	 	strcpy(nombre,_name.c_str());		  	 	strcpy(nombre,_name.c_str());
+  	 }		  	 }
+ 	void inner_body( void );		 
+ 	void duerme();
+ 	void despierta();		
+ 	void espera();
 	
 };
 

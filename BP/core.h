@@ -65,10 +65,12 @@ public:
   void run2( double t_cpu )  
   {
      if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
+     cout<<"run"<<endl;
   }
   
   void run( double t_cpu, string base, int bytes )
   {
+    cout<<"run"<<endl;
      int npag= (int)ceil( double(bytes) / double(PAG_CACHE) );
    
      t_cpu /= npag;
