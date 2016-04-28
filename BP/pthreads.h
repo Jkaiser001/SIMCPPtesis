@@ -9,6 +9,7 @@
 #include "metodos.h"
 #include "search.h"
 #include "index.h"
+#include "dispatcher.h"
 //#include "core.h"
 
 extern Estadisticas *estadisticas;
@@ -27,6 +28,7 @@ public:
    Core *core;
    handle<PThreads>* htrd;
    handle<PThreads>* htrd_barrier;
+   handle<Dispatcher> *despachador;
    Locks* lock;
    int QT, dimBloque, nTerm;
 
@@ -44,6 +46,7 @@ public:
              int _NT,
              const string& _name,
              handle<PThreads>* handle_pthread,
+             handle<Dispatcher> *_despachador,
              Locks *_locks,
              int _qt,
              int _dimBloque,
@@ -58,6 +61,7 @@ public:
      strcpy(nombre,_name.c_str());
 
      htrd = &(handle_pthread[pid]);
+     despachador= &(_despachador[0]);
      htrd_barrier = handle_pthread;
 
      lock      = _locks;

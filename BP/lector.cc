@@ -215,15 +215,20 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
 
       }
 
-      vecQuery.push_back(query);
+      listQuery.push_back(query);
     }
   }
-    cout<<"Cantidad"<<vecQuery.size()<<endl;
+    cout<<"Cantidad: "<<listQuery.size()<<endl;
 
 }
 
-Query Lector::getQuery(int i){
-   return vecQuery[i];
+Query Lector::getQuery(){
+   Query query=listQuery.front();
+   listQuery.pop_front();
+   return query;
+}
+bool Lector::emptylistQuery(){
+  return listQuery.empty();
 }
 // -------------------------------------------
 // --- lectura indice
