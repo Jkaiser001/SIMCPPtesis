@@ -11,7 +11,8 @@ void Sistema::inner_body( void )
     
   //-----------------------------------------------------------
   //-----------------------------------------------------------     
-   hold( 1000e100 );  // infinito   
+   hold( 10000000000e10000);  // infinito   
+   cout<<"SE ACABO"<<endl; 
   //-----------------------------------------------------------
   //-----------------------------------------------------------
 
@@ -19,7 +20,8 @@ void Sistema::inner_body( void )
 
    for(int i=0; i<NT; i++)
       pthreads[i]->cancel();
-    despachador[0]->cancel();  
+    despachador[0]->cancel(); 
+
               
     end_simulation( );   
 }

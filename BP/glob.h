@@ -39,8 +39,8 @@ using namespace std;
 #define CL2 2
 
 #define NORMAL_TIME 500.0 //segundos con tasa normal		
-//#define NORMAL_RATE 0.011 //
-#define NORMAL_RATE 1000 //
+#define NORMAL_RATE 0.011 //
+//#define NORMAL_RATE 0.000009 //
 
 
 #define BLOQUE_NO_LLENO 0

@@ -9,7 +9,8 @@ Ejecucion:
 
 ./simulador 5000 256 4 /scratch/carolina/archivos/indiceOr/traza-0-0-8.dat
 
-make;./simulador 200  256 8 /home2/cluster/carolina/datos-simulacion/indiceOr/ traza-0-0-8.dat
+make;
+./simulador 200  256 8 /home2/cluster/carolina/datos-simulacion/indiceOr/ traza-0-0-8.dat
 
 */
 
@@ -56,35 +57,37 @@ double  Factor_ListaWrite;
 void PThreads::inner_body( void )
 { 
   //printf("inicia thread (%d) dimBloque= %d\n",pid,dimBloque);
-  int qry=0,qq;
+  int qry=-1,qq;
   //cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
-  while(qry<QT)
+  while(1)
   {
-    /*qry++;
-    cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
-    if( qry>=QT ) break;*/
+    
+    //cout<<"PID: "<<pid<<" qry: "<<qry<<" QT: "<<QT<<endl;
+    qry++;
+    if( qry>=QT/NT ) break;
      //(*despachador)->activateAfter( current( ) );
     qq = qry%QT;
     int flag=0;
-    while(flag==0){
+    while(flag==0&&qry<QT/NT){
       if(!listQuery_ptheards.empty()){
           Query query=pop_query();
           if(query.tipo==READ){
-            cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
+            //cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
             runRead1(query);
           }
           else   {
-            cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
+            //cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
             runWrite1(query);
           }
           flag=1;  
       }else{
-        cout<<"Vacia"<<endl;
+        //cout<<"Vacia"<<endl;
         phold4(2.0);
 
       }
+      
     }
-
+    
     /*if( query[qq].tipo==READ )
       runRead(qq);
     else
@@ -93,7 +96,7 @@ void PThreads::inner_body( void )
     if (pid==0&&qq%100==0) { printf("%d ",qq); fflush(stdout); }
 
     ovBarrier(qry%NT);
-    qry++;
+    
   }
 
   double total= time();
@@ -551,7 +554,7 @@ printf("fin lectura indice\n");
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );
   }
-    Despachador[0]= new Dispatcher(NT,lector,Despachador,pthreads,nombred);
+    Despachador[0]= new Dispatcher(QT,NT,lector,Despachador,pthreads,nombred);
    
   ov_barrier = new int[NT];
   for(int i=0;i<NT;i++) ov_barrier[i]= 0;

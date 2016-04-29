@@ -634,8 +634,8 @@ public:
  }
  void mideCacheL2(int cpid,double diferencia,double tiempo_total, double tiempothread){
       double tiempoActivo=acumuladoresTiempoRamL2[cpid]-diferencia;
-       if (tiempoActivo!=0)
-       {
+        cout<<"tiempo: "<<tiempothread/1e6<<" CacheL2: "<<diferencia<<", pid: "<<cpid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
+        if(tiempoActivo>=0){  
           if(mapMuestreoCacheL2[cpid].find(tiempothread)==mapMuestreoCacheL2[cpid].end())
           { 
               mapMuestreoCacheL2[cpid][tiempothread].tiempoActivo=tiempoActivo;
@@ -645,7 +645,8 @@ public:
               double utilizacion =(tiempoActivo/tiempo_total)*100;
               mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
           }
-       }    
+        }
+        else acumuladoresTiempoRamL2[cpid]=diferencia;      
 
  }
  void guardarIntervalosUtilizacionCacheL1(){
@@ -790,11 +791,15 @@ public:
                 mideCacheL1(cpid,id_core,diferencia,tiempoTotal,tiempoThread);
                 mideCacheL2(cpid,0.0,tiempoTotal,tiempoThread);
               }
-              else{
+            else if(dispositivo==CL2){
 
-                  //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
+                  cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempoThread);
                   mideCacheL2(cpid,diferencia,tiempoTotal,tiempoThread); 
+              }
+              else{
+                  mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempoThread);
+                  mideCacheL2(cpid,0.0,tiempoTotal,tiempoThread);
               }
             //cout<<"HOLAAAA"<<endl;
             tiempoXThread[pid][ACTIVE]=0;            

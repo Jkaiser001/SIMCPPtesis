@@ -29,6 +29,8 @@ public:
    handle<PThreads>* htrd;
    handle<PThreads>* htrd_barrier;
    list<Query> listQuery_ptheards;
+   bool statusDispacher;
+   bool terminado;
    //handle<Dispatcher> *despachador;
    Locks* lock;
    int QT, dimBloque, nTerm;
@@ -77,6 +79,7 @@ public:
      {
         count[i]=1;
      }
+     statusDispacher=1;
 /*     
      scores    = new double[nscores];
      
@@ -104,6 +107,9 @@ public:
     listQuery_ptheards.pop_front();
     return query;
   }
+  void setStatus(){
+    statusDispacher=0;
+  }
   void phold( double t )
   {
     
@@ -129,6 +135,7 @@ public:
 #ifdef MIDE_ESTADISTICAS
      //if (count[1]>0&&pid==0){
       //cout<<"----L1<--L2----"<<endl;
+      estadisticas->sumarTiemposRamL2(cpid,t);
       estadisticas->sumarTiemposL2L1(cpid , id_core,pid,t);
       estadisticas->mide( pid , cpid ,id_core, time(), t , INACTIVE,CL1 );
       estadisticas->fallaL1L2( pid );
@@ -143,7 +150,7 @@ public:
 #ifdef MIDE_ESTADISTICAS
      //if (count[2]>0&&pid==0) {
       //cout<<"----L2<--RAM----"<<endl;
-     //estadisticas->sumarTiemposRamL2(cpid,t);
+      estadisticas->sumarTiemposRamL2(cpid,t);
       estadisticas->mide( pid, cpid, pid%4, time(), t, INACTIVE,CL2);
     //}
      count[2]--;
