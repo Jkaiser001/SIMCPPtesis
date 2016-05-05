@@ -11,8 +11,8 @@ class Lector
     int dimBloque, dB, // dimension de los bloques
         QT,        // total consultas/documentos
         NT;        // total de threads
-    list<Query> listQuery;
 
+    list<Query> listQuery;
     Metodos *metodos;
 
   public:
@@ -33,7 +33,6 @@ class Lector
     void inicMasBloques(Indice*);
     Query getQuery();
     bool emptylistQuery();
-
 };
 
 #endif
