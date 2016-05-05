@@ -1,6 +1,6 @@
-#ifndef DATACHIP_H
-#define DATACHIP_H
-class dataChip
+#ifndef DATA_H
+#define DATA_H
+class data
 {
 private:
 	int NthreadChip;
@@ -11,8 +11,8 @@ private:
     double utilizacionAcum;
 
 public:
-	dataChip(int nthreadchip,double tiempoActivo, double tiempoInactivo,double utilizacionAcum);
-	~dataChip();
+	data(int nthreadchip,double tiempoActivo, double tiempoInactivo,double utilizacionAcum);
+	~data();
 	
 	
 };

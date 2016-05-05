@@ -22,7 +22,8 @@ todo:
 	make simulador
 
 simulador_OBJECTS = obj/simulador.o obj/sistema.o obj/lru.o obj/locks.o \
-		    obj/lector.o obj/dispatcher.o obj/metodos.o obj/index.o
+		    obj/lector.o obj/dispatcher.o obj/metodos.o obj/index.o \
+		    obj/core.o obj/pthreads.o
 
 #-------------------------------------------------------------------------------
 obj/simulador.o: simulador.cc $(srcdir)/cppsim.hh $(srcdir)/process.hh \
@@ -35,36 +36,43 @@ obj/simulador.o: simulador.cc $(srcdir)/cppsim.hh $(srcdir)/process.hh \
 	$(srcdir)/histogram.hh $(srcdir)/jain.hh $(srcdir)/quantile.hh \
 	$(srcdir)/welch.hh $(srcdir)/rng.hh $(srcdir)/assertions.hh \
         \
-        chip.h core.h estadisticas.h \
-        pthreads.h sistema.h dispatcher.h
+        chip.h estadisticas.h \
+        pthreads/pthreads.h sistema/sistema.h dispatcher/dispatcher.h
 	g++ -O2 -c -o obj/simulador.o simulador.cc -Wno-deprecated -Wall
 #-------------------------------------------------------------------------------
 
 #--- objetos de la simulacion
 
-obj/sistema.o:  sistema.cc sistema.h 
-	g++ -O2 -c -o obj/sistema.o sistema.cc -lm -Wno-deprecated -Wall
+obj/sistema.o:  sistema/sistema.cc sistema/sistema.h 
+	g++ -O2 -c -o obj/sistema.o sistema/sistema.cc -lm -Wno-deprecated -Wall
 
-obj/lru.o:  lru.cc lru.h
-	g++ -O2 -c -o obj/lru.o lru.cc -Wno-deprecated -Wall
+obj/lru.o:  core/lru.cc core/lru.h
+	g++ -O2 -c -o obj/lru.o core/lru.cc -Wno-deprecated -Wall
 
+obj/core.o:  core/core.cc core/core.h 
+	g++ -O2 -c -o obj/core.o core/core.cc -Wno-deprecated -Wall
 
-obj/locks.o:  locks.cc locks.h
-	g++ -O2 -c -o obj/locks.o locks.cc -Wno-deprecated -Wall
-
-
-obj/lector.o:  lector.cc lector.h
-	g++ -O2 -c -o obj/lector.o lector.cc -Wno-deprecated -Wall
+obj/locks.o:  locks/locks.cc locks/locks.h
+	g++ -O2 -c -o obj/locks.o locks/locks.cc -Wno-deprecated -Wall
 
 
-obj/metodos.o:  metodos.cc metodos.h
-	g++ -O2 -c -o obj/metodos.o metodos.cc -Wno-deprecated -Wall
+obj/lector.o:  lector/lector.cc lector/lector.h
+	g++ -O2 -c -o obj/lector.o lector/lector.cc -Wno-deprecated -Wall
 
-obj/index.o:  index.cc index.h
-	g++ -O2 -c -o obj/index.o index.cc -Wno-deprecated -Wall
 
-obj/dispatcher.o:  dispatcher.cc dispatcher.h pthreads.h
-	g++ -O2 -c -o obj/dispatcher.o dispatcher.cc -Wno-deprecated -Wall	
+obj/metodos.o:  metodos/metodos.cc metodos/metodos.h
+	g++ -O2 -c -o obj/metodos.o metodos/metodos.cc -Wno-deprecated -Wall
+
+obj/index.o:  index/index.cc index/index.h
+	g++ -O2 -c -o obj/index.o index/index.cc -Wno-deprecated -Wall
+
+obj/dispatcher.o:  dispatcher/dispatcher.cc dispatcher/dispatcher.h pthreads/pthreads.h
+	g++ -O2 -c -o obj/dispatcher.o dispatcher/dispatcher.cc -Wno-deprecated -Wall	
+
+obj/pthreads.o:  pthreads/pthreads.cc pthreads/pthreads.h 
+	g++ -O2 -c -o obj/pthreads.o pthreads/pthreads.cc -lm -Wno-deprecated -Wall
+
+
 
 #------------------------------------------------------------------------------
 
@@ -74,8 +82,8 @@ simulador: $(simulador_OBJECTS)
 
 
 clean: 
-	rm -f out/*
-	rm -f graf/*
+	rm -f output/out/*
+	rm -f output/graf/*
 	rm -f obj/*
 	rm -f simulador
 

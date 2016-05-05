@@ -6,9 +6,9 @@
 #define CHIP_H
 
 #include "glob.h"
-#include "lru.h"
-#include "core.h"
-#include "pthreads.h"
+#include "core/lru.h"
+#include "core/core.h"
+#include "pthreads/pthreads.h"
 
 class Chip
 {

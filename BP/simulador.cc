@@ -17,28 +17,16 @@ make;
 #include <stdlib.h>
 #include "glob.h"
 #include "estadisticas.h"
-#include "sistema.h"
-#include "pthreads.h"
-#include "lector.h"
+#include "sistema/sistema.h"
+#include "pthreads/pthreads.h"
+#include "lector/lector.h"
 #include "estruc.h"
-#include "dispatcher.h"
+#include "dispatcher/dispatcher.h"
 
 //--------------------------------------------
 // Thread del programa (Estrategias)
 
 Estadisticas *estadisticas;
-
-int  sizeBloque;
-int  bytesBloque;
-int  bytesItem;
-bool flagPrimero;
-
-void setValSimBloque(int n)
-{
-   sizeBloque  = n;
-   bytesItem   = sizeof(int)+sizeof(double);
-   bytesBloque = sizeBloque*bytesItem;
-}
 
 int *contador_locks;
 
@@ -74,11 +62,11 @@ void PThreads::inner_body( void )
           Query query=pop_query();
           if(query.tipo==READ){
             //cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
-            runRead1(query);
+            runRead(query);
           }
           else   {
             //cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
-            runWrite1(query);
+            runWrite(query);
           }
           flag=1;  
       }else{
@@ -161,60 +149,7 @@ void PThreads::inner_body( void )
 }
 
 
-void PThreads::runRead(int idq)
-{
-  int maxIter=0, maxIterQry, termino;
-  
-  // busca la mayor iteracion de todos los terminos de idq
-  for( int jTerm=0; jTerm<query[idq].nt; jTerm++ )
-  {
-    if ( maxIter<query[idq].iter[jTerm] )
-      maxIter=query[idq].iter[jTerm];
-  }
-
-  for( int jTerm=0; jTerm<query[idq].nt; jTerm++ )
-  {
-    termino = query[idq].termino[jTerm];
-    maxIterQry = query[idq].iter[jTerm];
-
-    Indice *indx= &indice[pid][termino];
-    Bloque *actual= indx->inicioBloque;
-
-    for( int iter=0; iter<maxIter; iter++ )
-    {
-      if (indx->nb==0) 
-      { printf("ERROR, esto no puede ser\n"); exit(0); continue; }
-
-      if( iter<maxIterQry && iter<indx->nb)
-      {
-        if( iter==0 ) // primera iteracion
-          actual = indx->inicioBloque;
-        else
-          actual = actual->sig;
-
-        if( actual == NULL )
-          actual = indx->finBloque;
-
-//----------------
-
-        runCore(0.0, long(&actual->doc[0]),
-                (actual->jBloque)*sizeof(int) );
-
-//----------------
-
-        runCore(0.0, long(&actual->frec[0]),
-               (actual->jBloque)*sizeof(double) );
-
-//----------------
-
-        runCore2( Factor_MakeRanking*double(actual->jBloque) );
-
-//----------------
-      }
-    }
-  }  
-}
-void PThreads::runRead1(Query query)
+void PThreads::runRead(Query query)
 {
   int maxIter=0, maxIterQry, termino;
   
@@ -268,74 +203,7 @@ void PThreads::runRead1(Query query)
   }  
 }
 
-void PThreads::runWrite(int idq)
-{
-  int    termino;
-  double frec;
-  Indice *indx;
-  int doc = query[idq].idDoc;
-  int tid = doc%NT;
-
-  for( int jTerm=pid; jTerm<query[idq].nt; jTerm+=NT )
-  {
-      termino = query[idq].termino[jTerm];
-      frec    = query[idq].frec[jTerm];
-      
-//--------------------------------------------------------------------------
-//----- Simulando
-
-      indx=&indice[tid][termino];
-
-      indx->actual =
-             metodos->buscaBloque( indx->inicioBloque, frec );
-             
-//----- Simulador
-
-      // simula en el multi-core lo que hace buscaBloque()
-      for( Bloque *puntero= indx->inicioBloque;
-           puntero!=NULL && puntero != indx->actual;
-           puntero = puntero->sig )
-      {
-        runCore( 0*double(Factor_ListaWrite*1), // simula comparacion  frec[0]
-                 long( puntero ),
-                 PAG_CACHE );
-
-        setValSimBloque(puntero->jBloque);
-        int npaginasBloque = bytesBloque / PAG_CACHE ;
-
-        runCore( 0*double(Factor_ListaWrite*1), // simula comparacion  frec[jb]
-                 long(  ( (char*) puntero )  +  (npaginasBloque-1)*PAG_CACHE  ),
-                 PAG_CACHE );
-      }
-
-// Simula insercion en un bloque.
-      
-      if( indx->actual==NULL ) indx->actual = indx->finBloque;
-      
-// OJO: Esto para ver si todas las estrategias hacen el mismo WORK
-/*                  
-      indx->actual= indx->inicioBloque;
-
-      setValSimBloque(indx->actual->jBloque);
-
-      runCore( double(Factor_ListaWrite*indx->actual->jBloque),
-               long( indx->actual ),
-               bytesBloque );
-*/
-
-      setValSimBloque(dimBloque);
-
-      runCore( double(Factor_ListaWrite*dimBloque),
-               long( indx->actual ),
-               bytesBloque );
-
-            
-//--------------------------------------------------------------------------
-
-  } // for terminos
-
-}
-void PThreads::runWrite1(Query query)
+void PThreads::runWrite(Query query)
 {
   int    termino;
   double frec;
@@ -536,7 +404,7 @@ printf("fin lectura indice\n");
   latencia_G_L1_L2[4] = 0.01*2.3609467;
   latencia_G_L1_L2[8] = 0.01*4.0634146 ;
   
-  double Latencia_G_L1_L2  = 0.01;//latencia_G_L1_L2[NT];
+  double Latencia_G_L1_L2  = 0.01 ;//latencia_G_L1_L2[NT];
   double Latencia_G_L2_Ram = Latencia_G_L1_L2*10.0;
 
   printf("cache L1= %dKB  L2= %dMB  Latencia gL1L2= %lf  gL2Ram= %lf\n",
