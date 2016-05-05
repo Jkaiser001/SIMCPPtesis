@@ -9,6 +9,7 @@
 #include "metodos.h"
 #include "search.h"
 #include "index.h"
+//#include "dispatcher.h"
 //#include "core.h"
 
 extern Estadisticas *estadisticas;
@@ -27,6 +28,10 @@ public:
    Core *core;
    handle<PThreads>* htrd;
    handle<PThreads>* htrd_barrier;
+   list<Query> listQuery_ptheards;
+   bool statusDispacher;
+   bool terminado;
+   //handle<Dispatcher> *despachador;
    Locks* lock;
    int QT, dimBloque, nTerm;
 
@@ -44,6 +49,7 @@ public:
              int _NT,
              const string& _name,
              handle<PThreads>* handle_pthread,
+             //handle<Dispatcher> *_despachador,
              Locks *_locks,
              int _qt,
              int _dimBloque,
@@ -59,6 +65,7 @@ public:
 
      htrd = &(handle_pthread[pid]);
      htrd_barrier = handle_pthread;
+     //despachador= &(_despachador[0]);
 
      lock      = _locks;
      QT        = _qt;
@@ -72,6 +79,7 @@ public:
      {
         count[i]=1;
      }
+     statusDispacher=1;
 /*     
      scores    = new double[nscores];
      
@@ -90,7 +98,18 @@ public:
 
  // definimos varios phold iguales para obtener
  // las estadisticas diferenciadas por core, L1 y L2.
-
+  void add_query(Query _query){
+    listQuery_ptheards.push_back(_query);
+    //cout<<"pid: "<<pid<<"tamaño COLA:"<<listQuery_ptheards.size()<<endl;
+  }
+  Query pop_query(){
+    Query query=listQuery_ptheards.front();
+    listQuery_ptheards.pop_front();
+    return query;
+  }
+  void setStatus(){
+    statusDispacher=0;
+  }
   void phold( double t )
   {
     
@@ -115,7 +134,8 @@ public:
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[1]>0&&pid==0){
-      //cout<<"----CACHE L1, Pid: "<<pid<<"----"<<endl;
+      //cout<<"----L1<--L2----"<<endl;
+      estadisticas->sumarTiemposRamL2(pid,t);
       estadisticas->sumarTiemposL2L1(cpid , id_core,pid,t);
       estadisticas->mide( pid , cpid ,id_core, time(), t , INACTIVE,CL1 );
       estadisticas->fallaL1L2( pid );
@@ -124,17 +144,32 @@ public:
      hold(t);
   }
 
-  void phold3( double t , int cpid)
+  void phold3( double t )
   {
     
 #ifdef MIDE_ESTADISTICAS
      //if (count[2]>0&&pid==0) {
-      //cout<<"----CACHE L2, Pid: "<<pid<<"----"<<endl;
-      estadisticas->sumarTiemposRamL2(cpid,t);
-      estadisticas->mide( pid, cpid, pid%4, time(), t, INACTIVE,CL2);
+
+      //cout<<"----L2<--RAM----"<<endl;
+      estadisticas->sumarTiemposRamL2(pid,t);
+      estadisticas->mide( pid, pid/4, pid%4, time(), t, INACTIVE,CL2);
     //}
      count[2]--;
      estadisticas->fallaL2Ram( pid );
+    
+#endif
+     hold(t);
+  }
+  void phold4( double t)
+  {
+    
+#ifdef MIDE_ESTADISTICAS
+     //if (count[2]>0&&pid==0) {
+      //cout<<"----L2<--RAM----"<<endl;
+     //estadisticas->sumarTiemposRamL2(cpid,t);
+      estadisticas->mide( pid, pid/4, pid%4, time(), t, INACTIVE,CPU);
+    //}
+     
     
 #endif
      hold(t);
@@ -149,7 +184,9 @@ public:
   }
 
   void runRead(int);
+  void runRead1(Query);
   void runWrite(int);
+  void runWrite1(Query);
   void runCore(double,long,int);
   void runCore2(double);
 

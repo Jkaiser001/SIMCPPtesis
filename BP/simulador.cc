@@ -9,7 +9,8 @@ Ejecucion:
 
 ./simulador 5000 256 4 /scratch/carolina/archivos/indiceOr/traza-0-0-8.dat
 
-make;./simulador 200  256 8 /home2/cluster/carolina/datos-simulacion/indiceOr/ traza-0-0-8.dat
+make;
+./simulador 200  256 8 /home2/cluster/carolina/datos-simulacion/indiceOr/ traza-0-0-8.dat
 
 */
 
@@ -56,34 +57,47 @@ double  Factor_ListaWrite;
 void PThreads::inner_body( void )
 { 
   //printf("inicia thread (%d) dimBloque= %d\n",pid,dimBloque);
-  int qry=0,qq;
+  int qry=-1,qq;
   //cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
-  while(qry<QT)
+  while(1)
   {
-    /*qry++;
-    cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
-    if( qry>=QT ) break;*/
-    qq = qry%QT;
-    //Modificar
     
-    Query querya=query[qq];
+    //cout<<"PID: "<<pid<<" qry: "<<qry<<" QT: "<<QT<<endl;
+    qry++;
+    if( qry>=QT/NT ) break;
+     //(*despachador)->activateAfter( current( ) );
+    qq = qry%QT;
 
-    if( querya.tipo==READ )
-     
-      {
-    //    cout<<"Despacho READ"<<endl;
-            runRead(qq);
+    int flag=0;
+    while(flag==0&&qry<QT/NT){
+      if(!listQuery_ptheards.empty()){
+          Query query=pop_query();
+          if(query.tipo==READ){
+            //cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<", LEOO"<<endl;
+            runRead1(query);
           }
+          else   {
+            //cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
+            runWrite1(query);
+          }
+          flag=1;  
+      }else{
+        //cout<<"Vacia"<<endl;
+        phold4(2.0);
+
+      }
+      
+    }
+    
+    /*if( query[qq].tipo==READ )
+      runRead(qq);
     else
-      {
-     //   cout<<"Despacho Write"<<endl;
-            runWrite(qq);
-          }
-
+      runWrite(qq);
+    */
     if (pid==0&&qq%100==0) { printf("%d ",qq); fflush(stdout); }
 
     ovBarrier(qry%NT);
-    qry++;
+    
   }
 
   double total= time();
@@ -200,6 +214,59 @@ void PThreads::runRead(int idq)
     }
   }  
 }
+void PThreads::runRead1(Query query)
+{
+  int maxIter=0, maxIterQry, termino;
+  
+  // busca la mayor iteracion de todos los terminos de idq
+  for( int jTerm=0; jTerm<query.nt; jTerm++ )
+  {
+    if ( maxIter<query.iter[jTerm] )
+      maxIter=query.iter[jTerm];
+  }
+
+  for( int jTerm=0; jTerm<query.nt; jTerm++ )
+  {
+    termino = query.termino[jTerm];
+    maxIterQry = query.iter[jTerm];
+
+    Indice *indx= &indice[pid][termino];
+    Bloque *actual= indx->inicioBloque;
+
+    for( int iter=0; iter<maxIter; iter++ )
+    {
+      if (indx->nb==0) 
+      { printf("ERROR, esto no puede ser\n"); exit(0); continue; }
+
+      if( iter<maxIterQry && iter<indx->nb)
+      {
+        if( iter==0 ) // primera iteracion
+          actual = indx->inicioBloque;
+        else
+          actual = actual->sig;
+
+        if( actual == NULL )
+          actual = indx->finBloque;
+
+//----------------
+
+        runCore(0.0, long(&actual->doc[0]),
+                (actual->jBloque)*sizeof(int) );
+
+//----------------
+
+        runCore(0.0, long(&actual->frec[0]),
+               (actual->jBloque)*sizeof(double) );
+
+//----------------
+
+        runCore2( Factor_MakeRanking*double(actual->jBloque) );
+
+//----------------
+      }
+    }
+  }  
+}
 
 void PThreads::runWrite(int idq)
 {
@@ -213,6 +280,73 @@ void PThreads::runWrite(int idq)
   {
       termino = query[idq].termino[jTerm];
       frec    = query[idq].frec[jTerm];
+      
+//--------------------------------------------------------------------------
+//----- Simulando
+
+      indx=&indice[tid][termino];
+
+      indx->actual =
+             metodos->buscaBloque( indx->inicioBloque, frec );
+             
+//----- Simulador
+
+      // simula en el multi-core lo que hace buscaBloque()
+      for( Bloque *puntero= indx->inicioBloque;
+           puntero!=NULL && puntero != indx->actual;
+           puntero = puntero->sig )
+      {
+        runCore( 0*double(Factor_ListaWrite*1), // simula comparacion  frec[0]
+                 long( puntero ),
+                 PAG_CACHE );
+
+        setValSimBloque(puntero->jBloque);
+        int npaginasBloque = bytesBloque / PAG_CACHE ;
+
+        runCore( 0*double(Factor_ListaWrite*1), // simula comparacion  frec[jb]
+                 long(  ( (char*) puntero )  +  (npaginasBloque-1)*PAG_CACHE  ),
+                 PAG_CACHE );
+      }
+
+// Simula insercion en un bloque.
+      
+      if( indx->actual==NULL ) indx->actual = indx->finBloque;
+      
+// OJO: Esto para ver si todas las estrategias hacen el mismo WORK
+/*                  
+      indx->actual= indx->inicioBloque;
+
+      setValSimBloque(indx->actual->jBloque);
+
+      runCore( double(Factor_ListaWrite*indx->actual->jBloque),
+               long( indx->actual ),
+               bytesBloque );
+*/
+
+      setValSimBloque(dimBloque);
+
+      runCore( double(Factor_ListaWrite*dimBloque),
+               long( indx->actual ),
+               bytesBloque );
+
+            
+//--------------------------------------------------------------------------
+
+  } // for terminos
+
+}
+void PThreads::runWrite1(Query query)
+{
+  int    termino;
+  double frec;
+  Indice *indx;
+  int doc = query.idDoc;
+  int tid = doc%NT;
+
+  for( int jTerm=pid; jTerm<query.nt; jTerm+=NT )
+  {
+      termino = query.termino[jTerm];
+      frec    = query.frec[jTerm];
       
 //--------------------------------------------------------------------------
 //----- Simulando
@@ -340,14 +474,14 @@ int main( int argc, char* argv[] )
   sprintf(archivo,"%s%s",home_indice,log ); // consultas/documentos
   query = new Query[ QT ];
   lector->loadQry(query, archivo, &nTerm, &idTermMax);
-
+  lector->loadQry1(archivo,&nTerm,&idTermMax);
   handle<Dispatcher> *Despachador=new handle<Dispatcher>[1];
   
+  char nombred[1024]; 
+  sprintf( nombred, "Dispatcher");    
 
+  printf("fin lectura consultas\n"); 
 
-  lector->loadQry1(archivo,&nTerm,&idTermMax);
-
-printf("fin lectura consultas\n"); 
 
   indice = new Indice*[NT];
   for(int tid=0; tid<NT; tid++)
@@ -364,9 +498,7 @@ printf("fin lectura consultas\n");
   sprintf(archivo,"%sindexOr-x.idx",home_indice ); // indice
 
   lector->loadIndice( indice, archivo, idTermMax );
-  char nombred[1024];
-  sprintf( nombred, "Dispatcher");
-  Despachador[0]= new Dispatcher(lector,nombred);
+  
 printf("fin lectura indice\n"); 
   
   masBloques = new Indice[NT]; // conjunto de bloques por thread
@@ -425,6 +557,7 @@ printf("fin lectura indice\n");
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );//aqui se pasan las query cambiar query por un handle<espachadorQuery> crean las query!!!
   }
+    Despachador[0]= new Dispatcher(QT,NT,lector,Despachador,pthreads,nombred);
    
   ov_barrier = new int[NT];
   for(int i=0;i<NT;i++) ov_barrier[i]= 0;
@@ -439,8 +572,8 @@ printf("fin lectura indice\n");
                                  Latencia_G_L2_Ram );
 
     chip->set_thread( &pthreads[0], 0);
-    estadisticas-> iniciarAcumuladorTiempoRamL2(1);
     estadisticas-> iniciarAcumuladorTiempoL2L1(1,1);
+    estadisticas-> iniciarAcumuladorTiempoRamL2(1,1);
   }
   else if ( NT==2 )
   {
@@ -452,8 +585,10 @@ printf("fin lectura indice\n");
     chip->set_thread( &pthreads[0], 0);
     chip->set_thread( &pthreads[1], 1);
 
-    estadisticas-> iniciarAcumuladorTiempoRamL2(1);
-    estadisticas-> iniciarAcumuladorTiempoL2L1(1,2);
+
+    estadisticas-> iniciarAcumuladorTiempoL2L1(1,2);    
+    estadisticas-> iniciarAcumuladorTiempoRamL2(1,2);
+
   }
 
   else if ( NT==4 || NT==8 || NT==16 || NT==32 || NT==64 || NT==128 )
@@ -471,14 +606,14 @@ printf("fin lectura indice\n");
                              entradas_L2,
                              Latencia_G_L1_L2,
                              Latencia_G_L2_Ram );
-
+       
        for(int j=0; j<ncores; j++, nt++)
        {
           chip[i]->set_thread( &pthreads[nt], j);
        }
      }
-     estadisticas->iniciarAcumuladorTiempoRamL2(nchips);
      estadisticas-> iniciarAcumuladorTiempoL2L1(nchips,ncores);
+     estadisticas->iniciarAcumuladorTiempoRamL2(nchips,ncores);
      ASSERT( nt==NT );
   }
   else
@@ -489,7 +624,7 @@ printf("fin lectura indice\n");
 
   handle<Sistema> system(
 
-        new Sistema( "System main", pthreads,
+         new Sistema( "System main", pthreads,Despachador,
                       NT
                    )
 

@@ -65,10 +65,12 @@ public:
   void run2( double t_cpu )  
   {
      if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
+     //out<<"run"<<endl;
   }
   
   void run( double t_cpu, string base, int bytes )
   {
+    //cout<<"run"<<endl;
      int npag= (int)ceil( double(bytes) / double(PAG_CACHE) );
    
      t_cpu /= npag;
@@ -79,6 +81,7 @@ public:
 
         if ( L1->hit( str ) )
         {
+          //cout<<"hit_L1, "<<cpid<<" - "<<id_core<<endl;
 #ifdef MIDE_ESTADISTICAS
            estadisticas->hit_L1( (*pthread)->pid );
 #endif
@@ -92,6 +95,7 @@ public:
 #ifdef MIDE_ESTADISTICAS
               estadisticas->hit_L2( (*pthread)->pid );
 #endif
+              //cout<<"hit_L2, "<<cpid<<" - "<<id_core<<endl;
               L2->update( str );//me falta este tiempo
               L1->insert( str );
               (*pthread)->phold2( Latencia_G_L1_L2 , cpid,id_core );
@@ -99,14 +103,14 @@ public:
             }
             else
             {
+              //cout<<"hit_Ram, "<<cpid<<" - "<<id_core<<endl;
 #ifdef MIDE_ESTADISTICAS
               estadisticas->hit_Ram( (*pthread)->pid );
 #endif
               L2->insert( str );
               L1->insert( str );
-              
-              (*pthread)->phold3( Latencia_G_L2_Ram,cpid );
               (*pthread)->phold2( Latencia_G_L1_L2,cpid,id_core );
+              (*pthread)->phold3( Latencia_G_L2_Ram);
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
               if(id_core!=(*pthread)->getPid()%4) cout<<"pid "<< (*pthread)->getPid() << "core: "<<id_core<<endl;
             }

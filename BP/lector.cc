@@ -158,6 +158,81 @@ void Lector::loadQry(Query *query, char *archivo, int *nTerm, int *idTermMax)
   //arryQuery=query;
 } // end loadQry()
 
+void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
+{
+  string line;
+  ifstream file (archivo);
+  // READ: idQry tipoQry nTerms (termino iteracion)+
+  // WRITE/UPDATE: idQry tipoQry doc nTerm (termino frecuencia)+
+
+  if(file.is_open())
+  {
+    while(getline(file,line)){
+      Query query;
+      //cout<<line<<endl;
+      stringstream split(line);
+      string aux;
+      split>>aux;
+      split>>aux;
+      query.tipo=atoi(aux.c_str());
+      split>>aux;
+      if(query.tipo==READ){
+        query.nt=atoi(aux.c_str());
+        if(*nTerm<query.nt) *nTerm=query.nt;
+        query.termino =new int[query.nt];
+        query.iter = new int[query.nt];
+
+      }else
+      {
+        query.idDoc=atoi(aux.c_str());
+        split>>aux;
+        query.nt = atoi(aux.c_str());
+        query.termino = new int[query.nt];
+        query.frec = new  double[query.nt];
+      }
+
+      for (int i = 0; i < query.nt; ++i)
+      {
+          split>>aux;
+          query.termino[i] = atoi(aux.c_str());
+          if(*idTermMax<query.termino[i]) *idTermMax=query.termino[i];
+          split>>aux;
+          if(query.tipo == READ){
+              int nn = atoi(aux.c_str());
+              int delta = nn/128;
+              nn = 128*delta + 128;        
+
+              if (nn%dB == 0)
+                query.iter[i] = nn/dB;
+              else
+                query.iter[i] = ( nn/dB ) + 1;  
+          
+          }else{
+              
+              query.frec[i]=atof(aux.c_str());
+          
+          }
+
+      }
+
+      listQuery.push_back(query);
+    }
+  }
+    cout<<"Cantidad"<<listQuery.size()<<endl;
+
+}
+
+
+Query Lector::getQuery(){    
+    Query query=listQuery.front();    
+    listQuery.pop_front();   
+    return query;    
+  }   
+bool Lector::emptylistQuery(){    
+   return listQuery.empty();   
+}
+
+
 // -------------------------------------------
 // --- lectura indice
 void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)

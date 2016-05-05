@@ -1,7 +1,4 @@
-#ifndef DISPACHER_H
-#define DISPACHER_H
-#include "glob.h"
-#include "lector.h"
+
 <<<<<<< HEAD
 #include "estadisticas.h"
 #include "estruc.h"
