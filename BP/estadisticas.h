@@ -44,13 +44,14 @@ private:
   int NT; // numero de threads
   int nchips;
   int  Ncores;
+  int pasadas=0;
   double *minimo;
   double *maximo;
   double eficiencia, numEf;
   
   double *fallasCacheL1L2;
   double *fallasCacheL2Ram;
-  double *acumuladoresTiempoRamL2;
+  double **acumuladoresTiempoRamL2;
   double **acumuladoresTiempoL2L1;
   double *hitL1, *hitL2, *hitRam;
   double **tiempoXThread;
@@ -65,8 +66,7 @@ private:
 
 public:
 
-  Estadisticas(int nt,int delta)
-  {
+  Estadisticas(int nt,int delta){
      NT= nt;
      
      minimo = new double[nt];
@@ -98,6 +98,7 @@ public:
      }
         
       deltaTiempo=delta;
+      
       
   }
 
@@ -504,7 +505,7 @@ public:
        if (max<fallasCacheL2Ram[i]) max= fallasCacheL2Ram[i];
     }
     printf(" %.0lf    Ef= %.2lf\n",suma, (suma/NT)/max);
-    
+    /*
     max=0,suma=0.0;
     for(int i=0;i<nchips;i++)
     {
@@ -514,7 +515,7 @@ public:
     }
       printf("Total_Time_L2<-Ram=   %.6lf    max= %.6lf\n",suma,max);
       printf("-------------------------------------------\n");
-    
+    */
     printf("Total_HitsL1=  ");
     for(int i=0;i<NT;i++)
     {
@@ -556,22 +557,28 @@ public:
     Iniciualiza los acumuladores de tiempo para  transferir informacion de  Ram a L2
   */
 
-  void iniciarAcumuladorTiempoRamL2(int nchip)
+  void iniciarAcumuladorTiempoRamL2(int nchip,int ncore)
   {
       nchips=nchip;
-      acumuladoresTiempoRamL2=new double[nchip];
+      Ncores=ncore;
+      acumuladoresTiempoRamL2=(double **)malloc(nchip*sizeof(double *));
       for (int i = 0; i < nchip; ++i)
-      {
-        acumuladoresTiempoRamL2[i]=0.0;
+      {        
+        acumuladoresTiempoRamL2[i]=(double *)malloc(4*sizeof(double));
+        for (int j = 0; j < Ncores; ++j)
+        {
+          acumuladoresTiempoRamL2[i][j]=0;
+        }
       }
+
       //cout<<"INICIADO!!!!! "<<Nchip<<endl;
   }
   /* Suma los valores de tiempo de tranferencia en cada chip
   */
-  void sumarTiemposRamL2(int cpid, double tiempo){
+  void sumarTiemposRamL2(int pid, double tiempo){
 
-    acumuladoresTiempoRamL2[ cpid ] = acumuladoresTiempoRamL2[cpid]+tiempo;
-    //cout<<"Sume :"<< tiempo << " al chip "<< cpid << ", Nuevo valor :" << acumuladoresTiempoRamL2 [ cpid]/1e6<<endl;
+    acumuladoresTiempoRamL2[ pid/4 ][pid%4] = acumuladoresTiempoRamL2[pid/4][pid%4]+tiempo;
+    //cout<<"Sume :"<< tiempo << " al chip "<< pid/4 <<", core: "<<pid%4<< ", Nuevo valor :" << acumuladoresTiempoRamL2[pid/4][pid%4]<<endl;
 
   }
   void iniciarAcumuladorTiempoL2L1(int nchip,int ncore)
@@ -605,7 +612,7 @@ public:
 
  void mideCacheL1(int cpid,int id_core,double diferencia,double tiempo_total, double tiempothread){
       //dataCache datoC;
-      bool stado=mapMuestreoCacheL1.find(cpid)!=mapMuestreoCacheL1.end();
+      //bool stado=mapMuestreoCacheL1.find(cpid)!=mapMuestreoCacheL1.end();
 
       //cout<<stado<<endl;
       //mapMuestreoCacheL1[cpid][tiempothread].ncore=id_core;
@@ -632,21 +639,52 @@ public:
       //cout<<"mide CL1"<<endl;
 
  }
- void mideCacheL2(int cpid,double diferencia,double tiempo_total, double tiempothread){
-      double tiempoActivo=acumuladoresTiempoRamL2[cpid]-diferencia;
-        cout<<"tiempo: "<<tiempothread/1e6<<" CacheL2: "<<diferencia<<", pid: "<<cpid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
-        if(tiempoActivo>=0){  
-          if(mapMuestreoCacheL2[cpid].find(tiempothread)==mapMuestreoCacheL2[cpid].end())
-          { 
-              mapMuestreoCacheL2[cpid][tiempothread].tiempoActivo=tiempoActivo;
-              mapMuestreoCacheL2[cpid][tiempothread].tiempoTotal=tiempo_total;
-              acumuladoresTiempoRamL2[cpid]=diferencia;
+ void resetearAcumulador(int pid, double diferencia){
+    for (int i = 0; i < 4; ++i)
+    {
+      if (i==0) acumuladoresTiempoRamL2[pid/4][i]=diferencia;
+      else 
+        acumuladoresTiempoRamL2[pid/4][i]=0;
+    }
 
-              double utilizacion =(tiempoActivo/tiempo_total)*100;
-              mapMuestreoCacheL2[cpid][tiempothread].utilizacion=utilizacion;
+ }
+ void mideCacheL2(int pid,double diferencia,double tiempo_total, double tiempothread){
+      //
+        //if(diferencia>0){
+        pasadas++;
+        
+        cout<<"___________________________MIDE CACHE L2_________________________________"<<endl;
+        cout<<"tiempo: "<<tiempothread<<", diferencia: "<<diferencia<<", pid: "<<pid<<endl;
+        cout<<pasadas<<endl;
+        if(pasadas==Ncores){
+          double tiempo_Total_chip=0.0;
+          for (int i = 0; i < Ncores; ++i)
+          {
+            tiempo_Total_chip=tiempo_Total_chip+acumuladoresTiempoRamL2[pid/4][i];
           }
+          cout<<"tiempo Acumulado chip: "<<tiempo_Total_chip<<endl;  
+          //}
+          double tiempoActivo=tiempo_Total_chip-diferencia;
+          //if(tiempoActivo>=0){  
+            //if(mapMuestreoCacheL2[pid].find(tiempothread)==mapMuestreoCacheL2[cpid].end())
+            //{ 
+          mapMuestreoCacheL2[pid/4][tiempothread].tiempoActivo=tiempoActivo;
+          mapMuestreoCacheL2[pid/4][tiempothread].tiempoTotal=tiempo_total;
+          //acumuladoresTiempoRamL2[pid/4][0]=diferencia;
+          
+          double utilizacion =(tiempoActivo/tiempo_total)*100;
+          mapMuestreoCacheL2[pid/4][tiempothread].utilizacion=utilizacion;
+          
+          cout<<"Utilización: "<<utilizacion<<endl;
+          pasadas=0;
+          resetearAcumulador(pid,diferencia);
+
         }
-        else acumuladoresTiempoRamL2[cpid]=diferencia;      
+        cout<<"____________________________________________________________________"<<endl;
+          //}
+        
+       // }
+        //else acumuladoresTiempoRamL2[cpid]=diferencia;  */    
 
  }
  void guardarIntervalosUtilizacionCacheL1(){
@@ -775,10 +813,11 @@ public:
           
           
           tiempoXThread[pid][modo]=diferencia;
+          //cout<<"___________________________MIDE EN TIEMPO "<<tiempoThread<<", "<<tiempoTotal<<"___________________________"<<endl;
           if(modo==ACTIVE){
             //cout<<"Core"<<endl;
             mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempoThread);
-            mideCacheL2(cpid,0.0,tiempoTotal,tiempoThread);
+            mideCacheL2(pid,0.0,tiempoTotal,tiempoThread);
             //mideCacheL1(cpid,id_core,0,tiempoTotal,tiempoThread);
             tiempoXThread[pid][INACTIVE]=0;
           }
@@ -789,17 +828,17 @@ public:
                 //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL1: "<<retardo<<", pid: "<<pid<<endl;
 
                 mideCacheL1(cpid,id_core,diferencia,tiempoTotal,tiempoThread);
-                mideCacheL2(cpid,0.0,tiempoTotal,tiempoThread);
+                mideCacheL2(pid,0.0,tiempoTotal,tiempoThread);
               }
             else if(dispositivo==CL2){
 
-                  cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
+                  //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoRamL2[cpid]<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempoThread);
-                  mideCacheL2(cpid,diferencia,tiempoTotal,tiempoThread); 
+                  mideCacheL2(pid,diferencia,tiempoTotal,tiempoThread); 
               }
               else{
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempoThread);
-                  mideCacheL2(cpid,0.0,tiempoTotal,tiempoThread);
+                  mideCacheL2(pid,0.0,tiempoTotal,tiempoThread);
               }
             //cout<<"HOLAAAA"<<endl;
             tiempoXThread[pid][ACTIVE]=0;            
