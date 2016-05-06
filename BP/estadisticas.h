@@ -214,6 +214,57 @@ public:
     }
 
   }
+void guardarIntervalosUtilizacionCacheL1(){
+    //int primero=0;
+
+    for (map< int, map < int, map<double, dataCache> > >::iterator i = mapMuestreoCacheL1.begin(); i != mapMuestreoCacheL1.end(); ++i)
+    {
+      
+      for (map<int ,map<double, dataCache> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      {
+
+        std::string name= "output/out/Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
+        ofstream out;
+        //const char *namec=name.c_str();
+        char * namec = new char [name.length()+1];
+        strcpy (namec, name.c_str());
+        out.open(namec);
+
+        for (map<double, dataCache>::iterator k = j->second.begin(); k != j->second.end(); ++k)
+        {
+
+          dataCache dato=k->second;
+          //cout<<"HOLAAAA"<<endl;
+          //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+          if (k->first!=0.0)
+          {
+            //cout<<"OJO "<<dato.utilizacionAcum<<", "<<dato.NthreadCore<<endl;
+            out<< k->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+
+          //outp<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
+          }
+
+        }
+
+      out.close();
+        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
+      //primero++;
+      }
+      
+      //outp.close();
+      
+    }
+  
+
+ }
+  int PromUtilizacionCacheL1(int cpid, double tiempothread){
+/*      for (map<int ,map<double, dataCache> >::iterator i  = mapMuestreoCacheL1[cpid].begin(); i != mapMuestreoCacheL1[cpid].end(); ++i)
+      {
+           dataCache dato=i->second[tiempothread];
+
+
+      }*/
+  }
 
   void UtilizacionChip(){
     //double **salida;
@@ -596,49 +647,7 @@ public:
         //else acumuladoresTiempoRamL2[cpid]=diferencia;  */    
 
  }
- void guardarIntervalosUtilizacionCacheL1(){
-    //int primero=0;
-
-    for (map< int, map < int, map<double, dataCache> > >::iterator i = mapMuestreoCacheL1.begin(); i != mapMuestreoCacheL1.end(); ++i)
-    {
-      
-      for (map<int ,map<double, dataCache> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
-      {
-
-        std::string name= "output/out/Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
-        ofstream out;
-        //const char *namec=name.c_str();
-        char * namec = new char [name.length()+1];
-        strcpy (namec, name.c_str());
-        out.open(namec);
-
-        for (map<double, dataCache>::iterator k = j->second.begin(); k != j->second.end(); ++k)
-        {
-
-          dataCache dato=k->second;
-          //cout<<"HOLAAAA"<<endl;
-          //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
-          if (k->first!=0)
-          {
-            //cout<<"OJO "<<dato.utilizacionAcum<<", "<<dato.NthreadCore<<endl;
-            out<< k->first / 1e6 << ", " << dato.getUtilizacion() << endl;
-
-          //outp<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
-          }
-
-        }
-
-      out.close();
-        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
-      //primero++;
-      }
-      
-      //outp.close();
-      
-    }
-  
-
- }
+ 
  void guardarIntervalosUtilizacionCacheL2(){
     //int primero=0;
 
