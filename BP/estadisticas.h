@@ -501,6 +501,7 @@ public:
         {
           acumuladoresTiempoRamL2[i][j]=0;
         }
+        pasadas[i]=0;
 
       }
 
@@ -563,11 +564,11 @@ public:
  void mideCacheL2(int pid,double diferencia,double tiempo_total, double tiempothread){
       //
         //if(diferencia>0){
-        pasadas++;
+        pasadas[pid/4]++;
         
         cout<<"___________________________MIDE CACHE L2_________________________________"<<endl;
         cout<<"tiempo: "<<tiempothread<<", diferencia: "<<diferencia<<", pid: "<<pid<<endl;
-        cout<<pasadas<<endl;
+        cout<<pid/4<<" , "<<pasadas[pid/4]<<endl;
         if(pasadas[pid/4]==Ncores){
           double tiempo_Total_chip=0.0;
           for (int i = 0; i < Ncores; ++i)
