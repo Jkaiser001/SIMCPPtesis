@@ -36,7 +36,7 @@ obj/simulador.o: simulador.cc $(srcdir)/cppsim.hh $(srcdir)/process.hh \
 	$(srcdir)/histogram.hh $(srcdir)/jain.hh $(srcdir)/quantile.hh \
 	$(srcdir)/welch.hh $(srcdir)/rng.hh $(srcdir)/assertions.hh \
         \
-        chip.h estadisticas.h \
+        chip.h estadisticas.h estadisticas/dataChip.h estadisticas/dataThread.h estadisticas/dataCache.h \
         pthreads/pthreads.h sistema/sistema.h dispatcher/dispatcher.h
 	g++ -O2 -c -o obj/simulador.o simulador.cc -Wno-deprecated -Wall
 #-------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ obj/index.o:  index/index.cc index/index.h
 obj/dispatcher.o:  dispatcher/dispatcher.cc dispatcher/dispatcher.h pthreads/pthreads.h
 	g++ -O2 -c -o obj/dispatcher.o dispatcher/dispatcher.cc -Wno-deprecated -Wall	
 
-obj/pthreads.o:  pthreads/pthreads.cc pthreads/pthreads.h 
+obj/pthreads.o:  pthreads/pthreads.cc pthreads/pthreads.h estadisticas/dataChip.h
 	g++ -O2 -c -o obj/pthreads.o pthreads/pthreads.cc -lm -Wno-deprecated -Wall
 
 

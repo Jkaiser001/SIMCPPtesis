@@ -4,6 +4,7 @@
 
 #include "../glob.h"
 #include "../estadisticas.h"
+#include "../estadisticas/dataChip.h"
 #include "../estruc.h"
 #include "../locks/locks.h"
 #include "../metodos/metodos.h"

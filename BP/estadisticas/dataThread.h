@@ -23,10 +23,10 @@ public:
 		tiempoTotal=_tiempoTotal;
 		utilizacion=_utilizacion;
 	}
-	~dataThread()
-
+	
 	double getTiempoInactivo(){return tiempoInactivo;}
 	double getTiempoActivo(){ return  tiempoActivo;}
+	double getTiempoThread(){ return  tiempothread;}
 	double getTiempoTotal(){ return  tiempoTotal;}
 	double getUtilizacion(){return utilizacion;}
 	int getPid(){return pid; }
