@@ -11,6 +11,8 @@ private:
     double tiempoTotal;
     double utilizacion;
     double utilizacionAcum;
+    double utilizacionCacheL1;
+    double utilizacionCacheL2;
 public:
 
 	
@@ -25,6 +27,8 @@ public:
    		tiempoTotal = copyin.tiempoTotal;
    		utilizacion = copyin.utilizacion;
    		utilizacionAcum = copyin.utilizacionAcum;
+   		utilizacionCacheL1 = copyin.utilizacionCacheL1;
+   		utilizacionCacheL2 = copyin.utilizacionCacheL2;
 	}
 
    	
@@ -37,7 +41,8 @@ public:
     this->tiempoTotal=rhs.tiempoTotal;
     this->utilizacion=rhs.utilizacion;
     this->utilizacionAcum=rhs.utilizacionAcum;
-
+    this->utilizacionCacheL1 = rhs.utilizacionCacheL1;
+    this->utilizacionCacheL2 = rhs.utilizacionCacheL2;
    return *this;
 	}
  
@@ -49,6 +54,8 @@ public:
    		if( this->tiempoTotal != rhs.tiempoTotal) return 0;
    		if( this->utilizacion != rhs.utilizacion) return 0;
    		if( this->utilizacionAcum != rhs.utilizacionAcum) return 0;
+   		if(this->utilizacionCacheL1 != rhs.utilizacionCacheL1) return 0;
+   		if(this->utilizacionCacheL2 != rhs.utilizacionCacheL2) return 0;
    		return 1;
 	}
  
@@ -69,6 +76,8 @@ public:
 		tiempoTotal=_tiempoTotal;
 		utilizacion=(_tiempoActivo/_tiempoTotal)*100;
 		utilizacionAcum=_utilizacionAcum;
+		utilizacionCacheL1=0;
+		utilizacionCacheL2=0;
 	}
 	dataChip(dataThread _dato){
 
@@ -78,6 +87,8 @@ public:
 		tiempoTotal=_dato.getTiempoTotal();
 		utilizacion=(tiempoActivo/tiempoTotal)*100;
 		utilizacionAcum=_dato.getUtilizacion();
+		utilizacionCacheL1=0;
+		utilizacionCacheL2=0;
 	}
 	
 	
@@ -88,6 +99,8 @@ public:
 		utilizacion=(_tiempoActivo/_tiempoTotal)*100;
 		utilizacionAcum=utilizacionAcum+_utilizacion;
 		nThreadChip++;
+		utilizacionCacheL1=0;
+		utilizacionCacheL2=0;
 
 	}
 	void setUtilizacion(dataThread _dato){
@@ -97,6 +110,8 @@ public:
 		utilizacion=(tiempoActivo/tiempoTotal)*100;
 		utilizacionAcum=utilizacionAcum+_dato.getUtilizacion();
 		nThreadChip++;
+		utilizacionCacheL1=0;
+		utilizacionCacheL2=0;
 
 	}
 	double getUtilizacion(){return utilizacion;}
@@ -104,8 +119,19 @@ public:
 	void addNThreadChip(){ nThreadChip++; }
 	int getNThreadChip(){return nThreadChip;}
 	double getTiempoTotal(){ return  tiempoTotal;}
-	
-	
+	void setUtilizacionCacheL1(double Utilizacion){ 
+		this->utilizacionCacheL1=Utilizacion;
+	}
+
+	double getUtilizacionCacheL1(){ return utilizacionCacheL1;}
+	double UtilizacionChip(){
+		return (utilizacion+utilizacionCacheL1)/2;
+	}
+	double PromUtilizacionChip(){
+		double promUtilizacion=(utilizacionAcum/nThreadChip);
+		//cout<<promUtilizacion<<endl;
+		return (promUtilizacion+utilizacionCacheL1)/2;
+	}
 };
 
 

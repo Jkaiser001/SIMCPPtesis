@@ -21,8 +21,11 @@ while(1){
 	      	//cout<<"llegue al final"<<endl;		
 		}else{		
 			break;		
-		}		
+		}
+	//cout<<"qry "<<qry<<endl;		
+	
 	i++;
+
 	}
 	for (int j = 0; j < nthreads; ++j)
 	{

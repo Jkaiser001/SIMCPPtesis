@@ -40,12 +40,13 @@ double  factor_MakeRanking[1024];
 double  Factor_MakeRanking;
 double  Factor_Sort;
 double  Factor_ListaWrite;
+int terminadas=0;
 
 
 void PThreads::inner_body( void )
 { 
   //printf("inicia thread (%d) dimBloque= %d\n",pid,dimBloque);
-  int qry=-1,qq;
+  int qry=-1;
   //cout<<"qry: "<<qry<<"QT: "<<QT<<endl;
   while(1)
   {
@@ -54,7 +55,7 @@ void PThreads::inner_body( void )
     qry++;
     if( qry>=QT/NT ) break;
      //(*despachador)->activateAfter( current( ) );
-    qq = qry%QT;
+    //qq = qry%QT;
 
     int flag=0;
     while(flag==0&&qry<QT/NT){
@@ -68,6 +69,7 @@ void PThreads::inner_body( void )
             //cout<<"PID: "<<pid<<", TAMAÑO COLA: "<<listQuery_ptheards.size()<<",ESCRIBO"<<endl;
             runWrite(query);
           }
+          terminadas++;
           flag=1;  
       }else{
         //cout<<"Vacia"<<endl;
@@ -75,6 +77,8 @@ void PThreads::inner_body( void )
 
       }
       
+      
+
     }
     
     /*if( query[qq].tipo==READ )
@@ -82,7 +86,8 @@ void PThreads::inner_body( void )
     else
       runWrite(qq);
     */
-    if (pid==0&&qq%100==0) { printf("%d ",qq); fflush(stdout); }
+    if (terminadas%100==0) { printf("%d ",terminadas); fflush(stdout); }
+    //if (qq%100==0) { printf("%d ",qq); fflush(stdout); }
 
     ovBarrier(qry%NT);
     
