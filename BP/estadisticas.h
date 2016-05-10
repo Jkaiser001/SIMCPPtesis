@@ -14,14 +14,14 @@ private:
   int NT; // numero de threads
   int nchips;
   int  Ncores;
-  int *pasadas;
+  
   double *minimo;
   double *maximo;
   double eficiencia, numEf;
   
   double *fallasCacheL1L2;
   double *fallasCacheL2Ram;
-  double **acumuladoresTiempoRamL2;
+  std::map<int, map<double , double> > acumuladoresTiempoRamL2;
   double **acumuladoresTiempoL2L1;
   double *hitL1, *hitL2, *hitRam;
   double **tiempoXThread;
@@ -32,6 +32,7 @@ private:
   map<int, map<double,dataChip > > mapMuestreoChip;
   map<int, map< int, map< double , dataCache > > > mapMuestreoCacheL1;
   map<int, map< double , dataCache  > > mapMuestreoCacheL2;
+  map<int, map< double , int > > pasadas;
   //map<int, value> mapMuestreoCache;
 
 public:
@@ -302,7 +303,7 @@ public:
           tiempoXThread[k][INACTIVE]=0.0;
 
 
-        if((k%4==0)){
+        /*if((k%4==0)){
               double tiempo_Total_chip=0.0;
               double tiempothread = tiempoAcumulado[k];
               double tiempoTotal = deltaTiempo;
@@ -322,7 +323,7 @@ public:
               
               resetearAcumulador(k,0.0);
 
-          }
+          }*/
         
       }
 
@@ -350,7 +351,7 @@ void completarCores(){
           tiempoXThread[k][INACTIVE]=0.0;
           
         }
-        if((k%4==0)){
+        /*if((k%4==0)){
               double tiempo_Total_chip=0.0;
               double tiempothread = tiempoAcumulado[k];
               double tiempoTotal = deltaTiempo;
@@ -368,9 +369,9 @@ void completarCores(){
               mapMuestreoCacheL2[k/4][tiempothread]=*dataC;
               pasadas[k/4]=0;
               
-              resetearAcumulador(k,0.0);
+              resetearAcumulador(k,0.0);*
 
-          }
+          }*/
       }
   }
   
@@ -501,7 +502,7 @@ void completarCores(){
           dataChip datoC=j->second;
           double resultado=0.0;
           int ncore=0;
-          cout<<"_______ Tiempo: "<<tiempothread<<" _______"<<endl;
+          //cout<<"_______ Tiempo: "<<tiempothread<<" _______"<<endl;
           for (map<int ,map<double, dataCache> >::iterator k  = mapMuestreoCacheL1[cpid].begin(); k != mapMuestreoCacheL1[cpid].end(); ++k)
           {
              dataCache dato=k->second[tiempothread];
@@ -511,7 +512,7 @@ void completarCores(){
              //cout<<"Utilización: "<<dato.getUtilizacion()<<endl;
              
           }
-          cout<<"Utilizacion promedio cacheL1:"<<resultado/ncore <<endl;
+          //cout<<"Utilizacion promedio cacheL1:"<<resultado/ncore <<endl;
           datoC.setUtilizacionCacheL1(resultado/ncore);
           mapMuestreoChip[cpid][tiempothread]=datoC;
 
@@ -629,7 +630,7 @@ void completarCores(){
         //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
         if (j->first!=0)
         {
-          cout<<"Utilizacion promedio threads(1): "<<dato.PromUtilizacionChip()<<", Utilización prom threads(2): "<<dato.UtilizacionChip() <<", Utilización prom CacheL1: " <<dato.getUtilizacionCacheL1()<<endl;
+          //cout<<"Utilizacion promedio threads(1): "<<dato.PromUtilizacionChip()<<", Utilización prom threads(2): "<<dato.UtilizacionChip() <<", Utilización prom CacheL1: " <<dato.getUtilizacionCacheL1()<<endl;
           out<< j->first / 1e6 << ", " << dato.UtilizacionChip() << endl;
 
           outp<< j->first / 1e6 << ", " << dato.PromUtilizacionChip() << endl;
@@ -691,29 +692,25 @@ void completarCores(){
   void iniciarAcumuladorTiempoRamL2(int nchip,int ncore){
       nchips=nchip;
       Ncores=ncore;
-      pasadas=new int[nchips];
-      acumuladoresTiempoRamL2=(double **)malloc(nchip*sizeof(double *));
-      for (int i = 0; i < nchip; ++i)
-      {        
-        
-        acumuladoresTiempoRamL2[i]=(double *)malloc(4*sizeof(double));
-        for (int j = 0; j < Ncores; ++j)
-        {
-          acumuladoresTiempoRamL2[i][j]=0;
-        }
-        pasadas[i]=0;
-
-      }
-
-      //cout<<"INICIADO!!!!! "<<Nchip<<endl;
+      
   }
   /* Suma los valores de tiempo de tranferencia en cada chip
   */
   
   void sumarTiemposRamL2(int pid, double tiempo){
 
-    acumuladoresTiempoRamL2[ pid/4 ][pid%4] = acumuladoresTiempoRamL2[pid/4][pid%4]+tiempo;
-    //cout<<"Sume :"<< tiempo << " al chip "<< pid/4 <<", core: "<<pid%4<< ", Nuevo valor :" << acumuladoresTiempoRamL2[pid/4][pid%4]<<endl;
+      double tiempothread=tiempoAcumulado[pid];
+     
+      if(acumuladoresTiempoRamL2[pid/4].find(tiempothread)!=acumuladoresTiempoRamL2[pid/4].end())
+      {
+        acumuladoresTiempoRamL2[pid/4][tiempothread]=acumuladoresTiempoRamL2[pid/4][tiempothread]+tiempo;
+
+      }else{
+
+        acumuladoresTiempoRamL2[pid/4][tiempothread]= tiempo;
+      }
+     
+    
   }
 
   void iniciarAcumuladorTiempoL2L1(int nchip,int ncore){
@@ -752,25 +749,35 @@ void completarCores(){
       acumuladoresTiempoL2L1[cpid][id_core]=diferencia;     
   }
 
-  void resetearAcumulador(int pid, double diferencia){
+  /*void resetearAcumulador(int pid, double diferencia){
     for (int i = 0; i < 4; ++i)
     {
       if (i==0) acumuladoresTiempoRamL2[pid/4][i]=diferencia;
       else 
         acumuladoresTiempoRamL2[pid/4][i]=0;
     }
-  }
+  }*/
 
   void mideCacheL2(int pid,double diferencia,double tiempo_total, double tiempothread){
       //
         //if(diferencia>0){
-        pasadas[pid/4]++;
+        if(pasadas[pid/4].find(tiempothread) != pasadas[pid/4].end()){
+          pasadas[pid/4][tiempothread]++;
+        }
+        else
+        {
+          pasadas[pid/4][tiempothread]=1;
+        }
+
+        double tiempo_Total_chip=0.0;
+          cout<<"___________________________MIDE CACHE L2_________________________________"<<endl;
+          cout<<"tiempo: "<<tiempothread<<", diferencia: "<<diferencia<<", pid: "<<pid<<endl;
+          cout<<pid/4<<", "<<pasadas[pid/4][tiempothread]<<endl;
+          cout<<"tiempo Activo: "<<(acumuladoresTiempoRamL2[pid/4][tiempothread]/tiempo_total)*100<<endl;
+
         
-       // cout<<"___________________________MIDE CACHE L2_________________________________"<<endl;
-        //cout<<"tiempo: "<<tiempothread<<", diferencia: "<<diferencia<<", pid: "<<pid<<endl;
-        //cout<<pid/4<<" , "<<pasadas[pid/4]<<endl;
-        if(pasadas[pid/4]==Ncores){
-          double tiempo_Total_chip=0.0;
+        /*if(pasadas[pid/4]==Ncores){
+          cout<<"________________________Entre_______________________"<<endl;  
           for (int i = 0; i < Ncores; ++i)
           {
             tiempo_Total_chip=tiempo_Total_chip+acumuladoresTiempoRamL2[pid/4][i];
@@ -788,8 +795,8 @@ void completarCores(){
           pasadas[pid/4]=0;
           resetearAcumulador(pid,diferencia);
 
-        }
-        //cout<<"____________________________________________________________________"<<endl;
+        }*/
+        cout<<"____________________________________________________________________"<<endl;
           //}
         
        // }

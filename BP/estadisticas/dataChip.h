@@ -145,7 +145,7 @@ public:
 
 	double PromUtilizacionChip(){
 		double promUtilizacion=(utilizacionAcum/nComponentes);
-		cout<<"promedio"<<promUtilizacion<<", "<<utilizacionAcum<<", "<<nComponentes<<nThreadChip<<endl;
+		//cout<<"Promedio "<<promUtilizacion<<", "<<utilizacionAcum<<", "<<nComponentes<<nThreadChip<<endl;
 		return promUtilizacion ;
 	}
 };

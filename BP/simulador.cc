@@ -388,7 +388,7 @@ printf("fin lectura indice\n");
   factor_MakeRanking[4]= 1.0*0.305229;
   factor_MakeRanking[8]= 1.0*0.273049;
 
-  Factor_MakeRanking =  0.34;//factor_MakeRanking[NT];  
+  Factor_MakeRanking =  factor_MakeRanking[NT];  
   Factor_MakeRanking =  Factor_MakeRanking*4.0; // debido a dB/4.
     
   Factor_Sort        =  Factor_MakeRanking/5.0;
@@ -409,7 +409,7 @@ printf("fin lectura indice\n");
   latencia_G_L1_L2[4] = 0.01*2.3609467;
   latencia_G_L1_L2[8] = 0.01*4.0634146 ;
   
-  double Latencia_G_L1_L2  = 0.01 ;//latencia_G_L1_L2[NT];
+  double Latencia_G_L1_L2  = latencia_G_L1_L2[NT];
   double Latencia_G_L2_Ram = Latencia_G_L1_L2*10.0;
 
   printf("cache L1= %dKB  L2= %dMB  Latencia gL1L2= %lf  gL2Ram= %lf\n",
