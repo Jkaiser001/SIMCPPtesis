@@ -302,9 +302,30 @@ public:
           tiempoXThread[k][INACTIVE]=0.0;
 
 
-        //}
+        if((k%4==0)){
+              double tiempo_Total_chip=0.0;
+              double tiempothread = tiempoAcumulado[k];
+              double tiempoTotal = deltaTiempo;
+              for (int i = 0; i < Ncores; ++i)
+              {
+              
+                tiempo_Total_chip=tiempo_Total_chip+acumuladoresTiempoRamL2[k/4][i];
+              
+              }
+              
+              double tiempoActivoCacheL2=tiempo_Total_chip;
+              
+              dataCache *dataC= new dataCache(tiempoActivoCacheL2,tiempoTotal);
+              
+              mapMuestreoCacheL2[k/4][tiempothread]=*dataC;
+              pasadas[k/4]=0;
+              
+              resetearAcumulador(k,0.0);
+
+          }
         
       }
+
 
        
   }
@@ -485,6 +506,7 @@ void completarCores(){
           {
              dataCache dato=k->second[tiempothread];
              resultado=resultado+dato.getUtilizacion();
+             datoC.addCompUtilizacion(dato.getUtilizacion());
              ncore++;
              //cout<<"Utilización: "<<dato.getUtilizacion()<<endl;
              
@@ -532,8 +554,8 @@ void completarCores(){
             
               //if(dato.tiempothread==0)cout<<"Voy por el 2° if "<<chip<<endl;    
                 mapMuestreoChip[chip][tiempo].setUtilizacion(dato);
-
-               
+                mapMuestreoChip[chip][tiempo].setUtilizacionCacheL2(mapMuestreoCacheL2[chip][tiempo].getUtilizacion());
+                mapMuestreoChip[chip][tiempo].addCompUtilizacion(mapMuestreoCacheL2[chip][tiempo].getUtilizacion());
 
 
             }
@@ -541,14 +563,19 @@ void completarCores(){
               {
                 //if(dato.tiempothread==0) cout<<"Voy por el 2° else "<<chip<<endl;
                   dataChip *dataC=new dataChip(dato);
+                  dataC->setUtilizacionCacheL2(mapMuestreoCacheL2[chip][tiempo].getUtilizacion());
+                  dataC->addCompUtilizacion(mapMuestreoCacheL2[chip][tiempo].getUtilizacion());
                   mapMuestreoChip[chip][tiempo]= *dataC;
 
               }
           }
           else
           {
+            cout<<"YAAAAAAAAAAAA"<<endl;
                  
               dataChip *dataC=new dataChip(dato);
+              dataC->setUtilizacionCacheL2(mapMuestreoCacheL2[chip][tiempo].getUtilizacion());
+              dataC->addCompUtilizacion(mapMuestreoCacheL2[chip][tiempo].getUtilizacion());
               mapMuestreoChip[chip][tiempo]= *dataC;
           }    
           //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     

@@ -6,6 +6,7 @@ class dataChip
 
 private:
 	int nThreadChip;
+	int nComponentes;
     double tiempoActivo;
     double tiempoInactivo;
     double tiempoTotal;
@@ -22,6 +23,7 @@ public:
     dataChip(const dataChip &copyin)   // Copy constructor to handle pass by value.
 	{                            
    		nThreadChip = copyin.nThreadChip;
+   		nComponentes = copyin.nComponentes;
    		tiempoActivo = copyin.tiempoActivo;
    		tiempoInactivo = copyin.tiempoInactivo;
    		tiempoTotal = copyin.tiempoTotal;
@@ -36,6 +38,7 @@ public:
 	{
    
    	this->nThreadChip=rhs.nThreadChip;
+   	this->nComponentes = rhs.nComponentes;
     this->tiempoActivo=rhs.tiempoActivo;
     this->tiempoInactivo=rhs.tiempoInactivo;
     this->tiempoTotal=rhs.tiempoTotal;
@@ -49,6 +52,7 @@ public:
 	int operator==(const dataChip &rhs) const
 	{
    		if( this->nThreadChip != rhs.nThreadChip) return 0;
+   		if(this->nComponentes != rhs.nComponentes) return 0;
    		if( this->tiempoActivo != rhs.tiempoActivo) return 0;
    		if( this->tiempoInactivo != rhs.tiempoInactivo) return 0;
    		if( this->tiempoTotal != rhs.tiempoTotal) return 0;
@@ -78,6 +82,7 @@ public:
 		utilizacionAcum=_utilizacionAcum;
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
+		nComponentes=1;
 	}
 	dataChip(dataThread _dato){
 
@@ -89,6 +94,7 @@ public:
 		utilizacionAcum=_dato.getUtilizacion();
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
+		nComponentes=1;
 	}
 	
 	
@@ -99,6 +105,7 @@ public:
 		utilizacion=(_tiempoActivo/_tiempoTotal)*100;
 		utilizacionAcum=utilizacionAcum+_utilizacion;
 		nThreadChip++;
+		nComponentes++;
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
 
@@ -110,6 +117,7 @@ public:
 		utilizacion=(tiempoActivo/tiempoTotal)*100;
 		utilizacionAcum=utilizacionAcum+_dato.getUtilizacion();
 		nThreadChip++;
+		nComponentes++;
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
 
@@ -119,18 +127,26 @@ public:
 	void addNThreadChip(){ nThreadChip++; }
 	int getNThreadChip(){return nThreadChip;}
 	double getTiempoTotal(){ return  tiempoTotal;}
+	void addCompUtilizacion(double Utilizacion){ 
+		utilizacionAcum=utilizacionAcum+Utilizacion;
+		nComponentes++;
+	}
 	void setUtilizacionCacheL1(double Utilizacion){ 
 		this->utilizacionCacheL1=Utilizacion;
 	}
-
-	double getUtilizacionCacheL1(){ return utilizacionCacheL1;}
-	double UtilizacionChip(){
-		return (utilizacion+utilizacionCacheL1)/2;
+	void setUtilizacionCacheL2(double Utilizacion){ 
+		this->utilizacionCacheL2=Utilizacion;
 	}
+	double getUtilizacionCacheL1(){ return utilizacionCacheL1;}
+	double getUtilizacionCacheL2(){ return utilizacionCacheL2;}
+	double UtilizacionChip(){
+		return (utilizacion+utilizacionCacheL1+utilizacionCacheL2)/3;
+	}
+
 	double PromUtilizacionChip(){
-		double promUtilizacion=(utilizacionAcum/nThreadChip);
-		//cout<<promUtilizacion<<endl;
-		return (promUtilizacion+utilizacionCacheL1)/2;
+		double promUtilizacion=(utilizacionAcum/nComponentes);
+		cout<<"promedio"<<promUtilizacion<<", "<<utilizacionAcum<<", "<<nComponentes<<nThreadChip<<endl;
+		return promUtilizacion ;
 	}
 };
 
