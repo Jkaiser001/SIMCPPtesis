@@ -712,6 +712,21 @@ void completarCores(){
      
     
   }
+  void sumarTiemposRamL2(int pid, double tiempo, double _tiempothread){
+
+      double tiempothread=_tiempothread;
+     
+      if(acumuladoresTiempoRamL2[pid/4].find(tiempothread)!=acumuladoresTiempoRamL2[pid/4].end())
+      {
+        acumuladoresTiempoRamL2[pid/4][tiempothread]=acumuladoresTiempoRamL2[pid/4][tiempothread]+tiempo;
+
+      }else{
+
+        acumuladoresTiempoRamL2[pid/4][tiempothread]= tiempo;
+      }
+     
+    
+  }
 
   void iniciarAcumuladorTiempoL2L1(int nchip,int ncore){
       nchips=nchip;
@@ -769,33 +784,21 @@ void completarCores(){
           pasadas[pid/4][tiempothread]=1;
         }
 
-        double tiempo_Total_chip=0.0;
+        
           cout<<"___________________________MIDE CACHE L2_________________________________"<<endl;
           cout<<"tiempo: "<<tiempothread<<", diferencia: "<<diferencia<<", pid: "<<pid<<endl;
           cout<<pid/4<<", "<<pasadas[pid/4][tiempothread]<<endl;
           cout<<"tiempo Activo: "<<(acumuladoresTiempoRamL2[pid/4][tiempothread]/tiempo_total)*100<<endl;
 
-        
-        /*if(pasadas[pid/4]==Ncores){
-          cout<<"________________________Entre_______________________"<<endl;  
-          for (int i = 0; i < Ncores; ++i)
-          {
-            tiempo_Total_chip=tiempo_Total_chip+acumuladoresTiempoRamL2[pid/4][i];
-          }
-          //cout<<"tiempo Acumulado chip: "<<tiempo_Total_chip<<endl;  
-          //}
-          double tiempoActivo=tiempo_Total_chip-diferencia;
+          double tiempoActivo=acumuladoresTiempoRamL2[pid/4][tiempothread]-diferencia;
           
-          
-          //acumuladoresTiempoRamL2[pid/4][0]=diferencia;
+          if (diferencia!=0.0) sumarTiemposRamL2(pid, diferencia, tiempothread+deltaTiempo);
           
           dataCache *dataC= new dataCache(tiempoActivo,tiempo_total);
           mapMuestreoCacheL2[pid/4][tiempothread]=*dataC;
           //cout<<"Utilización: "<<utilizacion<<endl;
-          pasadas[pid/4]=0;
-          resetearAcumulador(pid,diferencia);
+          
 
-        }*/
         cout<<"____________________________________________________________________"<<endl;
           //}
         
