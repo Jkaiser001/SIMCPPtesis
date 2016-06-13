@@ -58,7 +58,7 @@ int Core::getCPid(){return cpid;}
               (*pthread)->phold2( Latencia_G_L1_L2,cpid,id_core );
               (*pthread)->phold3( Latencia_G_L2_Ram);
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
-              if(id_core!=(*pthread)->getPid()%4) cout<<"pid "<< (*pthread)->getPid() << "core: "<<id_core<<endl;
+              //if(id_core!=(*pthread)->getPid()%4) cout<<"pid "<< (*pthread)->getPid() << "core: "<<id_core<<endl;
             }
 
         } 

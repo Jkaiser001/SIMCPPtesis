@@ -232,7 +232,7 @@ public:
 
     for (int i = 0; i < NT; ++i)
     {
-      string nameG="Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i/4))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i%4))->str();
+      string nameG="Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i/NCORE))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i%NCORE))->str();
       string instrucionP = "plot \"output/out/"+ nameG+".out\" with lines";
       string instrucionG = "set out \"output/graf/Grafico_"+nameG+".png\"";
       char  * instrucionPc = new char [instrucionP.length()+1];
@@ -296,7 +296,7 @@ public:
           double utilizacion = (tiempoActivo/tiempoTotal)*100;
           dataThread *dataT= new dataThread(k,tiempothread,tiempoActivo,tiempoInactivo,tiempoTotal,utilizacion);
           vectorMuestreoT.push_back(*dataT);
-          mideCacheL1(k/4,k%4, 0.0,tiempoTotal,tiempothread);
+          mideCacheL1(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
             
           tiempoAcumulado[k]=tiempoAcumulado[k]+deltaTiempo;
           tiempoXThread[k][ACTIVE]=0.0;
@@ -343,7 +343,7 @@ void completarCores(){
           double utilizacion = (tiempoActivo/tiempoTotal)*100;
           dataThread *dataT= new dataThread(k,tiempothread,tiempoActivo,tiempoInactivo,tiempoTotal,utilizacion);
           vectorMuestreoT.push_back(*dataT);
-          mideCacheL1(k/4,k%4, 0.0,tiempoTotal,tiempothread);
+          mideCacheL1(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
          
           
           tiempoAcumulado[k]=tiempoAcumulado[k]+deltaTiempo;
@@ -544,7 +544,7 @@ void completarCores(){
         //if (dato.tiempothread!=0)
         //{
           //dataChip datoc;
-          int chip=dato.pid/4;
+          int chip=dato.pid/NCORE;
           double tiempo=dato.getTiempoThread();
           if (mapMuestreoChip.find(chip)!=mapMuestreoChip.end())
           {
@@ -572,7 +572,7 @@ void completarCores(){
           }
           else
           {
-            cout<<"YAAAAAAAAAAAA"<<endl;
+            
                  
               dataChip *dataC=new dataChip(dato);
               dataC->setUtilizacionCacheL2(mapMuestreoCacheL2[chip][tiempo].getUtilizacion());
@@ -701,13 +701,13 @@ void completarCores(){
 
       double tiempothread=tiempoAcumulado[pid];
      
-      if(acumuladoresTiempoRamL2[pid/4].find(tiempothread)!=acumuladoresTiempoRamL2[pid/4].end())
+      if(acumuladoresTiempoRamL2[pid/NCORE].find(tiempothread)!=acumuladoresTiempoRamL2[pid/NCORE].end())
       {
-        acumuladoresTiempoRamL2[pid/4][tiempothread]=acumuladoresTiempoRamL2[pid/4][tiempothread]+tiempo;
+        acumuladoresTiempoRamL2[pid/NCORE][tiempothread]=acumuladoresTiempoRamL2[pid/NCORE][tiempothread]+tiempo;
 
       }else{
 
-        acumuladoresTiempoRamL2[pid/4][tiempothread]= tiempo;
+        acumuladoresTiempoRamL2[pid/NCORE][tiempothread]= tiempo;
       }
      
     
@@ -716,13 +716,13 @@ void completarCores(){
 
       double tiempothread=_tiempothread;
      
-      if(acumuladoresTiempoRamL2[pid/4].find(tiempothread)!=acumuladoresTiempoRamL2[pid/4].end())
+      if(acumuladoresTiempoRamL2[pid/NCORE].find(tiempothread)!=acumuladoresTiempoRamL2[pid/NCORE].end())
       {
-        acumuladoresTiempoRamL2[pid/4][tiempothread]=acumuladoresTiempoRamL2[pid/4][tiempothread]+tiempo;
+        acumuladoresTiempoRamL2[pid/NCORE][tiempothread]=acumuladoresTiempoRamL2[pid/NCORE][tiempothread]+tiempo;
 
       }else{
 
-        acumuladoresTiempoRamL2[pid/4][tiempothread]= tiempo;
+        acumuladoresTiempoRamL2[pid/NCORE][tiempothread]= tiempo;
       }
      
     
@@ -764,53 +764,31 @@ void completarCores(){
       acumuladoresTiempoL2L1[cpid][id_core]=diferencia;     
   }
 
-  /*void resetearAcumulador(int pid, double diferencia){
-    for (int i = 0; i < 4; ++i)
-    {
-      if (i==0) acumuladoresTiempoRamL2[pid/4][i]=diferencia;
-      else 
-        acumuladoresTiempoRamL2[pid/4][i]=0;
-    }
-  }*/
+
 
   void mideCacheL2(int pid,double diferencia,double tiempo_total, double tiempothread){
       //
         //if(diferencia>0){
-        if(pasadas[pid/4].find(tiempothread) != pasadas[pid/4].end()){
-          pasadas[pid/4][tiempothread]++;
+        if(pasadas[pid/NCORE].find(tiempothread) != pasadas[pid/NCORE].end()){
+          pasadas[pid/NCORE][tiempothread]++;
         }
         else
         {
-          pasadas[pid/4][tiempothread]=1;
+          pasadas[pid/NCORE][tiempothread]=1;
         }
 
         
-          cout<<"___________________________MIDE CACHE L2_________________________________"<<endl;
-          cout<<"tiempo: "<<tiempothread<<", diferencia: "<<diferencia<<", pid: "<<pid<<endl;
-          cout<<pid/4<<", "<<pasadas[pid/4][tiempothread]<<endl;
-          cout<<"tiempo Activo: "<<(acumuladoresTiempoRamL2[pid/4][tiempothread]/tiempo_total)*100<<endl;
-
-          double tiempoActivo=acumuladoresTiempoRamL2[pid/4][tiempothread]-diferencia;
+          double tiempoActivo=acumuladoresTiempoRamL2[pid/NCORE][tiempothread]-diferencia;
           
           if (diferencia!=0.0) sumarTiemposRamL2(pid, diferencia, tiempothread+deltaTiempo);
           
           dataCache *dataC= new dataCache(tiempoActivo,tiempo_total);
-          mapMuestreoCacheL2[pid/4][tiempothread]=*dataC;
-          //cout<<"Utilización: "<<utilizacion<<endl;
+          mapMuestreoCacheL2[pid/NCORE][tiempothread]=*dataC;
           
-
-        cout<<"____________________________________________________________________"<<endl;
-          //}
-        
-       // }
-        //else acumuladoresTiempoRamL2[cpid]=diferencia;  */    
   }
  
   void guardarIntervalosUtilizacionCacheL2(){
-    //int primero=0;
-
-    
-      
+   
       for (map<int ,map<double, dataCache> >::iterator i = mapMuestreoCacheL2.begin(); i != mapMuestreoCacheL2.end(); ++i)
       {
 
@@ -825,14 +803,10 @@ void completarCores(){
         {
 
           dataCache dato=j->second;
-          //cout<<"HOLAAAA"<<endl;
-          //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
-          if (j->first!=0)
+                    if (j->first!=0)
           {
-            //cout<<"OJO "<<dato.utilizacionAcum<<", "<<dato.NthreadCore<<endl;
-            out<< j->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+           out<< j->first / 1e6 << ", " << dato.getUtilizacion() << endl;
 
-          //outp<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
           }
 
         }
@@ -927,7 +901,7 @@ void completarCores(){
           }
           */
      
-     /*
+     /* 
      double avg=0.0, mx=0.0, delta;
      
     printf("Esto no debería ejecutarse\n");exit(0);     

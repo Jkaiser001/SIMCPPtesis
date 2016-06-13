@@ -292,12 +292,15 @@ void PThreads::runCore2(double tiempo)
 }
 
 bool valido(int NT){
-  int i=0;
+  
   int aux=1;
   while(aux<=NT){
+    cout<<"AUX: "<<aux<<endl;
+
     if(aux==NT) return true;
     aux=aux*2;
-    i++;
+    
+
   }
 
   return false;
@@ -326,9 +329,11 @@ int main( int argc, char* argv[] )
   dB = atoi(argv[2]);
   NT = atoi(argv[3]);
   delta=atoi(argv[4]);
-  
+  //cout<<"NO Problem"<<endl;
   dB = dB/NCORE; // se cae con mas de 4096 y no quiero cambiar los run*.sh 
+  //cout<<"dB: "<<dB<<endl;
   dimBloque = dB/NT;
+  //cout<<"dimBloque: "<<dB<<endl;
 
   contador_locks = new int[NT];
   for(int i=0; i<NT; i++)
@@ -350,17 +355,20 @@ int main( int argc, char* argv[] )
   // --- lectura log e indice
 
   Lector *lector = new Lector(dimBloque, QT, NT);
-
-
+ 
   char archivo[128];
   int nTerm, idTermMax;
 
   sprintf(archivo,"%s%s",home_indice,log ); // consultas/documentos
   query = new Query[ QT ];
-  lector->loadQry(query, archivo, &nTerm, &idTermMax);
+ 
+
+  //lector->loadQry(query, archivo, &nTerm, &idTermMax);
+
   lector->loadQry1(archivo,&nTerm,&idTermMax);
+  cout<<"Problem"<<endl;
   handle<Dispatcher> *Despachador=new handle<Dispatcher>[1];
-  
+ 
   char nombred[1024]; 
   sprintf( nombred, "Dispatcher");    
 
@@ -376,7 +384,9 @@ int main( int argc, char* argv[] )
       indice[tid][i].inicioBloque = NULL;
       indice[tid][i].finBloque    = NULL;
       indice[tid][i].actual       = NULL;
+        
     }
+        
   }
 
   sprintf(archivo,"%sindexOr-x.idx",home_indice ); // indice
@@ -453,19 +463,31 @@ printf("fin lectura indice\n");
   estadisticas= new Estadisticas( NT , delta);
 
 
-  /*if(valido( NT )){
+  if(valido( NT )){
+    cout<<"-.NT/NCORE: "<<NT/NCORE<<endl;
     if( NT/NCORE==0)
       {
-        Chip *chip= new Chip( 0,NT,entradas_L1, 
+        
+        Chip *chip;
+        if (LEVELCACHE==2)
+        chip = new Chip( 0, NT, entradas_L1,
+                                 entradas_L2,
+                                 Latencia_G_L1_L2,
+                                 Latencia_G_L2_Ram );
+      else
+        chip= new Chip( 0,NT,entradas_L1, 
                               entradas_L2, 
                               entradas_L3, 
                               Latencia_G_L1_L2, 
                               Latencia_G_L2_L3,
                               Latencia_G_L3_Ram);
-        for(int i=0;i<=NT;i++)
-        chip->set_thread( &pthreads[i], i);    
-        //estadisticas-> iniciarAcumuladorTiempoL2L1(nchips,ncores);
-        //estadisticas->iniciarAcumuladorTiempoRamL2(nchips,ncores);                  
+      
+
+        for(int i=0;i<NT;i++)
+          chip->set_thread( &pthreads[i], i);   
+        estadisticas-> iniciarAcumuladorTiempoL2L1(1,NT);
+        estadisticas->iniciarAcumuladorTiempoRamL2(1,NT);
+
       }
     else
       {
@@ -477,15 +499,23 @@ printf("fin lectura indice\n");
 
        for(int i=0; i<nchips; i++)
        {
-       
-        chip[i]= new Chip( i,ncores,
-                          entradas_L1, 
-                          entradas_L2, 
-                          entradas_L3, 
-                          Latencia_G_L1_L2, 
-                          Latencia_G_L2_L3,
-                          Latencia_G_L3_Ram );
-         
+        
+        if (LEVELCACHE==2)
+        
+        chip[i]= new Chip( i, ncores,
+                             entradas_L1,
+                             entradas_L2,
+                             Latencia_G_L1_L2,
+                             Latencia_G_L2_Ram );
+        else
+          chip[i]= new Chip( i,ncores,
+                              entradas_L1, 
+                              entradas_L2, 
+                              entradas_L3, 
+                              Latencia_G_L1_L2, 
+                              Latencia_G_L2_L3,
+                              Latencia_G_L3_Ram );
+
          for(int j=0; j<ncores; j++, nt++)
          {
             chip[i]->set_thread( &pthreads[nt], j);
@@ -503,9 +533,9 @@ printf("fin lectura indice\n");
     exit(0);
     
     }
-    */
+    
  
-
+/*
   if ( NT==1 )
   {
     
@@ -520,14 +550,7 @@ printf("fin lectura indice\n");
   }
   else if ( NT==2 )
   {
-    /*
-      Chip *chip= new Chip( 0,2,entradas_L1,
-                            entradas_L2,
-                            entradas_L3,
-                            Latencia_G_L1_L2, 
-                            Latencia_G_L2_L3,
-                            Latencia_G_L3_Ram)
-    */
+    
     Chip *chip = new Chip( 0, 2, entradas_L1,
                                  entradas_L2,
                                  Latencia_G_L1_L2,
@@ -552,15 +575,7 @@ printf("fin lectura indice\n");
 
      for(int i=0; i<nchips; i++)
      {
-      /*
-      chip[i]= new Chip( i,ncores,
-                          entradas_L1, 
-                          entradas_L2, 
-                          entradas_L3, 
-                          Latencia_G_L1_L2, 
-                          Latencia_G_L2_L3,
-                          Latencia_G_L3_Ram );
-    */
+    
        chip[i]= new Chip( i, ncores,
                              entradas_L1,
                              entradas_L2,
@@ -581,7 +596,7 @@ printf("fin lectura indice\n");
      printf("ERROR: valor NT=%d no permitido\n",NT);
      exit(0);
   }
-
+*/
   handle<Sistema> system(
 
          new Sistema( "System main", pthreads,Despachador,

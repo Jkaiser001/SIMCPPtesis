@@ -14,6 +14,7 @@ private:
     double utilizacionAcum;
     double utilizacionCacheL1;
     double utilizacionCacheL2;
+    double utilizacionCacheL3;
 public:
 
 	
@@ -31,6 +32,7 @@ public:
    		utilizacionAcum = copyin.utilizacionAcum;
    		utilizacionCacheL1 = copyin.utilizacionCacheL1;
    		utilizacionCacheL2 = copyin.utilizacionCacheL2;
+   		utilizacionCacheL3 = copyin.utilizacionCacheL3;
 	}
 
    	
@@ -46,7 +48,8 @@ public:
     this->utilizacionAcum=rhs.utilizacionAcum;
     this->utilizacionCacheL1 = rhs.utilizacionCacheL1;
     this->utilizacionCacheL2 = rhs.utilizacionCacheL2;
-   return *this;
+    this->utilizacionCacheL3 = rhs.utilizacionCacheL3;
+   	return *this;
 	}
  
 	int operator==(const dataChip &rhs) const
@@ -60,6 +63,7 @@ public:
    		if( this->utilizacionAcum != rhs.utilizacionAcum) return 0;
    		if(this->utilizacionCacheL1 != rhs.utilizacionCacheL1) return 0;
    		if(this->utilizacionCacheL2 != rhs.utilizacionCacheL2) return 0;
+   		if(this->utilizacionCacheL3 != rhs.utilizacionCacheL3) return 0;
    		return 1;
 	}
  
@@ -82,6 +86,7 @@ public:
 		utilizacionAcum=_utilizacionAcum;
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
+		utilizacionCacheL3=0;
 		nComponentes=1;
 	}
 	dataChip(dataThread _dato){
@@ -94,6 +99,7 @@ public:
 		utilizacionAcum=_dato.getUtilizacion();
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
+		utilizacionCacheL3=0;
 		nComponentes=1;
 	}
 	
@@ -108,6 +114,7 @@ public:
 		nComponentes++;
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
+		utilizacionCacheL3=0;
 
 	}
 	void setUtilizacion(dataThread _dato){
@@ -120,6 +127,7 @@ public:
 		nComponentes++;
 		utilizacionCacheL1=0;
 		utilizacionCacheL2=0;
+		utilizacionCacheL3=0;
 
 	}
 	double getUtilizacion(){return utilizacion;}
@@ -137,8 +145,12 @@ public:
 	void setUtilizacionCacheL2(double Utilizacion){ 
 		this->utilizacionCacheL2=Utilizacion;
 	}
+	void setUtilizacionCacheL3(double Utilizacion){ 
+		this->utilizacionCacheL3=Utilizacion;
+	}
 	double getUtilizacionCacheL1(){ return utilizacionCacheL1;}
 	double getUtilizacionCacheL2(){ return utilizacionCacheL2;}
+	double getUtilizacionCacheL3(){ return utilizacionCacheL3;}
 	double UtilizacionChip(){
 		return (utilizacion+utilizacionCacheL1+utilizacionCacheL2)/3;
 	}

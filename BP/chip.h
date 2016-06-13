@@ -38,7 +38,7 @@ public:
      //L3      = new LRU( entradas_L3 );
 
      cores = new Core*[ncores];
-     //cout<<"latencia L1<-L2 en chip"<<Latencia_G_L1_L2<<endl;
+     cout<<"paso Por chip"<<endl;
 
      for ( int i=0; i<ncores; i++ )
          cores[i] = new Core( i,
@@ -49,7 +49,7 @@ public:
                               Latencia_G_L2_Ram
                              );
   }
-  /*Chip( int     _cpid,
+  Chip( int     _cpid,
         int     _ncores,
         int     entradas_L1, // total entradas de tamanho PAG_CACHE bytes
         int     entradas_L2, // total entradas de tamanho PAG_CACHE bytes
@@ -76,7 +76,7 @@ public:
                               Latencia_G_L2_L3,
                               Latencia_G_L3_Ram
                              );
-  }*/
+  }
 
   void set_thread( handle <PThreads> *pthread,
                    int id_core
