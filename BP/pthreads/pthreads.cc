@@ -28,8 +28,8 @@ void PThreads::imprime()
      //if (count[0]>0&&pid==0) {
         //cout<<"----CPU, Pid: "<<pid<<"----"<<endl;
         
-        estadisticas->sumarTiemposL2L1(pid/4 , pid%4,pid,t);
-        estadisticas->mide( pid,pid/4,pid%4, time(), t ,ACTIVE,CPU);//Borrar
+        estadisticas->sumarTiemposL2L1(pid/NCORE , pid%NCORE,pid,t);
+        estadisticas->mide( pid,pid/NCORE,pid%NCORE, time(), t ,ACTIVE,CPU);//Borrar
 
 
       //}
@@ -63,7 +63,7 @@ void PThreads::imprime()
 
       //cout<<"----L2<--RAM----"<<endl;
       estadisticas->sumarTiemposRamL2(pid,t);
-      estadisticas->mide( pid, pid/4, pid%4, time(), t, INACTIVE,CL2);
+      estadisticas->mide( pid, pid/NCORE, pid%NCORE, time(), t, INACTIVE,CL2);
     //}
      count[2]--;
      estadisticas->fallaL2Ram( pid );
@@ -78,7 +78,21 @@ void PThreads::imprime()
      //if (count[2]>0&&pid==0) {
       //cout<<"----L2<--RAM----"<<endl;
      //estadisticas->sumarTiemposRamL2(cpid,t);
-      estadisticas->mide( pid, pid/4, pid%4, time(), t, INACTIVE,CPU);
+      estadisticas->mide( pid, pid/NCORE, pid%NCORE, time(), t, INACTIVE,CPU);
+    //}
+     
+    
+#endif
+     hold(t);
+  }
+   void PThreads::phold5( double t)
+  {
+    
+#ifdef MIDE_ESTADISTICAS
+     //if (count[2]>0&&pid==0) {
+      //cout<<"----L2<--RAM----"<<endl;
+     //estadisticas->sumarTiemposRamL2(cpid,t);
+      estadisticas->mide( pid, pid/NCORE, pid%NCORE, time(), t, INACTIVE,CPU);
     //}
      
     

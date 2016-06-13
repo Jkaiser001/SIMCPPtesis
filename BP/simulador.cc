@@ -291,6 +291,17 @@ void PThreads::runCore2(double tiempo)
   core->run2(tiempo);
 }
 
+bool valido(int NT){
+  int i=0;
+  int aux=1;
+  while(aux<=NT){
+    if(aux==NT) return true;
+    aux=aux*2;
+    i++;
+  }
+
+  return false;
+}
 
 //--------------------------------------------
 
@@ -316,7 +327,7 @@ int main( int argc, char* argv[] )
   NT = atoi(argv[3]);
   delta=atoi(argv[4]);
   
-  dB = dB/4; // se cae con mas de 4096 y no quiero cambiar los run*.sh 
+  dB = dB/NCORE; // se cae con mas de 4096 y no quiero cambiar los run*.sh 
   dimBloque = dB/NT;
 
   contador_locks = new int[NT];
@@ -396,12 +407,14 @@ printf("fin lectura indice\n");
   
   assert(PAG_CACHE==64); // valores Intel
 
-  int entradas_L1= (32*1024)/PAG_CACHE; // total bytes = entradas_L1*PAG_CACHE
-  int entradas_L2= (4*1024*1024)/PAG_CACHE; // total bytes = entradas_L2*PAG_CACHE
-  
-  entradas_L1 = entradas_L1/4; // debido a dB/4.
-  entradas_L2 = entradas_L2/4;
-  
+  int entradas_L1= (SIZE_L1)/PAG_CACHE; // total bytes = entradas_L1*PAG_CACHE
+  int entradas_L2= (SIZE_L2)/PAG_CACHE; // total bytes = entradas_L2*PAG_CACHE
+  int entradas_L3= (SIZE_L3)/PAG_CACHE;
+
+  entradas_L1 = entradas_L1/NCORE; // debido a dB/4.
+  entradas_L2 = entradas_L2/NCORE;  
+  entradas_L3 = entradas_L3/NCORE;
+
   double  latencia_G_L1_L2[1024];
   // De donde vienen estos valores de latencia
   latencia_G_L1_L2[1] = 0.01*1.0000000;
@@ -409,8 +422,10 @@ printf("fin lectura indice\n");
   latencia_G_L1_L2[4] = 0.01*2.3609467;
   latencia_G_L1_L2[8] = 0.01*4.0634146 ;
   
-  double Latencia_G_L1_L2  = latencia_G_L1_L2[NT];
+  double Latencia_G_L1_L2  = 0.01;
   double Latencia_G_L2_Ram = Latencia_G_L1_L2*10.0;
+  double Latencia_G_L2_L3 = Latencia_G_L1_L2*10.0;
+  double Latencia_G_L3_Ram = Latencia_G_L1_L2*100.0;
 
   printf("cache L1= %dKB  L2= %dMB  Latencia gL1L2= %lf  gL2Ram= %lf\n",
          (entradas_L1*64)/1024, (entradas_L2*64)/(1024*1024),
@@ -437,8 +452,63 @@ printf("fin lectura indice\n");
 
   estadisticas= new Estadisticas( NT , delta);
 
+
+  /*if(valido( NT )){
+    if( NT/NCORE==0)
+      {
+        Chip *chip= new Chip( 0,NT,entradas_L1, 
+                              entradas_L2, 
+                              entradas_L3, 
+                              Latencia_G_L1_L2, 
+                              Latencia_G_L2_L3,
+                              Latencia_G_L3_Ram);
+        for(int i=0;i<=NT;i++)
+        chip->set_thread( &pthreads[i], i);    
+        //estadisticas-> iniciarAcumuladorTiempoL2L1(nchips,ncores);
+        //estadisticas->iniciarAcumuladorTiempoRamL2(nchips,ncores);                  
+      }
+    else
+      {
+      int ncores= NCORE;
+      int nchips= NT/ncores;
+      int nt=0;
+
+       Chip **chip = new Chip*[nchips];
+
+       for(int i=0; i<nchips; i++)
+       {
+       
+        chip[i]= new Chip( i,ncores,
+                          entradas_L1, 
+                          entradas_L2, 
+                          entradas_L3, 
+                          Latencia_G_L1_L2, 
+                          Latencia_G_L2_L3,
+                          Latencia_G_L3_Ram );
+         
+         for(int j=0; j<ncores; j++, nt++)
+         {
+            chip[i]->set_thread( &pthreads[nt], j);
+         }
+       }
+       estadisticas-> iniciarAcumuladorTiempoL2L1(nchips,ncores);
+       estadisticas->iniciarAcumuladorTiempoRamL2(nchips,ncores);
+       ASSERT( nt==NT );
+
+      }
+    }
+  else{
+    
+    printf("ERROR: valor NT=%d no permitido\n",NT);
+    exit(0);
+    
+    }
+    */
+ 
+
   if ( NT==1 )
   {
+    
     Chip *chip = new Chip( 0, 1, entradas_L1,
                                  entradas_L2,
                                  Latencia_G_L1_L2,
@@ -450,6 +520,14 @@ printf("fin lectura indice\n");
   }
   else if ( NT==2 )
   {
+    /*
+      Chip *chip= new Chip( 0,2,entradas_L1,
+                            entradas_L2,
+                            entradas_L3,
+                            Latencia_G_L1_L2, 
+                            Latencia_G_L2_L3,
+                            Latencia_G_L3_Ram)
+    */
     Chip *chip = new Chip( 0, 2, entradas_L1,
                                  entradas_L2,
                                  Latencia_G_L1_L2,
@@ -466,7 +544,7 @@ printf("fin lectura indice\n");
 
   else if ( NT==4 || NT==8 || NT==16 || NT==32 || NT==64 || NT==128 )
   {
-     int ncores= 4;
+     int ncores= NCORE;
      int nchips= NT/ncores;
      int nt=0;
 
@@ -474,6 +552,15 @@ printf("fin lectura indice\n");
 
      for(int i=0; i<nchips; i++)
      {
+      /*
+      chip[i]= new Chip( i,ncores,
+                          entradas_L1, 
+                          entradas_L2, 
+                          entradas_L3, 
+                          Latencia_G_L1_L2, 
+                          Latencia_G_L2_L3,
+                          Latencia_G_L3_Ram );
+    */
        chip[i]= new Chip( i, ncores,
                              entradas_L1,
                              entradas_L2,
@@ -506,7 +593,7 @@ printf("fin lectura indice\n");
   system->activate( );
 
   simulation::instance( )->run( );
-  cout<<"Por aqui"<<endl;
+ 
 
   simulation::instance( )->end_simulation( );
   return 0;

@@ -105,6 +105,7 @@ public:
   void phold2( double, int , int );
   void phold3( double );
   void phold4( double );
+  void phold5( double );
   void duerme(); 
   void despierta(); 
   void set_core( Core* );

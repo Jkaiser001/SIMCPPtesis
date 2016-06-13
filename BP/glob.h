@@ -24,11 +24,17 @@ using namespace std;
 
 #define ASSERT(x) assert(x)
 
-#define PAG_CACHE 64 // tamanho en bytes pagina de cache
+#define PAG_CACHE 64  // tamanho en bytes pagina de cache
+
+#define SIZE_L1 (32*1024)
+#define SIZE_L2 (4*1024*1024)
+
+//#define SIZE_L1 32*1024;
+//#define SIZE_L2 256*1024;
+//#define SIZE_L3 20*1024*1024
 
 #define READ 0
 #define WRITE 1
-
 
 #define TOTAL 2
 #define ACTIVE 1
@@ -37,12 +43,17 @@ using namespace std;
 #define CPU 0
 #define CL1 1
 #define CL2 2
+#define CL3 3
 
 #define NORMAL_TIME 500.0 //segundos con tasa normal		
 //#define NORMAL_RATE 0.011 //
 #define NORMAL_RATE 0.00009
 //#define NORMAL_RATE 0.000000001 //
 
+#define PU_X_CORE 2
+#define NCORE_X_L2 1
+#define NCORE_X_L3 4
+#define NCORE 4
 
 #define BLOQUE_NO_LLENO 0
 #define BLOQUE_LLENO 1
@@ -53,4 +64,3 @@ using namespace std;
 
 
 #endif
-
