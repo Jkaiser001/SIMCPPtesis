@@ -53,7 +53,7 @@ public:
 
       L1 = new LRU( entradas_L1 );
 
-     // cout<<"latencia L1<-L2 en core"<<Latencia_G_L1_L2<<endl;
+      cout<<"paso por core"<<endl;
 
   }
 

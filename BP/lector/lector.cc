@@ -165,8 +165,10 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
   // READ: idQry tipoQry nTerms (termino iteracion)+
   // WRITE/UPDATE: idQry tipoQry doc nTerm (termino frecuencia)+
 
+
   if(file.is_open())
   {
+
     while(getline(file,line)){
       Query query;
       //cout<<line<<endl;
@@ -176,6 +178,7 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
       split>>aux;
       query.tipo=atoi(aux.c_str());
       split>>aux;
+      
       if(query.tipo==READ){
         query.nt=atoi(aux.c_str());
         if(*nTerm<query.nt) *nTerm=query.nt;
@@ -201,12 +204,15 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
               int nn = atoi(aux.c_str());
               int delta = nn/128;
               nn = 128*delta + 128;        
-
-              if (nn%dB == 0)
+              //cout<<"Problem"<<endl;
+              //cout<<"Problem: "<<nn<<" "<<dB<<endl;
+              if (nn%dB == 0){
                 query.iter[i] = nn/dB;
-              else
+                
+              }else{
                 query.iter[i] = ( nn/dB ) + 1;  
-          
+              //cout<<"Problem"<<endl;
+              }
           }else{
               
               query.frec[i]=atof(aux.c_str());
@@ -217,6 +223,7 @@ void Lector::loadQry1( char *archivo, int *nTerm, int *idTermMax)
 
       listQuery.push_back(query);
     }
+    //cout<<"Problem"<<endl;
   }
     cout<<"Cantidad"<<listQuery.size()<<endl;
 

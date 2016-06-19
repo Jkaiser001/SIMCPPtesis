@@ -26,10 +26,10 @@ using namespace std;
 
 #define PAG_CACHE 64  // tamanho en bytes pagina de cache
 
+#define LEVELCACHE 2
 #define SIZE_L1 (32*1024)
 #define SIZE_L2 (256*1024)
 #define SIZE_L3 (8*1024*1024)
-
 //#define SIZE_L1 32*1024;
 //#define SIZE_L2 256*1024;
 
@@ -54,7 +54,7 @@ using namespace std;
 #define PU_X_CORE 2
 #define NCORE_X_L2 1
 #define NCORE_X_L3 4
-#define NCORE 4
+#define NCORE 8
 
 #define BLOQUE_NO_LLENO 0
 #define BLOQUE_LLENO 1
