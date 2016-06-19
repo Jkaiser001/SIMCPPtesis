@@ -7,14 +7,7 @@ int Core::getCPid(){return cpid;}
       pthread = _pthread;
       (*pthread)->set_core(this);
   }
-
-  void Core::run2( double t_cpu )  
-  {
-     if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
-     //out<<"run"<<endl;
-  }
-  
-  void Core::run( double t_cpu, string base, int bytes )
+void Core::run( double t_cpu, string base, int bytes )
   {
     //cout<<"run"<<endl;
      int npag= (int)ceil( double(bytes) / double(PAG_CACHE) );
@@ -66,7 +59,14 @@ int Core::getCPid(){return cpid;}
      }
 
   }
-  void Core::runL3( double t_cpu, string base, int bytes )
+  void Core::run2( double t_cpu )  
+  {
+     if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
+     //out<<"run"<<endl;
+  }
+  
+  
+  void Core::run3( double t_cpu, string base, int bytes )
   {
     int npag= (int)ceil( double(bytes) / double(PAG_CACHE) );
    

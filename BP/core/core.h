@@ -87,10 +87,9 @@ public:
 
   void set_thread( handle<PThreads> *);
 
-  void run2( double );
-  
   void run( double, string, int );
-  void runL3( double, string, int );
+  void run2( double );
+  void run3( double, string, int );
   
 
 };
