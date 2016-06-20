@@ -26,7 +26,7 @@ using namespace std;
 
 #define PAG_CACHE 64  // tamanho en bytes pagina de cache
 
-#define LEVELCACHE 2
+#define LEVELCACHE 3
 #define SIZE_L1 (32*1024)
 #define SIZE_L2 (256*1024)
 #define SIZE_L3 (8*1024*1024)

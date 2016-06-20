@@ -53,7 +53,6 @@ public:
 
       L1 = new LRU( entradas_L1 );
 
-      cout<<"paso por core"<<endl;
 
   }
 
