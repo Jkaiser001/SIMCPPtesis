@@ -29,14 +29,10 @@ using namespace std;
 #define LEVELCACHE 2
 #define SIZE_L1 (32*1024)
 #define SIZE_L2 (256*1024)
-#define SIZE_L3 (8192*1024)
-
-
-
-
+#define SIZE_L3 (8*1024*1024)
 //#define SIZE_L1 32*1024;
 //#define SIZE_L2 256*1024;
-//#define SIZE_L3 20*1024*1024
+
 
 #define READ 0
 #define WRITE 1

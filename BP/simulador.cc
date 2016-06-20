@@ -282,7 +282,7 @@ void PThreads::runCore(double tiempo, long base, int bytes)
   char str[1014];
   sprintf(str,"%ld",base);
   WORK[pid] += tiempo;
-  core->run(tiempo,str,bytes);
+  core->run3(tiempo,str,bytes);
 }
 
 void PThreads::runCore2(double tiempo)
@@ -333,7 +333,8 @@ int main( int argc, char* argv[] )
   dB = dB/NCORE; // se cae con mas de 4096 y no quiero cambiar los run*.sh 
   //cout<<"dB: "<<dB<<endl;
   dimBloque = dB/NT;
-  //cout<<"dimBloque: "<<dB<<endl;
+
+  cout<<"dB: "<< dB<<" , dimBloque: "<< dimBloque << endl;
 
   contador_locks = new int[NT];
   for(int i=0; i<NT; i++)
@@ -420,10 +421,14 @@ printf("fin lectura indice\n");
   int entradas_L1= (SIZE_L1)/PAG_CACHE; // total bytes = entradas_L1*PAG_CACHE
   int entradas_L2= (SIZE_L2)/PAG_CACHE; // total bytes = entradas_L2*PAG_CACHE
   int entradas_L3= (SIZE_L3)/PAG_CACHE;
-
+ 
   entradas_L1 = entradas_L1/NCORE; // debido a dB/4.
   entradas_L2 = entradas_L2/NCORE;  
   entradas_L3 = entradas_L3/NCORE;
+  cout<<"entradas_L1: "<< entradas_L1 <<endl;
+ cout<<"entradas_L2: "<< entradas_L2 <<endl;
+ cout<<"entradas_L3: "<< entradas_L3 <<endl;
+cout<<endl;
 
   double  latencia_G_L1_L2[1024];
   // De donde vienen estos valores de latencia
@@ -437,23 +442,27 @@ printf("fin lectura indice\n");
   double Latencia_G_L2_L3 = Latencia_G_L1_L2*10.0;
   double Latencia_G_L3_Ram = Latencia_G_L1_L2*100.0;
 
-  printf("cache L1= %dKB  L2= %dMB  Latencia gL1L2= %lf  gL2Ram= %lf\n",
-         (entradas_L1*64)/1024, (entradas_L2*64)/(1024*1024),
+  printf("cache L1= %dKB  L2= %dKB L3= %dMB Latencia gL1L2= %lf  gL2Ram= %lf\n",
+         (entradas_L1*4*64)/1024, (entradas_L2*4*64)/1024,(entradas_L3*4*64)/(1024*1024),
          Latencia_G_L1_L2, Latencia_G_L2_Ram  );
   printf("Factor_MakeRanking= %lf \n",Factor_MakeRanking);
 
   handle<PThreads> *pthreads= new handle<PThreads>[NT];
 
   Locks *locks = new Locks();
-  
+ 
   for(int i=0;i<NT;i++)
   {
+    cout<<"VAMOS BIEN"<<endl;
 
     sprintf( nombre, "PThread_%d", i );
+    cout<<"id= "<<i<<", NT"<<NT<<", nombre"<<nombre<<", nTerm= "<<nTerm<<endl;
 
     pthreads[i]= new PThreads( i, NT, nombre, pthreads,
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );//aqui se pasan las query cambiar query por un handle<espachadorQuery> crean las query!!!
+    
+    cout<<"VAMOS BIEN"<<endl;
   }
     Despachador[0]= new Dispatcher(QT,NT,lector,Despachador,pthreads,nombred);
    
