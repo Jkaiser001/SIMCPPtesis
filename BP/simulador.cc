@@ -366,7 +366,7 @@ int main( int argc, char* argv[] )
   //lector->loadQry(query, archivo, &nTerm, &idTermMax);
 
   lector->loadQry1(archivo,&nTerm,&idTermMax);
-  cout<<"Problem"<<endl;
+  //cout<<"Problem"<<endl;
   handle<Dispatcher> *Despachador=new handle<Dispatcher>[1];
  
   char nombred[1024]; 
