@@ -19,11 +19,12 @@ private:
   double *maximo;
   double eficiencia, numEf;
   
-  double *fallasCacheL1L2;
-  double *fallasCacheL2Ram;
+  double *fallasCacheL1;
+  double *fallasCacheL2;
+  double *fallasCacheL3;
   std::map<int, map<double , double> > acumuladoresTiempoRamL2;
   double **acumuladoresTiempoL2L1;
-  double *hitL1, *hitL2, *hitRam;
+  double *hitL1, *hitL2, *hitL3, *hitRam;
   double **tiempoXThread;
 
   double deltaTiempo;
@@ -47,14 +48,18 @@ public:
      eficiencia=0.0;
      numEf=0.0;
 
-     fallasCacheL1L2 = new double[nt];
-     for(int i=0;i<nt;i++) fallasCacheL1L2[i]=0;
+     fallasCacheL1 = new double[nt];
+     for(int i=0;i<nt;i++) fallasCacheL1[i]=0;
 
-     fallasCacheL2Ram = new double[nt];
-     for(int i=0;i<nt;i++) fallasCacheL2Ram[i]=0;
+    fallasCacheL2= new double[nt];
+    for(int i=0;i<nt;i++) fallasCacheL2[i]=0;
+
+    fallasCacheL3= new double[nt];
+     for(int i=0;i<nt;i++) fallasCacheL3[i]=0;
 
      hitL1  = new double[nt];
      hitL2  = new double[nt];
+     hitL3  = new double[nt];
      hitRam = new double[nt];
      tiempoAcumulado=new double[nt];
      tiempoXThread = (double **) malloc(nt *sizeof(double *));
@@ -79,8 +84,8 @@ public:
     for(int i=0;i<NT;i++)
     {
        //printf(" %.0lf", fallasCacheL1L2[i]);
-       suma += fallasCacheL1L2[i];
-       if (max<fallasCacheL1L2[i]) max= fallasCacheL1L2[i];
+       suma += fallasCacheL1[i];
+       if (max<fallasCacheL1[i]) max= fallasCacheL1[i];
     }
     printf(" %.0lf    Ef= %.2lf\n",suma, (suma/NT)/max);
     suma=0.0, max=0.0;
@@ -108,8 +113,8 @@ public:
     for(int i=0;i<NT;i++)
     {
        //printf(" %.0lf", fallasCacheL2Ram[i]);
-       suma += fallasCacheL2Ram[i];
-       if (max<fallasCacheL2Ram[i]) max= fallasCacheL2Ram[i];
+       suma += fallasCacheL2[i];
+       if (max<fallasCacheL2[i]) max= fallasCacheL2[i];
     }
     printf(" %.0lf    Ef= %.2lf\n",suma, (suma/NT)/max);
     /*
@@ -159,13 +164,13 @@ public:
       cout<<"-.Tiempo Activo sobrante: "<<tiempoXThread[i][ACTIVE]<<endl;
     }
     cout <<"Maximo :"<<*max_element(tiempoAcumulado,tiempoAcumulado+NT)<<endl;
-    guardarIntervalosUtilizacion();
+    /*guardarIntervalosUtilizacion();
     guardarIntervalosUtilizacionCacheL1();
     guardarIntervalosUtilizacionCacheL2();
     graficar();
     UtilizacionChip();
     graficarCacheL1();
-    graficarCacheL2();
+    graficarCacheL2();*/
   }
   void hit_Ram( int pid ) { hitRam[pid]++; }
   
@@ -173,9 +178,13 @@ public:
   
   void hit_L2( int pid ) { hitL2[pid]++; }
 
-  void fallaL1L2( int pid ) { fallasCacheL1L2[pid]++; }
+  void hit_L3( int pid ) { hitL3[pid]++; }
+
+  void fallaL1( int pid ) { fallasCacheL1[pid]++; }
   
-  void fallaL2Ram( int pid ) { fallasCacheL2Ram[pid]++;  }
+  void fallaL2( int pid ) { fallasCacheL2[pid]++;  }
+
+  void fallaL3( int pid ) { fallasCacheL3[pid]++;  }
   
   void graficar(){
    const char * configGnuplot[] = {  "set term png",
@@ -284,7 +293,7 @@ public:
   }
 
   void completarThreads(){
-    double maximo=*max_element(tiempoAcumulado,tiempoAcumulado+NT);
+    //double maximo=*max_element(tiempoAcumulado,tiempoAcumulado+NT);
       
       for (int k = 0; k < NT; ++k)
       {
@@ -697,7 +706,7 @@ void completarCores(){
   /* Suma los valores de tiempo de tranferencia en cada chip
   */
   
-  void sumarTiemposRamL2(int pid, double tiempo){
+  void sumarTiemposL2(int pid, double tiempo){
 
       double tiempothread=tiempoAcumulado[pid];
      
@@ -712,7 +721,7 @@ void completarCores(){
      
     
   }
-  void sumarTiemposRamL2(int pid, double tiempo, double _tiempothread){
+  void sumarTiemposL2(int pid, double tiempo, double _tiempothread){
 
       double tiempothread=_tiempothread;
      
@@ -747,7 +756,7 @@ void completarCores(){
   /* Suma los valores de tiempo de tranferencia en cada chip
   */
 
-  void sumarTiemposL2L1(int cpid,int id_core, int pid, double tiempo){
+  void sumarTiemposL1(int cpid,int id_core, int pid, double tiempo){
     //cout<<"SUMO AL L1<-L2 "<<tiempo<<endl;
     
     acumuladoresTiempoL2L1[ cpid ] [ id_core ]= acumuladoresTiempoL2L1[cpid][id_core]+tiempo;
@@ -780,7 +789,7 @@ void completarCores(){
         
           double tiempoActivo=acumuladoresTiempoRamL2[pid/NCORE][tiempothread]-diferencia;
           
-          if (diferencia!=0.0) sumarTiemposRamL2(pid, diferencia, tiempothread+deltaTiempo);
+          if (diferencia!=0.0) sumarTiemposL2(pid, diferencia, tiempothread+deltaTiempo);
           
           dataCache *dataC= new dataCache(tiempoActivo,tiempo_total);
           mapMuestreoCacheL2[pid/NCORE][tiempothread]=*dataC;

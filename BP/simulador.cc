@@ -437,7 +437,7 @@ cout<<endl;
   latencia_G_L1_L2[4] = 0.01*2.3609467;
   latencia_G_L1_L2[8] = 0.01*4.0634146 ;
   
-  double Latencia_G_L1_L2  = 0.01;
+  double Latencia_G_L1_L2  = 0.001;
   double Latencia_G_L2_Ram = Latencia_G_L1_L2*10.0;
   double Latencia_G_L2_L3 = Latencia_G_L1_L2*10.0;
   double Latencia_G_L3_Ram = Latencia_G_L1_L2*100.0;
@@ -453,16 +453,14 @@ cout<<endl;
  
   for(int i=0;i<NT;i++)
   {
-    cout<<"VAMOS BIEN"<<endl;
-
+   
     sprintf( nombre, "PThread_%d", i );
     cout<<"id= "<<i<<", NT"<<NT<<", nombre"<<nombre<<", nTerm= "<<nTerm<<endl;
 
     pthreads[i]= new PThreads( i, NT, nombre, pthreads,
                                locks, QT, dimBloque, nTerm,
                                query, indice, masBloques );//aqui se pasan las query cambiar query por un handle<espachadorQuery> crean las query!!!
-    
-    cout<<"VAMOS BIEN"<<endl;
+
   }
     Despachador[0]= new Dispatcher(QT,NT,lector,Despachador,pthreads,nombred);
    
@@ -475,7 +473,7 @@ cout<<endl;
   if(valido( NT )){
     cout<<"-.NT/NCORE: "<<NT/NCORE<<endl;
     if( NT/NCORE==0)
-      {
+      { 
         
         Chip *chip;
         if (LEVELCACHE==2)

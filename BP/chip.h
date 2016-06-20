@@ -38,7 +38,6 @@ public:
      //L3      = new LRU( entradas_L3 );
 
      cores = new Core*[ncores];
-     cout<<"paso Por chip"<<endl;
 
      for ( int i=0; i<ncores; i++ )
          cores[i] = new Core( i,
