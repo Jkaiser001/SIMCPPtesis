@@ -219,8 +219,7 @@ void PThreads::runWrite(Query query)
   for( int jTerm=pid; jTerm<query.nt; jTerm+=NT )
   {
       termino = query.termino[jTerm];
-      frec    = query.frec[jTerm];
-      
+      frec    = query.frec[jTerm];     
 //--------------------------------------------------------------------------
 //----- Simulando
 
@@ -228,7 +227,6 @@ void PThreads::runWrite(Query query)
 
       indx->actual =
              metodos->buscaBloque( indx->inicioBloque, frec );
-             
 //----- Simulador
 
       // simula en el multi-core lo que hace buscaBloque()
@@ -260,16 +258,13 @@ void PThreads::runWrite(Query query)
 
       runCore( double(Factor_ListaWrite*indx->actual->jBloque),
                long( indx->actual ),
-               bytesBloque );
-*/
+               bytesBloque );*/
 
       setValSimBloque(dimBloque);
 
       runCore( double(Factor_ListaWrite*dimBloque),
                long( indx->actual ),
                bytesBloque );
-
-            
 //--------------------------------------------------------------------------
 
   } // for terminos
@@ -295,12 +290,10 @@ bool valido(int NT){
   
   int aux=1;
   while(aux<=NT){
-    cout<<"AUX: "<<aux<<endl;
+    //cout<<"AUX: "<<aux<<endl;
 
     if(aux==NT) return true;
     aux=aux*2;
-    
-
   }
 
   return false;
@@ -437,10 +430,10 @@ cout<<endl;
   latencia_G_L1_L2[4] = 0.01*2.3609467;
   latencia_G_L1_L2[8] = 0.01*4.0634146 ;
   
-  double Latencia_G_L1_L2  = 0.001;
+  double Latencia_G_L1_L2  = 0.05171;
   double Latencia_G_L2_Ram = Latencia_G_L1_L2*10.0;
-  double Latencia_G_L2_L3 = Latencia_G_L1_L2*10.0;
-  double Latencia_G_L3_Ram = Latencia_G_L1_L2*100.0;
+  double Latencia_G_L2_L3 = 0.03889;
+  double Latencia_G_L3_Ram = 0.10584;
 
   printf("cache L1= %dKB  L2= %dKB L3= %dMB Latencia gL1L2= %lf  gL2Ram= %lf\n",
          (entradas_L1*4*64)/1024, (entradas_L2*4*64)/1024,(entradas_L3*4*64)/(1024*1024),
@@ -471,7 +464,7 @@ cout<<endl;
 
 
   if(valido( NT )){
-    cout<<"-.NT/NCORE: "<<NT/NCORE<<endl;
+    //cout<<"-.NT/NCORE: "<<NT/NCORE<<endl;
     if( NT/NCORE==0)
       { 
         
@@ -492,8 +485,7 @@ cout<<endl;
 
         for(int i=0;i<NT;i++)
           chip->set_thread( &pthreads[i], i);   
-        estadisticas-> iniciarAcumuladorTiempoL2L1(1,NT);
-        estadisticas->iniciarAcumuladorTiempoRamL2(1,NT);
+        estadisticas->iniciarAcumuladorTiempo(1,NT);
 
       }
     else
@@ -528,9 +520,8 @@ cout<<endl;
             chip[i]->set_thread( &pthreads[nt], j);
          }
        }
-       estadisticas-> iniciarAcumuladorTiempoL2L1(nchips,ncores);
-       estadisticas->iniciarAcumuladorTiempoRamL2(nchips,ncores);
-       ASSERT( nt==NT );
+       estadisticas-> iniciarAcumuladorTiempo(nchips,ncores);
+      ASSERT( nt==NT );
 
       }
     }

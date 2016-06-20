@@ -101,8 +101,8 @@ public:
   void add_query(Query );
   Query pop_query();
   void setStatus();
-  void phold( double  );
-  void phold2( double, int , int );
+  void phold(  double );
+  void phold2( double );
   void phold3( double );
   void phold4( double );
   void phold5( double );

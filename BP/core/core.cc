@@ -39,7 +39,7 @@ void Core::run( double t_cpu, string base, int bytes )
               //cout<<"hit_L2, "<<cpid<<" - "<<id_core<<endl;
               L2->update( str );//me falta este tiempo
               L1->insert( str );
-              (*pthread)->phold2( Latencia_G_L1_L2 , cpid,id_core );
+              (*pthread)->phold2( Latencia_G_L1_L2 );
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
             }
             else
@@ -53,7 +53,7 @@ void Core::run( double t_cpu, string base, int bytes )
 #endif
               L2->insert( str );
               L1->insert( str );
-              (*pthread)->phold2( Latencia_G_L1_L2,cpid,id_core );
+              (*pthread)->phold2( Latencia_G_L1_L2 );
               (*pthread)->pholdR( Latencia_G_L2_Ram);
             if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
               //if(id_core!=(*pthread)->getPid()%4) cout<<"pid "<< (*pthread)->getPid() << "core: "<<id_core<<endl;
@@ -99,7 +99,7 @@ void Core::run( double t_cpu, string base, int bytes )
           //cout<<"hit_L2, "<<cpid<<" - "<<id_core<<endl;
           L2->update( str );//me falta este tiempo
           L1->insert( str );
-          (*pthread)->phold2( Latencia_G_L1_L2 , cpid,id_core );
+          (*pthread)->phold2( Latencia_G_L1_L2);
         if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
         }
         else if (L3->hit( str ))
@@ -113,26 +113,25 @@ void Core::run( double t_cpu, string base, int bytes )
           L3->update( str );
           L2->insert( str );
           L1->insert( str );
-          (*pthread)->phold2( Latencia_G_L1_L2,cpid,id_core );
           (*pthread)->phold3( Latencia_G_L2_L3);
+          (*pthread)->phold2( Latencia_G_L1_L2);
           if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
         }
         else
         {
 
           #ifdef MIDE_ESTADISTICAS
-            estadisticas->fallaL1( (*pthread)->pid  );
-            estadisticas->fallaL2( (*pthread)->pid  );
-            estadisticas->fallaL3( (*pthread)->pid  );
+            estadisticas->fallaL1( (*pthread)->pid );
+            estadisticas->fallaL2( (*pthread)->pid );
+            estadisticas->fallaL3( (*pthread)->pid );
             estadisticas->hit_Ram( (*pthread)->pid );
           #endif
           L3->insert( str );
           L2->insert( str );
           L1->insert( str );
-          (*pthread)->phold2( Latencia_G_L1_L2,cpid,id_core );
-          (*pthread)->phold3( Latencia_G_L2_L3);
-          (*pthread)->pholdR( Latencia_G_L3_Ram);
-
+          (*pthread)->pholdR( Latencia_G_L3_Ram );
+          (*pthread)->phold3( Latencia_G_L2_L3 );
+          (*pthread)->phold2( Latencia_G_L1_L2 );
           if (t_cpu!=0.0) (*pthread)->phold( t_cpu );
           //if(id_core!=(*pthread)->getPid()%4) cout<<"pid "<< (*pthread)->getPid() << "core: "<<id_core<<endl;
 
