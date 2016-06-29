@@ -47,10 +47,15 @@ using namespace std;
 #define CL3 3
 
 #define NORMAL_TIME 500.0 //segundos con tasa normal		
+<<<<<<< HEAD
 //#define NORMAL_RATE 0.011 
 //#define NORMAL_RATE 0.000009
 #define NORMAL_RATE 0.00009
 
+=======
+//#define NORMAL_RATE 0.011 //
+#define NORMAL_RATE 0.000009
+>>>>>>> 268a4e501c7e2b9c9dc14c98f7babe95c509744d
 //#define NORMAL_RATE 0.000000001 //
 
 #define PU_X_CORE 2

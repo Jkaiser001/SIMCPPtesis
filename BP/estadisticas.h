@@ -167,12 +167,21 @@ public:
     }
     cout <<"Maximo :"<<*max_element(tiempoAcumulado,tiempoAcumulado+NT)<<endl;
     guardarIntervalosUtilizacion();
+<<<<<<< HEAD
     guardarIntervalosUtilizacionCacheL1();
     /*guardarIntervalosUtilizacionCacheL2();*/
     graficar();
     //UtilizacionChip();
     //graficarCacheL1();
     /*graficarCacheL2();*/
+=======
+    /*guardarIntervalosUtilizacionCacheL1();
+    guardarIntervalosUtilizacionCacheL2();*/
+    graficar();
+    /*UtilizacionChip();
+    graficarCacheL1();
+    graficarCacheL2();*/
+>>>>>>> 268a4e501c7e2b9c9dc14c98f7babe95c509744d
   }
   void hit_Ram( int pid ) { hitRam[pid]++; }
   
@@ -422,6 +431,42 @@ void completarCores(){
       }
   }
   
+<<<<<<< HEAD
+=======
+  void guardarIntervalosUtilizacion(){
+    
+    completarThreads();
+     
+    for (int j = 0; j < NT; ++j )
+    {
+      std::string name= "output/out/Utilizacion_Thread-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j))->str()+".out" ;
+      ofstream out;
+      //const char *namec=name.c_str();
+      char * namec = new char [name.length()+1];
+      strcpy (namec, name.c_str());
+
+      //namec = (char *)alloca(name.size() + 1);
+    //memcpy(namec, name.c_str(), name.size() + 1);
+      out.open(namec);
+      cout<<"-------------------------------------------------------------"<<endl;
+      //cout<<"GRAFICAR"<<endl;
+      for (int i = 0; (unsigned)i < vectorMuestreoT.size() ; ++i)
+      {   
+         
+         if (vectorMuestreoT[i].getPid()==j && vectorMuestreoT[i].getTiempoThread()!=0)
+         {
+           //cout<<"El pid: "<<vectorMuestreoT[i].pid<<" tiempo thread:"<<vectorMuestreoT[i].tiempothread<<endl;
+            //cout<<"Porcentaje de Utilización de la thread "<<vectorMuestreoT[i].utilizacion<<endl;
+            out<< vectorMuestreoT[i].getTiempoThread()/1e6<<", "<<vectorMuestreoT[i].getUtilizacion()<<endl;
+         }
+       
+      }
+
+       out.close();
+    }
+    completarCores();
+  }
+>>>>>>> 268a4e501c7e2b9c9dc14c98f7babe95c509744d
   
 
   void guardarIntervalosUtilizacionCacheL1(){
@@ -876,7 +921,7 @@ void completarCores(){
           //datos.tiempoTotal=tiempoTotal;
           double tiempothread = tiempoXThread[pid][TOTAL]- diferencia;
           //datos.tiempothread= tiempoThread;
-            dataThread *datos= new dataThread(pid,tiempothread,tiempoActivo, tiempoInactivo,tiempoTotal,utilizacion);
+            dataThread *datos= new dataThread(pid,tiempothread,tiempoActivo, tiempoInactivo,tiempoTotal,round(utilizacion/10)*10);
           //cout<<"El pid: "<<datos.pid<<" tiempo thread:"<<datos.tiempothread<<", tiempo acumulado thread: "<< tiempoAcumulado[pid]<<endl;
           //cout<<"Porcentaje de Utilización de la thread "<<datos.utilizacion<<endl;
 
