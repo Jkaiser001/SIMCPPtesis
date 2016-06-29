@@ -48,7 +48,7 @@ using namespace std;
 
 #define NORMAL_TIME 500.0 //segundos con tasa normal		
 //#define NORMAL_RATE 0.011 //
-#define NORMAL_RATE 0.00009
+#define NORMAL_RATE 0.000009
 //#define NORMAL_RATE 0.000000001 //
 
 #define PU_X_CORE 2

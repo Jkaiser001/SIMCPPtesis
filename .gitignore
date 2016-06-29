@@ -1,0 +1,7 @@
+#ignorar los .obj , .dat y .png
+
+/BP/obj/*.o
+/BP/out/*.out
+/BP/obj/*.png
+/BP/simulador
+/BP/*.dat

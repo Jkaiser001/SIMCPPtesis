@@ -26,7 +26,7 @@ void PThreads::imprime()
     
 #ifdef MIDE_ESTADISTICAS
      
-    cout<<"--------L1 --------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
+    //cout<<"--------L1 --------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
          
         estadisticas->sumarTiemposL1(pid,t);
         estadisticas->mide( pid,pid/NCORE,pid%NCORE, time(), t ,ACTIVE,CPU);//Borrar
@@ -43,7 +43,7 @@ void PThreads::imprime()
     
 #ifdef MIDE_ESTADISTICAS
      
-      cout<<"--------L2 --------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
+      //cout<<"--------L2 --------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
      
       estadisticas->sumarTiemposL1(pid,t);
       estadisticas->sumarTiemposL2(pid,t);
@@ -59,7 +59,7 @@ void PThreads::imprime()
     
 #ifdef MIDE_ESTADISTICAS
     
-      cout<<"--------L3 --------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
+      //cout<<"--------L3 --------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
       estadisticas->sumarTiemposL3(pid,t);
       estadisticas->sumarTiemposL2(pid,t);
       estadisticas->mide( pid, pid/NCORE, pid%NCORE, time(), t, INACTIVE,CL2);
@@ -73,9 +73,9 @@ void PThreads::imprime()
     
 #ifdef MIDE_ESTADISTICAS
   
-      cout<<"--------RAM--------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
+      //cout<<"--------RAM--------, Pid: "<<pid<<" , tiempo: "<<t<<endl;
       estadisticas->sumarTiemposL3(pid,t);
-      estadisticas->mide( pid, pid/NCORE, pid%NCORE, time(), t, INACTIVE,CL2);
+      estadisticas->mide( pid, pid/NCORE, pid%NCORE, time(), t, INACTIVE,CL3);
  
     
 #endif
