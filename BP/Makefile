@@ -87,3 +87,6 @@ clean:
 	rm -f obj/*
 	rm -f simulador
 
+cleanOut:
+	rm -f output/out/*
+	rm -f output/graf/*

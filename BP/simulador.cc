@@ -448,7 +448,7 @@ cout<<endl;
   {
    
     sprintf( nombre, "PThread_%d", i );
-    cout<<"id= "<<i<<", NT"<<NT<<", nombre"<<nombre<<", nTerm= "<<nTerm<<endl;
+    //cout<<"id= "<<i<<", NT: "<<NT<<", nombre"<<nombre<<", nTerm= "<<nTerm<<endl;
 
     pthreads[i]= new PThreads( i, NT, nombre, pthreads,
                                locks, QT, dimBloque, nTerm,
