@@ -172,6 +172,7 @@ public:
     graficar();
     //UtilizacionChip();
     graficarCacheL1();
+
     /*graficarCacheL2();*/
 
   }

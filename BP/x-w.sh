@@ -43,5 +43,9 @@ mkdir salidasBP/output1/graf
 # mkdir salidasBP/output32/out
 # mkdir salidasBP/output32/graf
 
+<<<<<<< HEAD
 # ./simulador 5000 4096 32 3000 ../Input/ traza-0-0-8.dat >> xejec-R.dat
+=======
+/simulador 1000 4096 32 3000 ../Input/ traza-0-0-8.dat >> xejec-R.dat
+>>>>>>> 28f014f57250b858f53b26e42bfef61d4b7bbc9e
 
