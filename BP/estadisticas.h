@@ -167,21 +167,13 @@ public:
     }
     cout <<"Maximo :"<<*max_element(tiempoAcumulado,tiempoAcumulado+NT)<<endl;
     guardarIntervalosUtilizacion();
-<<<<<<< HEAD
     guardarIntervalosUtilizacionCacheL1();
-    /*guardarIntervalosUtilizacionCacheL2();*/
+    guardarIntervalosUtilizacionCacheL2();
     graficar();
     //UtilizacionChip();
-    //graficarCacheL1();
-    /*graficarCacheL2();*/
-=======
-    /*guardarIntervalosUtilizacionCacheL1();
-    guardarIntervalosUtilizacionCacheL2();*/
-    graficar();
-    /*UtilizacionChip();
     graficarCacheL1();
-    graficarCacheL2();*/
->>>>>>> 268a4e501c7e2b9c9dc14c98f7babe95c509744d
+    /*graficarCacheL2();*/
+
   }
   void hit_Ram( int pid ) { hitRam[pid]++; }
   
@@ -242,6 +234,7 @@ public:
                                 //"set multiplot",
                                 //"set size 1,0.5"
                                 //"set autoscale",
+                                "set yrange [-10:110]",
                                 "set grid",
                                 "show grid"
                                  };
@@ -275,7 +268,7 @@ public:
                                 "set xlabel \"----Tiempo--->\"",
                                 //"set multiplot",
                                 //"set size 1,0.5"
-                                "set autoscale",
+                                "set yrange [-10:110]",
                                 "set grid",
                                 "show grid"
 
@@ -431,55 +424,21 @@ void completarCores(){
       }
   }
   
-<<<<<<< HEAD
-=======
-  void guardarIntervalosUtilizacion(){
-    
-    completarThreads();
-     
-    for (int j = 0; j < NT; ++j )
-    {
-      std::string name= "output/out/Utilizacion_Thread-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j))->str()+".out" ;
-      ofstream out;
-      //const char *namec=name.c_str();
-      char * namec = new char [name.length()+1];
-      strcpy (namec, name.c_str());
 
-      //namec = (char *)alloca(name.size() + 1);
-    //memcpy(namec, name.c_str(), name.size() + 1);
-      out.open(namec);
-      cout<<"-------------------------------------------------------------"<<endl;
-      //cout<<"GRAFICAR"<<endl;
-      for (int i = 0; (unsigned)i < vectorMuestreoT.size() ; ++i)
-      {   
-         
-         if (vectorMuestreoT[i].getPid()==j && vectorMuestreoT[i].getTiempoThread()!=0)
-         {
-           //cout<<"El pid: "<<vectorMuestreoT[i].pid<<" tiempo thread:"<<vectorMuestreoT[i].tiempothread<<endl;
-            //cout<<"Porcentaje de Utilización de la thread "<<vectorMuestreoT[i].utilizacion<<endl;
-            out<< vectorMuestreoT[i].getTiempoThread()/1e6<<", "<<vectorMuestreoT[i].getUtilizacion()<<endl;
-         }
-       
-      }
-
-       out.close();
-    }
-    completarCores();
-  }
->>>>>>> 268a4e501c7e2b9c9dc14c98f7babe95c509744d
-  
 
   void guardarIntervalosUtilizacionCacheL1(){
     //int primero=0;
     //completarCachesL1();
 
+  cout<<"GUARDARCacheL1"<<endl;
     for (map< int, map < int, map<double, dataCache> > >::iterator i = mapMuestreoCacheL1.begin(); i != mapMuestreoCacheL1.end(); ++i)
     {
-      
+     
+  
       for (map<int ,map<double, dataCache> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
-
-        std::string name= "output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
+        cout<<"GUARDAR"<<endl; 
+        std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
         ofstream out;
         //const char *namec=name.c_str();
         char * namec = new char [name.length()+1];
@@ -490,14 +449,58 @@ void completarCores(){
         {
 
           dataCache dato=k->second;
-          //cout<<"HOLAAAA"<<endl;
+          
           //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
           if (k->first!=0.0)
           {
             //cout<<"OJO "<<dato.utilizacionAcum<<", "<<dato.NthreadCore<<endl;
             out<< k->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+            //cout<< k->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+          //out<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
+          }
 
-          //outp<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
+        }
+
+      out.close();
+        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
+      //primero++;
+      }
+      
+      //outp.close();
+      
+    }
+  }
+  void guardarIntervalosUtilizacionCacheL2(){
+    //int primero=0;
+    //completarCachesL1();
+
+  cout<<"GUARDARCacheL2"<<endl;
+    for (map< int, map < int, map<double, dataCache> > >::iterator i = mapMuestreoCacheL2.begin(); i != mapMuestreoCacheL2.end(); ++i)
+    {
+     
+  
+      for (map<int ,map<double, dataCache> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      {
+        cout<<"GUARDAR"<<endl; 
+        std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/Utilizacion_CacheL2_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
+        ofstream out;
+        //const char *namec=name.c_str();
+        char * namec = new char [name.length()+1];
+        strcpy (namec, name.c_str());
+        out.open(namec);
+
+        for (map<double, dataCache>::iterator k = j->second.begin(); k != j->second.end(); ++k)
+        {
+
+          dataCache dato=k->second;
+          
+          //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+          if (k->first!=0.0)
+          {
+            //cout<<"OJO "<<dato.utilizacionAcum<<", "<<dato.NthreadCore<<endl;
+            out<< k->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+            //cout<< k->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+          //out<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
           }
 
         }
@@ -780,9 +783,7 @@ void completarCores(){
   }
   void sumarTiemposL2( int pid, double tiempo){
    
-    acumuladoresTiempoL2[ pid/NCORE ] [ pid%NCORE ]= acumuladoresTiempoL1[pid/NCORE][pid%NCORE]+tiempo;
-   //cout<<"Cpid: "<< pid/NCORE <<", id_core: "<<pid%NCORE<<", tiempo acumulado en L2: "<<acumuladoresTiempoL2[ pid/NCORE ] [ pid%NCORE ]<<endl;
-    }
+    acumuladoresTiempoL2[ pid/NCORE ] [ pid%NCORE ]= acumuladoresTiempoL1[pid/NCORE][pid%NCORE]+tiempo;    }
   /* Suma los valores de tiempo de tranferencia en cada chip
   */
   void sumarTiemposL3(int pid, double tiempo){
@@ -823,13 +824,18 @@ void completarCores(){
       double tiempoActivo=acumuladoresTiempoL1[cpid][id_core]-diferencia;
       dataCache *dataC = new dataCache(tiempoActivo,tiempo_total);
       mapMuestreoCacheL1[cpid][id_core][tiempothread]=*dataC;
-      acumuladoresTiempoL1[cpid][id_core]=diferencia;     
+    
+      acumuladoresTiempoL1[cpid][id_core]=diferencia;
+      
+
+
   }
   void mideCacheL2(int cpid,int id_core,double diferencia,double tiempo_total, double tiempothread){
       
       double tiempoActivo=acumuladoresTiempoL2[cpid][id_core]-diferencia;
       dataCache *dataC = new dataCache(tiempoActivo,tiempo_total);
       mapMuestreoCacheL2[cpid][id_core][tiempothread]=*dataC;
+      cout<<"Cpid: "<< cpid <<", id_core: "<<id_core<<", tiempo acumulado en L2: "<<acumuladoresTiempoL2[ id_core ] [ id_core ]<<endl;
       acumuladoresTiempoL2[cpid][id_core]=diferencia;     
   }
 
@@ -856,7 +862,7 @@ void completarCores(){
           
   }
  
-  void guardarIntervalosUtilizacionCacheL2(){
+  void guardarIntervalosUtilizacionCacheL3(){
    
       for (map<int ,map<double, dataCache> >::iterator i = mapMuestreoCacheL3.begin(); i != mapMuestreoCacheL3.end(); ++i)
       {
@@ -900,6 +906,7 @@ void completarCores(){
         //cout<<"Porcentaje INACTIVO de la thread "<<(tiempoXThread[pid][INACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
         if (tiempoAcumulado[pid]<=tiempoXThread[pid][TOTAL])
         {
+          cout<<"MIDO"<<endl;
           double diferencia=tiempoXThread[pid][TOTAL]-tiempoAcumulado[pid];
           //dataT datos;
           
@@ -921,7 +928,7 @@ void completarCores(){
           //datos.tiempoTotal=tiempoTotal;
           double tiempothread = tiempoXThread[pid][TOTAL]- diferencia;
           //datos.tiempothread= tiempoThread;
-            dataThread *datos= new dataThread(pid,tiempothread,tiempoActivo, tiempoInactivo,tiempoTotal,round(utilizacion/10)*10);
+          dataThread *datos= new dataThread(pid,tiempothread,tiempoActivo, tiempoInactivo,tiempoTotal,utilizacion);
           //cout<<"El pid: "<<datos.pid<<" tiempo thread:"<<datos.tiempothread<<", tiempo acumulado thread: "<< tiempoAcumulado[pid]<<endl;
           //cout<<"Porcentaje de Utilización de la thread "<<datos.utilizacion<<endl;
 
@@ -931,7 +938,7 @@ void completarCores(){
           tiempoXThread[pid][modo]=diferencia;
           //cout<<"___________________________MIDE EN TIEMPO "<<tiempoThread<<", "<<tiempoTotal<<"___________________________"<<endl;
           if(modo==ACTIVE){
-            //cout<<"Core"<<endl;
+            cout<<"Core"<<endl;
             mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
             mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
             mideCacheL3(pid,0.0,tiempoTotal,tiempothread);
@@ -940,16 +947,16 @@ void completarCores(){
           }
           else
           {
-            //cout<<"HOLAAAA"<<endl;
+            
             if (dispositivo==CL1){ 
-                //cout<<"CacheL1"<<endl;
+                cout<<"CacheL1"<<endl;
 
                 mideCacheL1(cpid,id_core,diferencia,tiempoTotal,tiempothread);
                 mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
                 mideCacheL3(pid,0.0,tiempoTotal,tiempothread);
               }
             else if(dispositivo==CL2){
-                  //cout<<"CacheL2"<<endl;
+                  cout<<"CacheL2"<<endl;
                   //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoL3[cpid]<<endl;
 
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
@@ -957,13 +964,13 @@ void completarCores(){
                   mideCacheL3(pid,0.0,tiempoTotal,tiempothread);    
               }
             else if (dispositivo==CL3){
-                  //cout<<"CacheL3"<<endl;
+                  cout<<"CacheL3"<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
                   mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
                   mideCacheL3(pid,diferencia,tiempoTotal,tiempothread);
               }
             else{
-                  //cout<<"INACTIVO"<<endl;
+                  cout<<"INACTIVO"<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
                   mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
                   mideCacheL3(pid,diferencia,tiempoTotal,tiempothread);
