@@ -169,11 +169,12 @@ public:
     guardarIntervalosUtilizacion();
     guardarIntervalosUtilizacionCacheL1();
     guardarIntervalosUtilizacionCacheL2();
+    guardarIntervalosUtilizacionCacheL3();
     graficar();
     //UtilizacionChip();
     graficarCacheL1();
-
-    /*graficarCacheL2();*/
+    graficarCacheL2();
+    graficarCacheL3();
 
   }
   void hit_Ram( int pid ) { hitRam[pid]++; }
@@ -193,7 +194,7 @@ public:
 
   void guardarIntervalosUtilizacion(){
     
-    //completarThreads();
+    completarThreads();
      
     for (int j = 0; j < NT; ++j )
     {
@@ -296,16 +297,51 @@ public:
     }
     fprintf(ventanaGnuplot, "%s \n", "exit");  
   }
+ void graficarCacheL2(){
+   const char * configGnuplot[] = {  "set term png",
+                                "set title \"Utilización vs Tiempo por CacheL2\"", 
+                                "set ylabel \"----Utilización--->\"",
+                                //"set format y\"%2.f\"",
+                                "set xlabel \"----Tiempo--->\"",
+                                //"set multiplot",
+                                //"set size 1,0.5"
+                                "set yrange [-10:110]",
+                                "set grid",
+                                "show grid"
 
-  void graficarCacheL2(){
+                                //instrucionc
+                               };
+    FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
+    for (int k=0;k<5;k++){
+      fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
+    }
+
+    for (int i = 0; i < NT; ++i)
+    {
+      string nameG="Utilizacion_CacheL2_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i/NCORE))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i%NCORE))->str();
+      string instrucionP = "plot \"salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/"+ nameG+".out\" with lines";
+      string instrucionG = "set out \"salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/graf/Grafico_"+nameG+".png\"";
+      char  * instrucionPc = new char [instrucionP.length()+1];
+      strcpy (instrucionPc, instrucionP.c_str());
+      char *  instrucionGc = new char [instrucionG.length()+1];
+      strcpy (instrucionGc, instrucionG.c_str());
+
+      fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+      fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+    
+    }
+    fprintf(ventanaGnuplot, "%s \n", "exit");  
+  }
+
+  void graficarCacheL3(){
     const char * configGnuplot[] = {  "set term png",
-                                 "set title \"Utilización CacheL2\"", 
+                                 "set title \"Utilización CacheL3\"", 
                                  "set ylabel \"----Utilización--->\"",
                                  //"set format y\"%2.f\"",
                                  "set xlabel \"----Tiempo--->\"",
                                  //"set multiplot",
                                  //"set size 1,0.5"
-                                 "set autoscale",
+                                 "set yrange [-10:110]",
                                  "set grid",
                                  "show grid"
  
@@ -318,9 +354,9 @@ public:
  
      for (int i = 0; i < nchips; ++i)
      {
-       string nameG="Utilizacion_CacheL2_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
-       string instrucionP = "plot \"output/out/"+ nameG+".out\" with lines";
-       string instrucionG = "set out \"output/graf/Grafico_"+nameG+".png\"";
+       string nameG="Utilizacion_CacheL3_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+       string instrucionP = "plot \"salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/"+ nameG+".out\" with lines";
+       string instrucionG = "set out \"salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/graf/Grafico_"+nameG+".png\"";
        char  * instrucionPc = new char [instrucionP.length()+1];
        strcpy (instrucionPc, instrucionP.c_str());
        char *  instrucionGc = new char [instrucionG.length()+1];
@@ -347,7 +383,7 @@ public:
           dataThread *dataT= new dataThread(k,tiempothread,tiempoActivo,tiempoInactivo,tiempoTotal,utilizacion);
           vectorMuestreoT.push_back(*dataT);
           mideCacheL1(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
-            
+          mideCacheL2(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
           tiempoAcumulado[k]=tiempoAcumulado[k]+deltaTiempo;
           tiempoXThread[k][ACTIVE]=0.0;
           tiempoXThread[k][INACTIVE]=0.0;
@@ -394,6 +430,7 @@ void completarCores(){
           dataThread *dataT= new dataThread(k,tiempothread,tiempoActivo,tiempoInactivo,tiempoTotal,round(utilizacion/10)*10);
           vectorMuestreoT.push_back(*dataT);
           mideCacheL1(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
+          mideCacheL2(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
          
           
           tiempoAcumulado[k]=tiempoAcumulado[k]+deltaTiempo;
@@ -431,7 +468,7 @@ void completarCores(){
     //int primero=0;
     //completarCachesL1();
 
-  cout<<"GUARDARCacheL1"<<endl;
+  //cout<<"GUARDARCacheL1"<<endl;
     for (map< int, map < int, map<double, dataCache> > >::iterator i = mapMuestreoCacheL1.begin(); i != mapMuestreoCacheL1.end(); ++i)
     {
      
@@ -514,6 +551,40 @@ void completarCores(){
       //outp.close();
       
     }
+  }
+  void guardarIntervalosUtilizacionCacheL3(){
+    cout<<"GUARDARCacheL3"<<endl;
+   
+      for (map<int ,map<double, dataCache> >::iterator i = mapMuestreoCacheL3.begin(); i != mapMuestreoCacheL3.end(); ++i)
+      {
+
+        std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+"/out/Utilizacion_CacheL3_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
+        ofstream out;
+        //const char *namec=name.c_str();
+        char * namec = new char [name.length()+1];
+        strcpy (namec, name.c_str());
+        out.open(namec);
+
+        for (map<double, dataCache>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+        {
+          cout<<"GUARDAR"<<endl;
+          dataCache dato=j->second;
+          if (j->first!=0)
+          {
+            out<< j->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+            cout<< j->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+          }
+
+        }
+
+      out.close();
+        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
+      //primero++;
+      }
+      
+      //outp.close();
+      
+    //graficarCacheL2();
   }
   void graficarChip(){
    const char * configGnuplot[] = {  "set term png",
@@ -863,39 +934,7 @@ void completarCores(){
           
   }
  
-  void guardarIntervalosUtilizacionCacheL3(){
-   
-      for (map<int ,map<double, dataCache> >::iterator i = mapMuestreoCacheL3.begin(); i != mapMuestreoCacheL3.end(); ++i)
-      {
-
-        std::string name= "output/out/Utilizacion_CacheL2_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
-        ofstream out;
-        //const char *namec=name.c_str();
-        char * namec = new char [name.length()+1];
-        strcpy (namec, name.c_str());
-        out.open(namec);
-
-        for (map<double, dataCache>::iterator j = i->second.begin(); j != i->second.end(); ++j)
-        {
-
-          dataCache dato=j->second;
-                    if (j->first!=0)
-          {
-           out<< j->first / 1e6 << ", " << dato.getUtilizacion() << endl;
-
-          }
-
-        }
-
-      out.close();
-        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
-      //primero++;
-      }
-      
-      //outp.close();
-      
-    graficarCacheL2();
-  }
+  
 
   void mide( int pid,int cpid,int id_core , double reloj, double retardo, int modo, int dispositivo ){
     tiempoXThread[pid][modo]=retardo+tiempoXThread[pid][modo];
