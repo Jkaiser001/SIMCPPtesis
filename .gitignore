@@ -1,16 +1,9 @@
 #ignorar los .obj , .dat y .png
 
 /BP/obj/*.o
-<<<<<<< HEAD
 /BP/output/out/*.out
 /BP/output/graf/*.png
 /BP/simulador
 /BP/*.dat
 /BP/salidasBP/
 
-=======
-/BP/out/*.out
-/BP/obj/*.png
-/BP/simulador
-/BP/*.dat
->>>>>>> 268a4e501c7e2b9c9dc14c98f7babe95c509744d

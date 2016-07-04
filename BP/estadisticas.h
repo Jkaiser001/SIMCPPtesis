@@ -22,20 +22,22 @@ private:
   double *fallasCacheL1;
   double *fallasCacheL2;
   double *fallasCacheL3;
-  std::map<int, map<double , double> > acumuladoresTiempoL3;
+  //std::map<int, map<double , double> > acumuladoresTiempoL3;
   double **acumuladoresTiempoL1;
   double **acumuladoresTiempoL2;
+  double **acumuladoresTiempoL3;
   double *hitL1, *hitL2, *hitL3, *hitRam;
   double **tiempoXThread;
 
   double deltaTiempo;
   double *tiempoAcumulado;
   vector<dataThread> vectorMuestreoT;
-  map<int, map<double,dataChip > > mapMuestreoChip;
+  map<int, map< int, map< double , dataChip > > > mapMuestreoChip;
   map<int, map< int, map< double , dataCache > > > mapMuestreoCacheL1;
   map<int, map< int, map< double , dataCache > > > mapMuestreoCacheL2;
-  map<int, map< double , dataCache  > > mapMuestreoCacheL3;
-  map<int, map< double , int > > pasadas;
+  map<int, map< double, map< int , dataCache > > > mapMuestreoCacheL3;
+  //map<int, map< double , dataCache  > > mapMuestreoCacheL3;
+  //map<int, map< double , int > > pasadas;
   //map<int, value> mapMuestreoCache;
 
 public:
@@ -170,11 +172,15 @@ public:
     guardarIntervalosUtilizacionCacheL1();
     guardarIntervalosUtilizacionCacheL2();
     guardarIntervalosUtilizacionCacheL3();
+    UtilizacionChip();
+    guardarIntervalosUtilizacionChip();
     graficar();
     //UtilizacionChip();
     graficarCacheL1();
     graficarCacheL2();
     graficarCacheL3();
+    graficarChip();
+
 
   }
   void hit_Ram( int pid ) { hitRam[pid]++; }
@@ -384,6 +390,7 @@ public:
           vectorMuestreoT.push_back(*dataT);
           mideCacheL1(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
           mideCacheL2(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
+          mideCacheL3(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
           tiempoAcumulado[k]=tiempoAcumulado[k]+deltaTiempo;
           tiempoXThread[k][ACTIVE]=0.0;
           tiempoXThread[k][INACTIVE]=0.0;
@@ -431,8 +438,7 @@ void completarCores(){
           vectorMuestreoT.push_back(*dataT);
           mideCacheL1(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
           mideCacheL2(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
-         
-          
+          mideCacheL3(k/NCORE,k%NCORE, 0.0,tiempoTotal,tiempothread);
           tiempoAcumulado[k]=tiempoAcumulado[k]+deltaTiempo;
           tiempoXThread[k][ACTIVE]=0.0;
           tiempoXThread[k][INACTIVE]=0.0;
@@ -475,7 +481,7 @@ void completarCores(){
   
       for (map<int ,map<double, dataCache> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
-        cout<<"GUARDAR"<<endl; 
+        //cout<<"GUARDAR"<<endl; 
         std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/Utilizacion_CacheL1_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
         ofstream out;
         //const char *namec=name.c_str();
@@ -512,14 +518,14 @@ void completarCores(){
     //int primero=0;
     //completarCachesL1();
 
-  cout<<"GUARDARCacheL2"<<endl;
+  //cout<<"GUARDARCacheL2"<<endl;
     for (map< int, map < int, map<double, dataCache> > >::iterator i = mapMuestreoCacheL2.begin(); i != mapMuestreoCacheL2.end(); ++i)
     {
      
   
       for (map<int ,map<double, dataCache> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
-        cout<<"GUARDAR"<<endl; 
+        //cout<<"GUARDAR"<<endl; 
         std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/Utilizacion_CacheL2_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
         ofstream out;
         //const char *namec=name.c_str();
@@ -552,27 +558,81 @@ void completarCores(){
       
     }
   }
-  void guardarIntervalosUtilizacionCacheL3(){
-    cout<<"GUARDARCacheL3"<<endl;
-   
-      for (map<int ,map<double, dataCache> >::iterator i = mapMuestreoCacheL3.begin(); i != mapMuestreoCacheL3.end(); ++i)
-      {
+  
+   void guardarIntervalosUtilizacionCacheL3(){
+    //int primero=0;
+    //completarCachesL1();
 
-        std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+"/out/Utilizacion_CacheL3_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
+  //cout<<"GUARDARCacheL3"<<endl;
+    for (map< int, map < double, map<int , dataCache> > >::iterator i = mapMuestreoCacheL3.begin(); i != mapMuestreoCacheL3.end(); ++i)
+    {
+     
+      std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/Utilizacion_CacheL3_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
+      ofstream out;
+      
+      char * namec = new char [name.length()+1];
+      strcpy (namec, name.c_str());
+      out.open(namec);
+
+      for (map<double ,map<int , dataCache> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      {
+        double sum_utilizacion=0.0;
+        
+        for (map<int, dataCache>::iterator k = j->second.begin(); k != j->second.end(); ++k)
+        {
+
+          dataCache dato=k->second;
+          sum_utilizacion=sum_utilizacion+dato.getUtilizacion();
+
+        }
+         if (j->first!=0.0)
+          {
+            out<< j->first / 1e6 << ", " << sum_utilizacion << endl;
+            //cout<< j->first / 1e6 << ", " << sum_utilizacion/NCORE << endl;
+          }
+        
+        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
+      //primero++;
+      }
+      out.close();
+      
+      //outp.close();
+      
+    }
+  }
+ void guardarIntervalosUtilizacionChip(){
+    //int primero=0;
+    //completarCachesL1();
+
+  //cout<<"GUARDARCacheL2"<<endl;
+    for (map< int, map < int, map<double, dataChip> > >::iterator i = mapMuestreoChip.begin(); i != mapMuestreoChip.end(); ++i)
+    {
+     
+  
+      for (map<int ,map<double, dataChip> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      {
+        //cout<<"GUARDAR"<<endl; 
+        std::string name= "salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/Utilizacion_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j->first))->str()+".out" ;
         ofstream out;
+        
         //const char *namec=name.c_str();
+
         char * namec = new char [name.length()+1];
         strcpy (namec, name.c_str());
         out.open(namec);
 
-        for (map<double, dataCache>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+        for (map<double, dataChip>::iterator k = j->second.begin(); k != j->second.end(); ++k)
         {
-          cout<<"GUARDAR"<<endl;
-          dataCache dato=j->second;
-          if (j->first!=0)
+
+          dataChip dato=k->second;
+          
+          //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
+          if (k->first!=0.0)
           {
-            out<< j->first / 1e6 << ", " << dato.getUtilizacion() << endl;
-            cout<< j->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+            //cout<<"OJO "<<dato.utilizacionAcum<<", "<<dato.NthreadCore<<endl;
+            out<< k->first / 1e6 << " " << dato.getUtilizacion() << ", " << dato.getUtilizacionCacheL1()<<", " << dato.getUtilizacionCacheL2()<<", " << dato.getUtilizacionCacheL3()<< endl;
+            //cout<< k->first / 1e6 << ", " << dato.getUtilizacion() << endl;
+          //out<< j->first / 1e6 << ", " << dato.utilizacionAcum / double(dato.NthreadChip) << endl;
           }
 
         }
@@ -584,239 +644,163 @@ void completarCores(){
       
       //outp.close();
       
-    //graficarCacheL2();
+    }
   }
   void graficarChip(){
    const char * configGnuplot[] = {  "set term png",
-                                  "set title \"Utilización vs Tiempo por chip\"", 
-                                  "set ylabel \"----Utilización--->\"",
-                                  //"set format y\"%2.f\"",
+                                  "set title \"Utilización vs Tiempo por chip\"",
+                                  "set style data histograms",
+                                  "set style histogram rowstacked",
+                                  "set boxwidth 1 relative",
+                                  "set style fill solid 1.0 border -1",
+                                  //"set ylabel \"----Utilización--->\"",
+                                  "set format x\"%2.f\"",
                                   "set xlabel \"----Tiempo--->\"",
                                   //"set multiplot",
                                   //"set size 1,0.5"
-                                  "set autoscale",
-                                  "set grid",
-                                  "show grid"
+                                   "set yrange [0:140]"
 
                                   //instrucionc
                                  };
+
+
       FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
-      for (int k=0;k<5;k++){
+      for (int k=0;k<8;k++){
         fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
       }
+      cout<<"nchips: "<<nchips<<"cores: "<<Ncores<<endl;
 
       for (int i = 0; i < nchips; ++i)
       {
-        string nameG="Utilizacion_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
-        string instrucionP = "plot \"output/out/"+ nameG+".out\" with lines";
-        string instrucionG = "set out \"output/graf/Grafico_"+nameG+".png\"";
-        char  * instrucionPc = new char [instrucionP.length()+1];
-        strcpy (instrucionPc, instrucionP.c_str());
-        char *  instrucionGc = new char [instrucionG.length()+1];
-        strcpy (instrucionGc, instrucionG.c_str());
+        for (int j = 0; j < Ncores; ++j)
+        {
+          string nameG="Utilizacion_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str()+"_Core-"+static_cast<std::ostringstream*>(&(std::ostringstream() << j))->str();
+          string instrucionP = "plot \"salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/out/"+ nameG+".out\"  using 3 t \"cacheL1\",\'\' using  4:xticlabels(1) t \"cacheL2\",\'\' using  5:xticlabels(1) t \"cacheL3\"";
 
-        fprintf(ventanaGnuplot, "%s \n", instrucionGc);
-        fprintf(ventanaGnuplot, "%s \n", instrucionPc);
-      
+          string instrucionG = "set out \"salidasBP/output"+static_cast<std::ostringstream*>(&(std::ostringstream() << NT))->str()+ "/graf/Grafico_"+nameG+".png\"";
+          char  * instrucionPc = new char [instrucionP.length()+1];
+          strcpy (instrucionPc, instrucionP.c_str());
+          char *  instrucionGc = new char [instrucionG.length()+1];
+          strcpy (instrucionGc, instrucionG.c_str());
+
+          fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+          fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+        }
+        
       }
       fprintf(ventanaGnuplot, "%s \n", "exit");  
   }
   
-  void  PromUtilizacionCacheL1(){
-      
-      for ( map< int, map< double, dataChip > >::iterator i = mapMuestreoChip.begin(); i != mapMuestreoChip.end(); ++i)
-      {
-        int cpid=i->first;
-         
-
-        for (std::map<double, dataChip>::iterator j = i->second.begin(); j != i->second.end(); ++j)
-        {
-          
-          double tiempothread=j->first;
-          dataChip datoC=j->second;
-          double resultado=0.0;
-          int ncore=0;
-          //cout<<"_______ Tiempo: "<<tiempothread<<" _______"<<endl;
-          for (map<int ,map<double, dataCache> >::iterator k  = mapMuestreoCacheL1[cpid].begin(); k != mapMuestreoCacheL1[cpid].end(); ++k)
-          {
-             dataCache dato=k->second[tiempothread];
-             resultado=resultado+dato.getUtilizacion();
-             datoC.addCompUtilizacion(dato.getUtilizacion());
-             ncore++;
-             //cout<<"Utilización: "<<dato.getUtilizacion()<<endl;
-             
-          }
-          //cout<<"Utilizacion promedio cacheL1:"<<resultado/ncore <<endl;
-          datoC.setUtilizacionCacheL1(resultado/ncore);
-          mapMuestreoChip[cpid][tiempothread]=datoC;
-
-        }
-
-      }
-
-  }
-
+ 
   void UtilizacionChip(){
-    //double **salida;
-    //salida=(double **)malloc(Ncores * sizeof(double *));
-    //int core=0;
-    /*for (int i = 0; i < Ncores; ++i)
-    {
-        salida[i]=(double *)malloc(3*sizeof(double ));
-        for (int j = 0; j < 3; ++i)
-        {
-          salida[i][j]=0;
-        }
-      
-    }*/
-        
     
-    //cout<<"___________________________ENTRE____________________________"<<endl;
       for (int i = 0; (unsigned)i < vectorMuestreoT.size() ; ++i)
       {   
         dataThread dato=vectorMuestreoT[i];
-        //if (dato.tiempothread!=0)
-        //{
+        if (dato.tiempothread!=0)
+        {
           //dataChip datoc;
           int chip=dato.pid/NCORE;
+          int core=dato.pid%NCORE;
           double tiempo=dato.getTiempoThread();
+         
+          // cout<<"Core: "<<core<<", Tiempo: "<<tiempo<<endl;
+          // cout<<"Thread: "<< dato.getUtilizacion()<<endl;
+          // cout<<"CacheL1: "<<mapMuestreoCacheL1[chip][core][tiempo].getUtilizacion()<<endl;
+          // cout<<"CacheL2: "<<mapMuestreoCacheL2[chip][core][tiempo].getUtilizacion()<<endl;
+          // cout<<"CacheL3: "<<mapMuestreoCacheL3[chip][tiempo][core].getUtilizacion()<<endl;
+          
           if (mapMuestreoChip.find(chip)!=mapMuestreoChip.end())
           {
-            //if(dato.tiempothread==0) cout<<"Voy por el 1° if "<<chip<<endl;
             
-            if(mapMuestreoChip[chip].find(tiempo)!=mapMuestreoChip[chip].end())
-            {
+              dataChip *dataC=new dataChip(dato);
+              dataC->setUtilizacionCacheL1(mapMuestreoCacheL1[chip][core][tiempo].getUtilizacion());
+              dataC->setUtilizacionCacheL2(mapMuestreoCacheL2[chip][core][tiempo].getUtilizacion());
+              dataC->setUtilizacionCacheL3(mapMuestreoCacheL3[chip][tiempo][core].getUtilizacion());
+              mapMuestreoChip[chip][core][tiempo]= *dataC;
             
-              //if(dato.tiempothread==0)cout<<"Voy por el 2° if "<<chip<<endl;    
-                mapMuestreoChip[chip][tiempo].setUtilizacion(dato);
-                mapMuestreoChip[chip][tiempo].setUtilizacionCacheL2(mapMuestreoCacheL3[chip][tiempo].getUtilizacion());
-                mapMuestreoChip[chip][tiempo].addCompUtilizacion(mapMuestreoCacheL3[chip][tiempo].getUtilizacion());
-
-
-            }
-            else
-              {
-                //if(dato.tiempothread==0) cout<<"Voy por el 2° else "<<chip<<endl;
-                  dataChip *dataC=new dataChip(dato);
-                  dataC->setUtilizacionCacheL2(mapMuestreoCacheL3[chip][tiempo].getUtilizacion());
-                  dataC->addCompUtilizacion(mapMuestreoCacheL3[chip][tiempo].getUtilizacion());
-                  mapMuestreoChip[chip][tiempo]= *dataC;
-
-              }
           }
           else
           {
-            
-                 
               dataChip *dataC=new dataChip(dato);
-              dataC->setUtilizacionCacheL2(mapMuestreoCacheL3[chip][tiempo].getUtilizacion());
-              dataC->addCompUtilizacion(mapMuestreoCacheL3[chip][tiempo].getUtilizacion());
-              mapMuestreoChip[chip][tiempo]= *dataC;
+              dataC->setUtilizacionCacheL1(mapMuestreoCacheL1[chip][core][tiempo].getUtilizacion());
+              dataC->setUtilizacionCacheL2(mapMuestreoCacheL2[chip][core][tiempo].getUtilizacion());
+              dataC->setUtilizacionCacheL3(mapMuestreoCacheL3[chip][tiempo][core].getUtilizacion());
+              mapMuestreoChip[chip][core][tiempo]= *dataC;
+                 
           }    
-          //mapMuestreoC[dato.pid\4][dato.tiempothread].push_back()     
-       //}  
+          
+        }
+    
       }
 
 
-      PromUtilizacionCacheL1();
-      //printUtilizacionChip();
-      guardarIntervalosUtilizacionChip();
-      graficarChip();
-      graficarPromUChip();
+      // PromUtilizacionCacheL1();
+      printUtilizacionChip();
+      // guardarIntervalosUtilizacionChip();
+      // graficarChip();
+      // graficarPromUChip();
     //return salida; 
   }
 
   void printUtilizacionChip(){
 
-    for (map< int,map < double, dataChip> >::iterator i = mapMuestreoChip.begin(); i != mapMuestreoChip.end(); ++i)
+    for (map< int,map< int, map< double, dataChip> > >::iterator i = mapMuestreoChip.begin(); i != mapMuestreoChip.end(); ++i)
     {
-      for (map<double, dataChip>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+      for (map<int, map< double, dataChip> > ::iterator j = i->second.begin(); j != i->second.end(); ++j)
       {
-        dataChip dato=j->second;
-      
-        cout<<"chip : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.getNThreadChip()<<endl;
-        //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
-      }
-    }
-  }
-
-  void guardarIntervalosUtilizacionChip(){
-    int primero=0;
-    for (map< int,map < double, dataChip> >::iterator i = mapMuestreoChip.begin(); i != mapMuestreoChip.end(); ++i)
-    {
-      std::string name= "output/out/Utilizacion_Chip-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
-      ofstream out;
-      //const char *namec=name.c_str();
-      char * namec = new char [name.length()+1];
-      strcpy (namec, name.c_str());
-      out.open(namec);
-      
-      name= "output/out/PromUtilizacion_Chip_-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i->first))->str()+".out" ;
-      ofstream outp;
-      //const char *namec=name.c_str();
-      namec = new char [name.length()+1];
-      strcpy (namec, name.c_str());
-      outp.open(namec);
-      
-      for (map<double, dataChip>::iterator j = i->second.begin(); j != i->second.end(); ++j)
-      {
-        dataChip dato=j->second;
-        //cout<<"core : "<<i->first<<", tiempo: "<<j->first<<", threads: "<<dato.NthreadCore<<endl;
-        if (j->first!=0)
+       
+        for (map< double, dataChip>::iterator k = j->second.begin(); k != j->second.end(); ++k)
         {
-          //cout<<"Utilizacion promedio threads(1): "<<dato.PromUtilizacionChip()<<", Utilización prom threads(2): "<<dato.UtilizacionChip() <<", Utilización prom CacheL1: " <<dato.getUtilizacionCacheL1()<<endl;
-          out<< j->first / 1e6 << ", " << dato.UtilizacionChip() << endl;
-
-          outp<< j->first / 1e6 << ", " << dato.PromUtilizacionChip() << endl;
+          dataChip dato=k->second;
+      
+          cout<<"chip : "<<i->first<<", core: "<<j->first<<", time: "<<k->first<<", threads: "<<dato.getUtilizacion()<<", CacheL1: "<< dato.getUtilizacionCacheL1() <<", CacheL2: "<<dato.getUtilizacionCacheL2()<<", CacheL3: "<<dato.getUtilizacionCacheL3()<<endl;      
         }
         
-        
         //cout<<"Tiempo Total"<<dato.tiempoTotal<<", tiempo activo : "<<dato.tiempoActivo<<endl;  
-      primero++;
       }
-      out.close();
-      outp.close();
-      
     }
   }
+
+ 
 
   
 
-  void graficarPromUChip(){
-   const char * configGnuplot[] = {  "set term png",
-                                  "set title \"Utilización vs Tiempo por chip\"", 
-                                  "set ylabel \"----Utilización--->\"",
-                                  //"set format y\"%2.f\"",
-                                  "set xlabel \"----Tiempo--->\"",
-                                  //"set multiplot",
-                                  //"set size 1,0.5"
-                                  "set autoscale",
-                                  "set grid",
-                                  "show grid"
+  // void graficarPromUChip(){
+  //  const char * configGnuplot[] = {  "set term png",
+  //                                 "set title \"Utilización vs Tiempo por chip\"", 
+  //                                 "set ylabel \"----Utilización--->\"",
+  //                                 //"set format y\"%2.f\"",
+  //                                 "set xlabel \"----Tiempo--->\"",
+  //                                 //"set multiplot",
+  //                                 //"set size 1,0.5"
+  //                                 "set autoscale",
+  //                                 "set grid",
+  //                                 "show grid"
 
-                                  //instrucionc
-                                 };
-      FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
-      for (int k=0;k<5;k++){
-        fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
-      }
+  //                                 //instrucionc
+  //                                };
+  //     FILE * ventanaGnuplot = popen ("gnuplot -persist", "w");
+  //     for (int k=0;k<5;k++){
+  //       fprintf(ventanaGnuplot, "%s \n", configGnuplot[k]);
+  //     }
 
-      for (int i = 0; i < nchips; ++i)
-      {
-        string nameG="PromUtilizacion_Chip_-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
-        string instrucionP = "plot \"output/out/"+ nameG+".out\" with lines";
-        string instrucionG = "set out \"output/graf/Grafico_"+nameG+".png\"";
-        char  * instrucionPc = new char [instrucionP.length()+1];
-        strcpy (instrucionPc, instrucionP.c_str());
-        char *  instrucionGc = new char [instrucionG.length()+1];
-        strcpy (instrucionGc, instrucionG.c_str());
+  //     for (int i = 0; i < nchips; ++i)
+  //     {
+  //       string nameG="PromUtilizacion_Chip_-"+static_cast<std::ostringstream*>(&(std::ostringstream() << i))->str();
+  //       string instrucionP = "plot \"output/out/"+ nameG+".out\" with lines";
+  //       string instrucionG = "set out \"output/graf/Grafico_"+nameG+".png\"";
+  //       char  * instrucionPc = new char [instrucionP.length()+1];
+  //       strcpy (instrucionPc, instrucionP.c_str());
+  //       char *  instrucionGc = new char [instrucionG.length()+1];
+  //       strcpy (instrucionGc, instrucionG.c_str());
 
-        fprintf(ventanaGnuplot, "%s \n", instrucionGc);
-        fprintf(ventanaGnuplot, "%s \n", instrucionPc);
+  //       fprintf(ventanaGnuplot, "%s \n", instrucionGc);
+  //       fprintf(ventanaGnuplot, "%s \n", instrucionPc);
       
-      }
-      fprintf(ventanaGnuplot, "%s \n", "exit");  
-  }
+  //     }
+  //     fprintf(ventanaGnuplot, "%s \n", "exit");  
+  // }
 
   /*
     Iniciualiza los acumuladores de tiempo para  transferir informacion de  Ram a L2
@@ -834,16 +818,19 @@ void completarCores(){
       nchips=nchip;
       Ncores=ncore;
 
-      acumuladoresTiempoL2=(double **)malloc(nchip *sizeof(double * ));
       acumuladoresTiempoL1=(double **)malloc(nchip *sizeof(double * ));
+      acumuladoresTiempoL2=(double **)malloc(nchip *sizeof(double * ));
+      acumuladoresTiempoL3=(double **)malloc(nchip *sizeof(double * ));
       for (int i = 0; i < nchip; ++i)
       {
         acumuladoresTiempoL1[i]= (double *)malloc(ncore*sizeof(double));
         acumuladoresTiempoL2[i]= (double *)malloc(ncore*sizeof(double));
+        acumuladoresTiempoL3[i]= (double *)malloc(ncore*sizeof(double));
         for (int j = 0; j < ncore; ++j)
         {
           acumuladoresTiempoL1[i][j]=0.0;
           acumuladoresTiempoL2[i][j]=0.0;
+          acumuladoresTiempoL3[i][j]=0.0;
         }
       }
       //cout<<"INICIADO!!!!! "<<Nchip<<endl;
@@ -855,40 +842,46 @@ void completarCores(){
   }
   void sumarTiemposL2( int pid, double tiempo){
    
-    acumuladoresTiempoL2[ pid/NCORE ] [ pid%NCORE ]= acumuladoresTiempoL1[pid/NCORE][pid%NCORE]+tiempo;    }
+    acumuladoresTiempoL2[ pid/NCORE ] [ pid%NCORE ]= acumuladoresTiempoL2[pid/NCORE][pid%NCORE]+tiempo;    
+  }
+   void sumarTiemposL3( int pid, double tiempo){
+   
+    acumuladoresTiempoL3[ pid/NCORE ] [ pid%NCORE ]= acumuladoresTiempoL3[pid/NCORE][pid%NCORE]+tiempo;   
+  }
+ 
   /* Suma los valores de tiempo de tranferencia en cada chip
   */
-  void sumarTiemposL3(int pid, double tiempo){
   
-        double tiempothread=tiempoAcumulado[pid];
+  // void sumarTiemposL3(int pid, double tiempo){
+  //       double tiempothread=tiempoAcumulado[pid];
        
-       if(acumuladoresTiempoL3[pid/NCORE].find(tiempothread)!=acumuladoresTiempoL3[pid/NCORE].end())
-       {
-         acumuladoresTiempoL3[pid/NCORE][tiempothread]=acumuladoresTiempoL3[pid/NCORE][tiempothread]+tiempo;
+  //      if(acumuladoresTiempoL3[pid/NCORE].find(tiempothread)!=acumuladoresTiempoL3[pid/NCORE].end())
+  //      {
+  //        acumuladoresTiempoL3[pid/NCORE][tiempothread]=acumuladoresTiempoL3[pid/NCORE][tiempothread]+tiempo;
  
-       }else{
+  //      }else{
  
-         acumuladoresTiempoL3[pid/NCORE][tiempothread]= tiempo;
-       }
+  //        acumuladoresTiempoL3[pid/NCORE][tiempothread]= tiempo;
+  //      }
        
-       //cout<<"Cpid: "<< pid/NCORE <<", tiempo acumulado en L3 :"<<acumuladoresTiempoL3[ pid/NCORE ] [ tiempothread ]<<endl;
+  //      //cout<<"Cpid: "<< pid/NCORE <<", tiempo acumulado en L3 :"<<acumuladoresTiempoL3[ pid/NCORE ] [ tiempothread ]<<endl;
       
-    }
-  void sumarTiemposL3(int pid, double tiempo, double _tiempothread){
+  //   }
+  // void sumarTiemposL3(int pid, double tiempo, double _tiempothread){
 
-      double tiempothread=_tiempothread;
+  //     double tiempothread=_tiempothread;
      
-      if(acumuladoresTiempoL3[pid/NCORE].find(tiempothread)!=acumuladoresTiempoL3[pid/NCORE].end())
-      {
-        acumuladoresTiempoL3[pid/NCORE][tiempothread]=acumuladoresTiempoL3[pid/NCORE][tiempothread]+tiempo;
+  //     if(acumuladoresTiempoL3[pid/NCORE].find(tiempothread)!=acumuladoresTiempoL3[pid/NCORE].end())
+  //     {
+  //       acumuladoresTiempoL3[pid/NCORE][tiempothread]=acumuladoresTiempoL3[pid/NCORE][tiempothread]+tiempo;
 
-      }else{
+  //     }else{
 
-        acumuladoresTiempoL3[pid/NCORE][tiempothread]= tiempo;
-      }
+  //       acumuladoresTiempoL3[pid/NCORE][tiempothread]= tiempo;
+  //     }
      
     
-  }
+  // }
  
 
   void mideCacheL1(int cpid,int id_core,double diferencia,double tiempo_total, double tiempothread){
@@ -907,32 +900,40 @@ void completarCores(){
       double tiempoActivo=acumuladoresTiempoL2[cpid][id_core]-diferencia;
       dataCache *dataC = new dataCache(tiempoActivo,tiempo_total);
       mapMuestreoCacheL2[cpid][id_core][tiempothread]=*dataC;
-      cout<<"Cpid: "<< cpid <<", id_core: "<<id_core<<", tiempo acumulado en L2: "<<acumuladoresTiempoL2[ id_core ] [ id_core ]<<endl;
+      //cout<<"Cpid: "<< cpid <<", id_core: "<<id_core<<", tiempo acumulado en L2: "<<acumuladoresTiempoL2[ cpid ] [ id_core ]<<endl;
       acumuladoresTiempoL2[cpid][id_core]=diferencia;     
   }
+    void mideCacheL3(int cpid,int id_core,double diferencia,double tiempo_total, double tiempothread){
+      
+      double tiempoActivo=acumuladoresTiempoL3[cpid][id_core]-diferencia;
+      dataCache *dataC = new dataCache(tiempoActivo,tiempo_total);
+      mapMuestreoCacheL3[cpid][tiempothread][id_core]=*dataC;
+      //cout<<"Cpid: "<< cpid <<", id_core: "<<id_core<<", tiempo acumulado en L3: "<<acumuladoresTiempoL3[ cpid ] [ id_core ]<<endl;
+      acumuladoresTiempoL3[cpid][id_core]=diferencia;     
+  }
 
 
 
-  void mideCacheL3(int pid,double diferencia,double tiempo_total, double tiempothread){
-      //
-        //if(diferencia>0){
-        if(pasadas[pid/NCORE].find(tiempothread) != pasadas[pid/NCORE].end()){
-          pasadas[pid/NCORE][tiempothread]++;
-        }
-        else
-        {
-          pasadas[pid/NCORE][tiempothread]=1;
-        }
+  // void mideCacheL3(int pid,double diferencia,double tiempo_total, double tiempothread){
+  //     //
+  //       //if(diferencia>0){
+  //       if(pasadas[pid/NCORE].find(tiempothread) != pasadas[pid/NCORE].end()){
+  //         pasadas[pid/NCORE][tiempothread]++;
+  //       }
+  //       else
+  //       {
+  //         pasadas[pid/NCORE][tiempothread]=1;
+  //       }
 
         
-          double tiempoActivo=acumuladoresTiempoL3[pid/NCORE][tiempothread]-diferencia;
+  //         double tiempoActivo=acumuladoresTiempoL3[pid/NCORE][tiempothread]-diferencia;
           
-          if (diferencia!=0.0) sumarTiemposL3(pid, diferencia, tiempothread+deltaTiempo);
+  //         if (diferencia!=0.0) sumarTiemposL3(pid, diferencia, tiempothread+deltaTiempo);
           
-          dataCache *dataC= new dataCache(tiempoActivo,tiempo_total);
-          mapMuestreoCacheL3[pid/NCORE][tiempothread]=*dataC;
+  //         dataCache *dataC= new dataCache(tiempoActivo,tiempo_total);
+  //         mapMuestreoCacheL3[pid/NCORE][tiempothread]=*dataC;
           
-  }
+  // }
  
   
 
@@ -946,7 +947,7 @@ void completarCores(){
         //cout<<"Porcentaje INACTIVO de la thread "<<(tiempoXThread[pid][INACTIVE]/(tiempoXThread[pid][ACTIVE]+tiempoXThread[pid][INACTIVE]))*100<<"%"<<endl;
         if (tiempoAcumulado[pid]<=tiempoXThread[pid][TOTAL])
         {
-          cout<<"MIDO"<<endl;
+          //cout<<"MIDO"<<endl;
           double diferencia=tiempoXThread[pid][TOTAL]-tiempoAcumulado[pid];
           //dataT datos;
           
@@ -978,10 +979,11 @@ void completarCores(){
           tiempoXThread[pid][modo]=diferencia;
           //cout<<"___________________________MIDE EN TIEMPO "<<tiempoThread<<", "<<tiempoTotal<<"___________________________"<<endl;
           if(modo==ACTIVE){
-            cout<<"Core"<<endl;
+            //cout<<"Core"<<endl;
             mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
             mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
-            mideCacheL3(pid,0.0,tiempoTotal,tiempothread);
+            mideCacheL3(cpid,id_core,0.0,tiempoTotal,tiempothread);
+            //mideCacheL3(pid,0.0,tiempoTotal,tiempothread);
             //mideCacheL1(cpid,id_core,0,tiempoTotal,tiempoThread);
             tiempoXThread[pid][INACTIVE]=0;
           }
@@ -989,31 +991,35 @@ void completarCores(){
           {
             
             if (dispositivo==CL1){ 
-                cout<<"CacheL1"<<endl;
+                //cout<<"CacheL1"<<endl;
 
                 mideCacheL1(cpid,id_core,diferencia,tiempoTotal,tiempothread);
                 mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
-                mideCacheL3(pid,0.0,tiempoTotal,tiempothread);
+                mideCacheL3(cpid,id_core,0.0,tiempoTotal,tiempothread);
+                //mideCacheL3(pid,0.0,tiempoTotal,tiempothread);
               }
             else if(dispositivo==CL2){
-                  cout<<"CacheL2"<<endl;
+                  //cout<<"CacheL2"<<endl;
                   //cout<<"tiempo: "<<tiempoThread/1e6<<" CacheL2: "<<retardo<<", pid: "<<pid<<", acumulador :"<<acumuladoresTiempoL3[cpid]<<endl;
 
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
                   mideCacheL2(cpid,id_core,diferencia,tiempoTotal,tiempothread);
-                  mideCacheL3(pid,0.0,tiempoTotal,tiempothread);    
+                  mideCacheL3(cpid,id_core,0.0,tiempoTotal,tiempothread);
+                  //mideCacheL3(pid,0.0,tiempoTotal,tiempothread);    
               }
             else if (dispositivo==CL3){
-                  cout<<"CacheL3"<<endl;
+                  //cout<<"CacheL3"<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
                   mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
-                  mideCacheL3(pid,diferencia,tiempoTotal,tiempothread);
+                  mideCacheL3(cpid,id_core,diferencia,tiempoTotal,tiempothread);
+                  //mideCacheL3(pid,diferencia,tiempoTotal,tiempothread);
               }
             else{
-                  cout<<"INACTIVO"<<endl;
+                  //cout<<"INACTIVO"<<endl;
                   mideCacheL1(cpid,id_core,0.0,tiempoTotal,tiempothread);
                   mideCacheL2(cpid,id_core,0.0,tiempoTotal,tiempothread);
-                  mideCacheL3(pid,diferencia,tiempoTotal,tiempothread);
+                  mideCacheL3(cpid,id_core,0.0,tiempoTotal,tiempothread);
+                  //mideCacheL3(pid,diferencia,tiempoTotal,tiempothread);
               }
             //cout<<"HOLAAAA"<<endl;
             tiempoXThread[pid][ACTIVE]=0;            
