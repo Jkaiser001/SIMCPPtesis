@@ -1,0 +1,73 @@
+dB: 8 , dimBloque: 8
+
+./simulador 5000 64 1 3000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 1.369024 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 
+TiempoFinal= 67.827256   Ef= 1.00  min= 67.83 max= 67.83
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   14540838    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 1774475.950224
+Total_Time_L1<-L2 de chip 0: 1774475.950224
+Total_Time_L1<-L2=   1774475.950224    max= 1774475.950224
+-------------------------------------------
+Total_L2<-Ram=  14540838    Ef= 1.00
+Total_HitsL1=   14540838    Ef= 1.00
+Total_HitsL2=    0    Ef= -nan
+Total_HitsRam=  14300258    Ef= 1.00
+Tiempo Acumulado
+Pid: 0, tiempoAcumulado: 6.9e+07
+-.Tiempo Activo sobrante: 1.75551e+06
+Maximo :6.9e+07
+-------------------------------------------------------------
+chip : 0, core: 0, time: 3e+06, threads: 95.7841, CacheL1: 96.899, CacheL2: 1.95318, CacheL3: 3.10103
+chip : 0, core: 0, time: 6e+06, threads: 95.759, CacheL1: 96.8896, CacheL2: 1.98091, CacheL3: 3.11037
+chip : 0, core: 0, time: 9e+06, threads: 95.7584, CacheL1: 96.8865, CacheL2: 1.97616, CacheL3: 3.11371
+chip : 0, core: 0, time: 1.2e+07, threads: 95.7926, CacheL1: 96.906, CacheL2: 1.95071, CacheL3: 3.09406
+chip : 0, core: 0, time: 1.5e+07, threads: 95.9989, CacheL1: 97.0609, CacheL2: 1.86135, CacheL3: 2.93872
+chip : 0, core: 0, time: 1.8e+07, threads: 95.7996, CacheL1: 96.922, CacheL2: 1.96642, CacheL3: 3.07809
+chip : 0, core: 0, time: 2.1e+07, threads: 95.6549, CacheL1: 96.8035, CacheL2: 2.01258, CacheL3: 3.19637
+chip : 0, core: 0, time: 2.4e+07, threads: 95.5841, CacheL1: 96.7686, CacheL2: 2.07515, CacheL3: 3.23147
+chip : 0, core: 0, time: 2.7e+07, threads: 95.7857, CacheL1: 96.9091, CacheL2: 1.96774, CacheL3: 3.0912
+chip : 0, core: 0, time: 3e+07, threads: 95.8349, CacheL1: 96.9429, CacheL2: 1.94172, CacheL3: 3.05684
+chip : 0, core: 0, time: 3.3e+07, threads: 96.1275, CacheL1: 97.1526, CacheL2: 1.79608, CacheL3: 2.84737
+chip : 0, core: 0, time: 3.6e+07, threads: 95.8553, CacheL1: 96.9497, CacheL2: 1.91769, CacheL3: 3.05022
+chip : 0, core: 0, time: 3.9e+07, threads: 95.9364, CacheL1: 97.0097, CacheL2: 1.88042, CacheL3: 2.99034
+chip : 0, core: 0, time: 4.2e+07, threads: 95.7439, CacheL1: 96.8756, CacheL2: 1.98258, CacheL3: 3.1245
+chip : 0, core: 0, time: 4.5e+07, threads: 95.6949, CacheL1: 96.8376, CacheL2: 2.00192, CacheL3: 3.16247
+chip : 0, core: 0, time: 4.8e+07, threads: 95.8511, CacheL1: 96.9511, CacheL2: 1.92738, CacheL3: 3.04882
+chip : 0, core: 0, time: 5.1e+07, threads: 95.8481, CacheL1: 96.9522, CacheL2: 1.93441, CacheL3: 3.0478
+chip : 0, core: 0, time: 5.4e+07, threads: 95.3895, CacheL1: 96.6239, CacheL2: 2.16231, CacheL3: 3.37636
+chip : 0, core: 0, time: 5.7e+07, threads: 95.9008, CacheL1: 96.9983, CacheL2: 1.92276, CacheL3: 3.00174
+chip : 0, core: 0, time: 6e+07, threads: 96.0834, CacheL1: 97.1204, CacheL2: 1.81703, CacheL3: 2.87951
+chip : 0, core: 0, time: 6.3e+07, threads: 96.1292, CacheL1: 97.1507, CacheL2: 1.78975, CacheL3: 2.84933
+chip : 0, core: 0, time: 6.6e+07, threads: 95.7142, CacheL1: 96.8483, CacheL2: 1.9872, CacheL3: 3.15157
+chip : 0, core: 0, time: 6.9e+07, threads: 58.517, CacheL1: 59.1492, CacheL2: 1.10788, CacheL3: 1.75921
+chip : 0, core: 0, time: 7.2e+07, threads: 0, CacheL1: 0, CacheL2: 0, CacheL3: 0
+nchips: 1cores: 1
+WORK=  64986315   Ef= 1.00
+TotalLocks=  5000   Ef= 1.00
+SE ACABO
+dB: 8 , dimBloque: 4
+
+./simulador 5000 64 2 3000000 ../Input/ traza-0-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 1.323436 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 

@@ -1,0 +1,436 @@
+dB: 8 , dimBloque: 8
+
+./simulador 5000 64 1 3000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 1.369024 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 
+TiempoFinal= 548.755195   Ef= 1.00  min= 548.76 max= 548.76
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   14540838    Ef= 1.00
+Total_Time_L1<-L2 de chip 0, core 0: 780054.254084
+Total_Time_L1<-L2 de chip 0: 780054.254084
+Total_Time_L1<-L2=   780054.254084    max= 780054.254084
+-------------------------------------------
+Total_L2<-Ram=  14540838    Ef= 1.00
+Total_HitsL1=   14540838    Ef= 1.00
+Total_HitsL2=    0    Ef= -nan
+Total_HitsRam=  14300258    Ef= 1.00
+Tiempo Acumulado
+Pid: 0, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 772187
+Maximo :5.49e+08
+-------------------------------------------------------------
+WORK=  64986315   Ef= 1.00
+TotalLocks=  5000   Ef= 1.00
+SE ACABO
+dB: 8 , dimBloque: 4
+
+./simulador 5000 64 2 3000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 1.323436 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 
+TiempoFinal= 548.618484   Ef= 1.00  min= 548.49 max= 548.75
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   12312854    Ef= 0.98
+Total_Time_L1<-L2 de chip 0, core 0: 128688.389760
+Total_Time_L1<-L2 de chip 0, core 1: 80645.188136
+Total_Time_L1<-L2 de chip 0: 209333.577896
+Total_Time_L1<-L2=   209333.577896    max= 209333.577896
+-------------------------------------------
+Total_L2<-Ram=  12312854    Ef= 0.98
+Total_HitsL1=   12312854    Ef= 0.98
+Total_HitsL2=    0    Ef= -nan
+Total_HitsRam=  12261525    Ef= 0.98
+Tiempo Acumulado
+Pid: 0, tiempoAcumulado: 4.17e+08
+-.Tiempo Activo sobrante: 126223
+Pid: 1, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 78974.3
+Maximo :5.49e+08
+-------------------------------------------------------------
+-------------------------------------------------------------
+WORK=  31017997   Ef= 0.98
+TotalLocks=  5000   Ef= 1.00
+SE ACABO
+dB: 8 , dimBloque: 2
+
+./simulador 5000 64 4 3000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 1.220916 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 
+TiempoFinal= 548.581410   Ef= 1.00  min= 548.34 max= 548.75
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   11941534    Ef= 0.94
+Total_Time_L1<-L2 de chip 0, core 0: 27252.377408
+Total_Time_L1<-L2 de chip 0, core 1: 244.124253
+Total_Time_L1<-L2 de chip 0, core 2: 28270.478208
+Total_Time_L1<-L2 de chip 0, core 3: 38700.974516
+Total_Time_L1<-L2 de chip 0: 94467.954385
+Total_Time_L1<-L2=   94467.954385    max= 94467.954385
+-------------------------------------------
+Total_L2<-Ram=  11941440    Ef= 0.94
+Total_HitsL1=   11941440    Ef= 0.94
+Total_HitsL2=    94    Ef= 0.65
+Total_HitsRam=  11932325    Ef= 0.94
+Tiempo Acumulado
+Pid: 0, tiempoAcumulado: 4.5e+08
+-.Tiempo Activo sobrante: 26145.4
+Pid: 1, tiempoAcumulado: 4.83e+08
+-.Tiempo Activo sobrante: 224.009
+Pid: 2, tiempoAcumulado: 5.16e+08
+-.Tiempo Activo sobrante: 27122.1
+Pid: 3, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 37112.8
+Maximo :5.49e+08
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+WORK=  14216924   Ef= 0.94
+TotalLocks=  5000   Ef= 1.00
+SE ACABO
+dB: 16 , dimBloque: 2
+
+./simulador 5000 128 8 3000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 1.092196 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 
+TiempoFinal= 548.430711   Ef= 1.00  min= 548.18 max= 548.75
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   5970769    Ef= 0.86
+Total_Time_L1<-L2 de chip 0, core 0: 20.302496
+Total_Time_L1<-L2 de chip 0, core 1: 12177.944393
+Total_Time_L1<-L2 de chip 0, core 2: 11682.992448
+Total_Time_L1<-L2 de chip 0, core 3: 8974.696138
+Total_Time_L1<-L2 de chip 0, core 4: 3611.591712
+Total_Time_L1<-L2 de chip 0, core 5: 25403.693221
+Total_Time_L1<-L2 de chip 0, core 6: 1508.804672
+Total_Time_L1<-L2 de chip 0, core 7: 8427.148160
+Total_Time_L1<-L2 de chip 0: 71807.173240
+Total_Time_L1<-L2=   71807.173240    max= 71807.173240
+-------------------------------------------
+Total_L2<-Ram=  5969749    Ef= 0.86
+Total_HitsL1=   5969749    Ef= 0.86
+Total_HitsL2=    1020    Ef= 0.30
+Total_HitsRam=  5959890    Ef= 0.86
+Tiempo Acumulado
+Pid: 0, tiempoAcumulado: 4.89e+08
+-.Tiempo Activo sobrante: 19.4751
+Pid: 1, tiempoAcumulado: 4.98e+08
+-.Tiempo Activo sobrante: 11622.6
+Pid: 2, tiempoAcumulado: 5.07e+08
+-.Tiempo Activo sobrante: 11155.1
+Pid: 3, tiempoAcumulado: 5.13e+08
+-.Tiempo Activo sobrante: 8561.17
+Pid: 4, tiempoAcumulado: 5.25e+08
+-.Tiempo Activo sobrante: 3448.6
+Pid: 5, tiempoAcumulado: 5.31e+08
+-.Tiempo Activo sobrante: 24238.1
+Pid: 6, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 1440.96
+Pid: 7, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 8046.56
+Maximo :5.49e+08
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+WORK=  6359024   Ef= 0.86
+TotalLocks=  5000   Ef= 1.00
+SE ACABO
+dB: 32 , dimBloque: 2
+
+./simulador 5000 256 16 3000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 0.000000 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 
+TiempoFinal= 547.369236   Ef= 1.00  min= 546.35 max= 548.06
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   2979480    Ef= 0.80
+Total_Time_L1<-L2 de chip 0, core 0: 129.827120
+Total_Time_L1<-L2 de chip 0, core 1: 18.478800
+Total_Time_L1<-L2 de chip 0, core 2: 2.827360
+Total_Time_L1<-L2 de chip 0, core 3: 243.107040
+Total_Time_L1<-L2 de chip 0, core 4: 48.332160
+Total_Time_L1<-L2 de chip 0, core 5: 98.801120
+Total_Time_L1<-L2 de chip 0, core 6: 12.687280
+Total_Time_L1<-L2 de chip 0, core 7: 163.335200
+Total_Time_L1<-L2 de chip 0: 717.396080
+Total_Time_L1<-L2 de chip 1, core 0: 245.589120
+Total_Time_L1<-L2 de chip 1, core 1: 256.413200
+Total_Time_L1<-L2 de chip 1, core 2: 2.413680
+Total_Time_L1<-L2 de chip 1, core 3: 47.022720
+Total_Time_L1<-L2 de chip 1, core 4: 51.986880
+Total_Time_L1<-L2 de chip 1, core 5: 488.315860
+Total_Time_L1<-L2 de chip 1, core 6: 19.306160
+Total_Time_L1<-L2 de chip 1, core 7: 15.583040
+Total_Time_L1<-L2 de chip 1: 1126.630660
+Total_Time_L1<-L2=   1844.026740    max= 1126.630660
+-------------------------------------------
+Total_L2<-Ram=  2977966    Ef= 0.80
+Total_HitsL1=   2978007    Ef= 0.80
+Total_HitsL2=    1514    Ef= 0.39
+Total_HitsRam=  2907527    Ef= 0.81
+Tiempo Acumulado
+Pid: 0, tiempoAcumulado: 5.13e+08
+-.Tiempo Activo sobrante: 2
+Pid: 1, tiempoAcumulado: 5.19e+08
+-.Tiempo Activo sobrante: 4
+Pid: 2, tiempoAcumulado: 5.22e+08
+-.Tiempo Activo sobrante: 2
+Pid: 3, tiempoAcumulado: 5.22e+08
+-.Tiempo Activo sobrante: 4
+Pid: 4, tiempoAcumulado: 5.25e+08
+-.Tiempo Activo sobrante: 2
+Pid: 5, tiempoAcumulado: 5.25e+08
+-.Tiempo Activo sobrante: 2
+Pid: 6, tiempoAcumulado: 5.28e+08
+-.Tiempo Activo sobrante: 4
+Pid: 7, tiempoAcumulado: 5.34e+08
+-.Tiempo Activo sobrante: 2
+Pid: 8, tiempoAcumulado: 5.34e+08
+-.Tiempo Activo sobrante: 4
+Pid: 9, tiempoAcumulado: 5.34e+08
+-.Tiempo Activo sobrante: 2
+Pid: 10, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 2
+Pid: 11, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 4
+Pid: 12, tiempoAcumulado: 5.43e+08
+-.Tiempo Activo sobrante: 4
+Pid: 13, tiempoAcumulado: 5.43e+08
+-.Tiempo Activo sobrante: 4
+Pid: 14, tiempoAcumulado: 5.46e+08
+-.Tiempo Activo sobrante: 4
+Pid: 15, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 4
+Maximo :5.49e+08
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+WORK=  0   Ef= -nan
+TotalLocks=  4992   Ef= 1.00
+SE ACABO
+dB: 64 , dimBloque: 2
+
+./simulador 5000 512 32 3000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+entradas_L1: 64
+entradas_L2: 512
+entradas_L3: 16384
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710  gL2Ram= 0.517100
+Factor_MakeRanking= 0.000000 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 
+TiempoFinal= 546.368868   Ef= 1.00  min= 544.45 max= 548.06
+Ef= -1.0000 
+-------------------------------------------
+Total_L1<-L2=   1489672    Ef= 0.69
+Total_Time_L1<-L2 de chip 0, core 0: 2.723940
+Total_Time_L1<-L2 de chip 0, core 1: 9.032560
+Total_Time_L1<-L2 de chip 0, core 2: 2.206840
+Total_Time_L1<-L2 de chip 0, core 3: 36.335440
+Total_Time_L1<-L2 de chip 0, core 4: 4.585500
+Total_Time_L1<-L2 de chip 0, core 5: 2.206840
+Total_Time_L1<-L2 de chip 0, core 6: 3.241040
+Total_Time_L1<-L2 de chip 0, core 7: 2.465390
+Total_Time_L1<-L2 de chip 0: 62.797550
+Total_Time_L1<-L2 de chip 1, core 0: 2.206840
+Total_Time_L1<-L2 de chip 1, core 1: 11.721480
+Total_Time_L1<-L2 de chip 1, core 2: 185.467080
+Total_Time_L1<-L2 de chip 1, core 3: 7.998360
+Total_Time_L1<-L2 de chip 1, core 4: 8.618880
+Total_Time_L1<-L2 de chip 1, core 5: 238.418120
+Total_Time_L1<-L2 de chip 1, core 6: 3.861560
+Total_Time_L1<-L2 de chip 1, core 7: 7.377840
+Total_Time_L1<-L2 de chip 1: 465.670160
+Total_Time_L1<-L2 de chip 2, core 0: 65.913560
+Total_Time_L1<-L2 de chip 2, core 1: 2.206840
+Total_Time_L1<-L2 de chip 2, core 2: 2.413680
+Total_Time_L1<-L2 de chip 2, core 3: 87.218080
+Total_Time_L1<-L2 de chip 2, core 4: 25.166080
+Total_Time_L1<-L2 de chip 2, core 5: 50.400560
+Total_Time_L1<-L2 de chip 2, core 6: 5.102600
+Total_Time_L1<-L2 de chip 2, core 7: 82.667600
+Total_Time_L1<-L2 de chip 2: 321.089000
+Total_Time_L1<-L2 de chip 3, core 0: 122.587720
+Total_Time_L1<-L2 de chip 3, core 1: 129.206600
+Total_Time_L1<-L2 de chip 3, core 2: 2.206840
+Total_Time_L1<-L2 de chip 3, core 3: 17.513000
+Total_Time_L1<-L2 de chip 3, core 4: 19.374560
+Total_Time_L1<-L2 de chip 3, core 5: 7.739810
+Total_Time_L1<-L2 de chip 3, core 6: 7.791520
+Total_Time_L1<-L2 de chip 3, core 7: 2.413680
+Total_Time_L1<-L2 de chip 3: 308.833730
+Total_Time_L1<-L2=   1158.390440    max= 465.670160
+-------------------------------------------
+Total_L2<-Ram=  1489362    Ef= 0.69
+Total_HitsL1=   1489450    Ef= 0.69
+Total_HitsL2=    310    Ef= 0.17
+Total_HitsRam=  1353652    Ef= 0.69
+Tiempo Acumulado
+Pid: 0, tiempoAcumulado: 5.28e+08
+-.Tiempo Activo sobrante: 2
+Pid: 1, tiempoAcumulado: 5.28e+08
+-.Tiempo Activo sobrante: 2
+Pid: 2, tiempoAcumulado: 5.31e+08
+-.Tiempo Activo sobrante: 2
+Pid: 3, tiempoAcumulado: 5.28e+08
+-.Tiempo Activo sobrante: 2
+Pid: 4, tiempoAcumulado: 5.31e+08
+-.Tiempo Activo sobrante: 2
+Pid: 5, tiempoAcumulado: 5.34e+08
+-.Tiempo Activo sobrante: 2
+Pid: 6, tiempoAcumulado: 5.31e+08
+-.Tiempo Activo sobrante: 2
+Pid: 7, tiempoAcumulado: 5.34e+08
+-.Tiempo Activo sobrante: 2
+Pid: 8, tiempoAcumulado: 5.37e+08
+-.Tiempo Activo sobrante: 2
+Pid: 9, tiempoAcumulado: 5.37e+08
+-.Tiempo Activo sobrante: 2
+Pid: 10, tiempoAcumulado: 5.37e+08
+-.Tiempo Activo sobrante: 2
+Pid: 11, tiempoAcumulado: 5.37e+08
+-.Tiempo Activo sobrante: 2
+Pid: 12, tiempoAcumulado: 5.37e+08
+-.Tiempo Activo sobrante: 2
+Pid: 13, tiempoAcumulado: 5.37e+08
+-.Tiempo Activo sobrante: 2
+Pid: 14, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 2
+Pid: 15, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 2
+Pid: 16, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 2
+Pid: 17, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 2
+Pid: 18, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 2
+Pid: 19, tiempoAcumulado: 5.43e+08
+-.Tiempo Activo sobrante: 2
+Pid: 20, tiempoAcumulado: 5.4e+08
+-.Tiempo Activo sobrante: 2
+Pid: 21, tiempoAcumulado: 5.43e+08
+-.Tiempo Activo sobrante: 2
+Pid: 22, tiempoAcumulado: 5.43e+08
+-.Tiempo Activo sobrante: 2
+Pid: 23, tiempoAcumulado: 5.43e+08
+-.Tiempo Activo sobrante: 2
+Pid: 24, tiempoAcumulado: 5.46e+08
+-.Tiempo Activo sobrante: 2
+Pid: 25, tiempoAcumulado: 5.46e+08
+-.Tiempo Activo sobrante: 2
+Pid: 26, tiempoAcumulado: 5.46e+08
+-.Tiempo Activo sobrante: 2
+Pid: 27, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 2
+Pid: 28, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 2
+Pid: 29, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 2
+Pid: 30, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 2
+Pid: 31, tiempoAcumulado: 5.49e+08
+-.Tiempo Activo sobrante: 2
+Maximo :5.49e+08
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+WORK=  0   Ef= -nan
+TotalLocks=  4992   Ef= 1.00
+SE ACABO

@@ -1,0 +1,10 @@
+
+./simulador 5000 64 1 30000000 ../Input/ traza-30-0-8.dat
+
+Cantidad5000
+fin lectura consultas
+fin lectura indice
+
+cache L1= 16KB  L2= 128KB L3= 4MB Latencia gL1L2= 0.051710 gL2L3= 0.038890  gL3Ram= 0.105840
+Factor_MakeRanking= 1.369024 
+100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 
